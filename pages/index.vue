@@ -1,10 +1,10 @@
 <template lang="pug">
-  tutorial
+div index
 </template>
 
 <script>
 import Vue from 'vue'
 
 export default Vue.extend({
-  name: 'IndexPage'
+  name: 'PagesIndex',
 })
