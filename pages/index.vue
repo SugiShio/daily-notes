@@ -1,10 +1,21 @@
 <template lang="pug">
-div index
+div
+  templates-daily-notes(:daily-id='dailyId')
 </template>
 
 <script>
-import Vue from 'vue'
+const dateObject = new Date()
+const year = dateObject.getFullYear()
+const month = dateObject.getMonth() + 1
+const date = dateObject.getDate()
+const dailyId = `${year}${`0${month}`.slice(-2)}${`0${date}`.slice(-2)}`
 
-export default Vue.extend({
+export default {
   name: 'PagesIndex',
-})
+  data() {
+    return {
+      dailyId,
+    }
+  },
+}
+</script>
