@@ -4,7 +4,7 @@ section
 
   ul(v-if='dailyNotes.length')
     li(v-for='dailyNote in dailyNotes')
-      | {{ dailyNote }}
+      organisms-note(:item='dailyNote')
 </template>
 
 <script>
