@@ -12,7 +12,14 @@ section
 </template>
 
 <script>
-import { getDocs, updateDoc, collection, doc } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
 
 const dateObject = new Date()
@@ -48,9 +55,12 @@ export default {
   },
   methods: {
     async fetchDailyNotes() {
-      const snapShots = await getDocs(
-        collection(db, 'dailyNotes', this.uid, this.dailyId)
+      const q = query(
+        collection(db, 'dailyNotes'),
+        where('uid', '==', this.uid),
+        where('date', '==', this.dailyId)
       )
+      const snapShots = await getDocs(q)
       this.dailyNotes = []
       snapShots.forEach((snapshot) => {
         this.dailyNotes.push({ ...snapshot.data(), id: snapshot.id })
@@ -58,10 +68,7 @@ export default {
     },
 
     async updateDailyNote($event) {
-      await updateDoc(
-        doc(db, 'dailyNotes', this.uid, this.dailyId, $event.id),
-        $event.updated
-      )
+      await updateDoc(doc(db, 'dailyNotes', $event.id), $event.updated)
       this.fetchDailyNotes()
     },
   },
