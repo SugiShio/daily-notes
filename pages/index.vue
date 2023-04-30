@@ -1,6 +1,6 @@
 <template lang="pug">
-div
-  templates-daily-notes(:daily-id='dailyId')
+.p-index
+  templates-daily-notes
 </template>
 
 <script>
@@ -19,3 +19,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.p-index {
+  padding: 0 20px;
+}
+</style>

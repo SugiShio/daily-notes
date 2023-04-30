@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+.p-id
   templates-daily-notes(:daily-id='dailyId')
 </template>
 
@@ -16,3 +16,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.p-id {
+  padding: 0 20px;
+}
+</style>

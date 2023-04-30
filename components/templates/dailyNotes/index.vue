@@ -1,6 +1,9 @@
 <template lang="pug">
-section
-  div {{ dailyId }}
+section.t-daily-notes
+  time.t-daily-notes__title(:datetime='`${year}-${month}-${date}`')
+    span.t-daily-notes__year {{ year }}
+    span.t-daily-notes__date {{ month }}.{{ date }}
+      span.t-daily-notes__day {{ day }}
 
   ul
     li(v-for='(dailyNote, id) in dailyNotes')
@@ -44,6 +47,20 @@ export default {
     uid() {
       return this.$store.state.user.uid
     },
+    year() {
+      return Number(this.dailyId.slice(0, 4))
+    },
+    month() {
+      return Number(this.dailyId.slice(4, 6))
+    },
+    date() {
+      return Number(this.dailyId.slice(6, 8))
+    },
+    day() {
+      const date = new Date(this.year, this.month - 1, this.date)
+      const dayText = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      return dayText[date.getDay()]
+    },
   },
   watch: {
     uid(uid) {
@@ -78,3 +95,25 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.t-daily-notes {
+  &__title {
+    display: block;
+    margin: 50px 0;
+  }
+
+  &__year {
+    display: block;
+  }
+
+  &__date {
+    display: block;
+    font-size: 24px;
+  }
+
+  &__day {
+    margin-left: 10px;
+  }
+}
+</style>
