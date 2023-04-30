@@ -5,6 +5,10 @@ section.t-daily-notes
     span.t-daily-notes__date {{ month }}.{{ date }}
       span.t-daily-notes__day {{ day }}
 
+  .t-daily-notes__selector
+    nuxt-link.t-daily-notes__prev(:to='linkPrevious') Prev
+    nuxt-link.t-daily-notes__next(:to='linkNext') Next
+
   ul
     li(v-for='(dailyNote, id) in dailyNotes')
       component(
@@ -25,6 +29,11 @@ import {
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
 import { Note } from '~/models/note'
+import {
+  convertDateIdToDate,
+  convertDateToDateId,
+  getDayText,
+} from '~/scripts/dateHelper'
 
 const dateObject = new Date()
 const year = dateObject.getFullYear()
@@ -47,19 +56,34 @@ export default {
     uid() {
       return this.$store.state.user.uid
     },
+    dateObject() {
+      return convertDateIdToDate(this.dailyId)
+    },
     year() {
-      return Number(this.dailyId.slice(0, 4))
+      return this.dateObject.getFullYear()
     },
     month() {
-      return Number(this.dailyId.slice(4, 6))
+      return this.dateObject.getMonth() + 1
     },
     date() {
-      return Number(this.dailyId.slice(6, 8))
+      return this.dateObject.getDate()
     },
     day() {
-      const date = new Date(this.year, this.month - 1, this.date)
-      const dayText = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-      return dayText[date.getDay()]
+      return getDayText(this.dateObject)
+    },
+    linkNext() {
+      const nextDate = new Date(this.dateObject)
+      nextDate.setDate(this.dateObject.getDate() + 1)
+      const id = convertDateToDateId(nextDate)
+
+      return { name: 'id', params: { id } }
+    },
+    linkPrevious() {
+      const previousDate = new Date(this.dateObject)
+      previousDate.setDate(this.dateObject.getDate() - 1)
+      const id = convertDateToDateId(previousDate)
+
+      return { name: 'id', params: { id } }
     },
   },
   watch: {
@@ -100,7 +124,7 @@ export default {
 .t-daily-notes {
   &__title {
     display: block;
-    margin: 50px 0;
+    margin: 50px 0 10px;
   }
 
   &__year {
@@ -114,6 +138,18 @@ export default {
 
   &__day {
     margin-left: 10px;
+  }
+
+  &__selector {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0 30px;
+  }
+
+  &__prev,
+  &__next {
+    text-decoration: none;
+    font-size: 14px;
   }
 }
 </style>
