@@ -5,42 +5,28 @@ div
     textarea(v-model='localContent')
     button(@click='cancel') cancel
     button(@click='save') save
-    h3 preview
-    div(v-html='markedContent')
   template(v-else)
     h2(v-if='item.title') {{ item.title }}
-    div(v-html='markedContent')
+    div(v-html='item.markedContent')
     button(@click='isEditing = true') edit
 </template>
 
 <script>
-import { marked } from 'marked'
-import DOMPurify from 'dompurify'
+import { Note } from '~/models/note'
 
-class Note {
-  constructor(params = {}) {
-    this.title = params.title || ''
-    this.content = params.content || ''
-  }
-}
 export default {
   name: 'OrganismsNote',
   props: {
-    item: { type: Object, default: new Note() },
+    item: { type: Note, default: new Note() },
   },
   data() {
+    const item = new Note(this.item || {})
+
     return {
-      isEditing: false,
-      localContent: this.item.content.replace(/\\n/g, '\n'),
-      localTitle: this.item.title,
+      isEditing: item.isEmpty,
+      localContent: item.content.replace(/\\n/g, '\n'),
+      localTitle: item.title,
     }
-  },
-  computed: {
-    markedContent() {
-      return DOMPurify.sanitize(
-        marked.parse(this.item.content.replace(/\\n/g, '\n'))
-      )
-    },
   },
   methods: {
     cancel() {
@@ -56,10 +42,7 @@ export default {
         updated.content = this.localContent
       }
       if (Object.keys(updated).length) {
-        this.$emit('item-updated', {
-          id: this.item.id,
-          updated,
-        })
+        this.$emit('item-updated', updated)
       }
       this.isEditing = false
     },

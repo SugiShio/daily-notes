@@ -2,12 +2,12 @@
 section
   div {{ dailyId }}
 
-  ul(v-if='dailyNotes.length')
-    li(v-for='(dailyNote, index) in dailyNotes')
+  ul
+    li(v-for='(dailyNote, id) in dailyNotes')
       component(
         :is='`organisms-${dailyNote.type}`',
         :item='dailyNote',
-        @item-updated='updateDailyNote($event)'
+        @item-updated='updateDailyNote($event, id)'
       )
 </template>
 
@@ -21,6 +21,7 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
+import { Note } from '~/models/note'
 
 const dateObject = new Date()
 const year = dateObject.getFullYear()
@@ -34,7 +35,10 @@ export default {
     dailyId: { type: String, default: dailyId },
   },
   data() {
-    return { dailyNotes: [] }
+    return {
+      dailyNotes: {},
+      isTypeSelectorOpen: false,
+    }
   },
   computed: {
     uid() {
@@ -61,14 +65,14 @@ export default {
         where('date', '==', this.dailyId)
       )
       const snapShots = await getDocs(q)
-      this.dailyNotes = []
+      this.dailyNotes = {}
       snapShots.forEach((snapshot) => {
-        this.dailyNotes.push({ ...snapshot.data(), id: snapshot.id })
+        this.dailyNotes[snapshot.id] = new Note(snapshot.data())
       })
     },
 
-    async updateDailyNote($event) {
-      await updateDoc(doc(db, 'dailyNotes', $event.id), $event.updated)
+    async updateDailyNote($event, id) {
+      await updateDoc(doc(db, 'dailyNotes', id), $event)
       this.fetchDailyNotes()
     },
   },
