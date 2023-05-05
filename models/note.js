@@ -1,14 +1,12 @@
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
-import { Timestamp } from '~/models/timestamp'
+import { DailyItem } from './dailyItem'
 
-export class Note extends Timestamp {
+export class Note extends DailyItem {
   constructor(note = {}) {
     super(note)
     this.content = note.content || ''
-    this.id = note.id || null
     this.title = note.title || ''
-    this.type = 'note'
   }
 
   get isEmpty() {

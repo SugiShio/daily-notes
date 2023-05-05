@@ -1,6 +1,8 @@
 <template lang="pug">
 .p-id
-  templates-daily-notes(:daily-id='dailyId')
+  templates-daily-notes
+  templates-daily-form(v-if='isEditing')
+  button(v-if='!isEditing', @click='addItem') New
 </template>
 
 <script>
@@ -13,6 +15,33 @@ export default {
     return {
       dailyId: this.$route.params.id,
     }
+  },
+  computed: {
+    isEditing() {
+      return this.$store.getters.isEditing
+    },
+    uid() {
+      return this.$store.state.user.uid
+    },
+  },
+  watch: {
+    uid(uid) {
+      if (uid) {
+        this.$store.commit('setDailyId', this.dailyId)
+        this.$store.dispatch('fetchDailyNotes')
+      }
+    },
+  },
+  created() {
+    if (this.uid) {
+      this.$store.commit('setDailyId', this.dailyId)
+      this.$store.dispatch('fetchDailyNotes')
+    }
+  },
+  methods: {
+    addItem() {
+      this.$store.commit('setEditingItem')
+    },
   },
 }
 </script>

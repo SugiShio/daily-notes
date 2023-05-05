@@ -10,54 +10,36 @@ section.t-daily-notes
     nuxt-link.t-daily-notes__next(:to='linkNext') Next
 
   ul
-    li(v-for='(dailyNote, id) in dailyNotes')
+    li.t-daily-notes__item(v-for='(dailyNote, id) in dailyNotes')
       component(
         :is='`organisms-${dailyNote.type}`',
         :item='dailyNote',
         @item-updated='updateDailyNote($event, id)'
       )
+      button(@click='editItem(dailyNote, id)') Edit
 </template>
 
 <script>
-import {
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore'
-import { db } from '~/plugins/firebase'
-import { Note } from '~/models/note'
 import {
   convertDateIdToDate,
   convertDateToDateId,
   getDayText,
 } from '~/scripts/dateHelper'
 
-const dateObject = new Date()
-const year = dateObject.getFullYear()
-const month = dateObject.getMonth() + 1
-const date = dateObject.getDate()
-const dailyId = `${year}${`0${month}`.slice(-2)}${`0${date}`.slice(-2)}`
-
 export default {
   name: 'TemplatesDailyNotes',
   props: {
-    dailyId: { type: String, default: dailyId },
-  },
-  data() {
-    return {
-      dailyNotes: {},
-      isTypeSelectorOpen: false,
-    }
+    dailyNotesChanged: { type: Boolean, default: false },
   },
   computed: {
     uid() {
       return this.$store.state.user.uid
     },
+    dailyNotes() {
+      return this.$store.state.dailyNotes
+    },
     dateObject() {
-      return convertDateIdToDate(this.dailyId)
+      return convertDateIdToDate(this.$store.state.dailyId)
     },
     year() {
       return this.dateObject.getFullYear()
@@ -86,35 +68,10 @@ export default {
       return { name: 'id', params: { id } }
     },
   },
-  watch: {
-    uid(uid) {
-      if (uid) {
-        this.fetchDailyNotes()
-      }
-    },
-  },
-  created() {
-    if (this.uid) {
-      this.fetchDailyNotes()
-    }
-  },
   methods: {
-    async fetchDailyNotes() {
-      const q = query(
-        collection(db, 'dailyNotes'),
-        where('uid', '==', this.uid),
-        where('date', '==', this.dailyId)
-      )
-      const snapShots = await getDocs(q)
-      this.dailyNotes = {}
-      snapShots.forEach((snapshot) => {
-        this.dailyNotes[snapshot.id] = new Note(snapshot.data())
-      })
-    },
-
-    async updateDailyNote($event, id) {
-      await updateDoc(doc(db, 'dailyNotes', id), $event)
-      this.fetchDailyNotes()
+    editItem(dailyNote, id) {
+      this.$store.commit('setEditingItem', dailyNote)
+      this.$store.commit('setEditingItemId', id)
     },
   },
 }
@@ -150,6 +107,10 @@ export default {
   &__next {
     text-decoration: none;
     font-size: 14px;
+  }
+
+  &__item {
+    margin: 20px 0;
   }
 }
 </style>

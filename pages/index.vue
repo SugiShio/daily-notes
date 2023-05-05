@@ -1,21 +1,42 @@
 <template lang="pug">
 .p-index
   templates-daily-notes
+  templates-daily-form(v-if='isEditing')
+  button(v-if='!isEditing', @click='addItem') New
 </template>
 
 <script>
-const dateObject = new Date()
-const year = dateObject.getFullYear()
-const month = dateObject.getMonth() + 1
-const date = dateObject.getDate()
-const dailyId = `${year}${`0${month}`.slice(-2)}${`0${date}`.slice(-2)}`
+import { convertDateToDateId } from '~/scripts/dateHelper'
+const dailyId = convertDateToDateId(new Date())
 
 export default {
   name: 'PagesIndex',
-  data() {
-    return {
-      dailyId,
+  computed: {
+    isEditing() {
+      return this.$store.getters.isEditing
+    },
+    uid() {
+      return this.$store.state.user.uid
+    },
+  },
+  watch: {
+    uid(uid) {
+      if (uid) {
+        this.$store.commit('setDailyId', dailyId)
+        this.$store.dispatch('fetchDailyNotes')
+      }
+    },
+  },
+  created() {
+    if (this.uid) {
+      this.$store.commit('setDailyId', dailyId)
+      this.$store.dispatch('fetchDailyNotes')
     }
+  },
+  methods: {
+    addItem() {
+      this.$store.commit('setEditingItem')
+    },
   },
 }
 </script>
