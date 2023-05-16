@@ -1,6 +1,6 @@
 import { Timestamp } from '~/models/timestamp'
 import { convertDateToDateId } from '~/scripts/dateHelper'
-export const TYPES = ['note', 'checklist']
+export const TYPES = ['note', 'meal']
 
 export class DailyItem extends Timestamp {
   constructor(dailyItem = {}) {
@@ -8,5 +8,10 @@ export class DailyItem extends Timestamp {
     this.title = dailyItem.title || ''
     this.type = dailyItem.type || TYPES[0]
     this.date = dailyItem.date || convertDateToDateId(new Date())
+  }
+
+  setType(type) {
+    if (!TYPES.includes(type)) throw new Error('Type is invalid')
+    this.type = type
   }
 }

@@ -1,8 +1,17 @@
 <template lang="pug">
-div
-  input(v-model='localTitle')
-  textarea(v-model='localContent')
-  button(@click='onSaveClicked', :disabled='!isSaveAvailable') save
+.o-note-editor
+  .o-note-editor__item
+    label.o-note-editor__label(for='title') Title
+    .o-note-editor__content
+      atoms-input-text(v-model='localTitle')
+
+  .o-note-editor__item
+    label.o-note-editor__label(for='content') Content
+    .o-note-editor__content
+      atoms-markdown-editor(v-model='localContent')
+
+  .o-note-editor__item
+    button(@click='onSaveClicked', :disabled='!isSaveAvailable') save
 </template>
 
 <script>
@@ -54,3 +63,20 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/stylesheets/form';
+.o-note-editor {
+  &__item {
+    @extend %form__item;
+  }
+
+  &__label {
+    @extend %form__label;
+  }
+
+  &__content {
+    @extend %form__content;
+  }
+}
+</style>

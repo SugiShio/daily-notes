@@ -78,9 +78,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
+
 .t-daily-notes {
   &__title {
     display: block;
+    font-family: $font-family-accent;
     margin: 50px 0 10px;
   }
 

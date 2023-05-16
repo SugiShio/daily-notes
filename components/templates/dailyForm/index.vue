@@ -1,15 +1,15 @@
 <template lang="pug">
-div
-  div(v-for='t in types')
-    input(
-      type='radio',
-      :id='t',
-      :value='t',
-      name='type',
-      v-model='item.type',
-      :disabled='!isNew'
-    )
-    label(:for='t') {{ t }}
+.t-daily-form
+  .t-daily-form__item
+    .t-daily-form__label(for='title') Type
+    .t-daily-form__content
+      atoms-selector(
+        :disabled='!isNew',
+        field-name='type',
+        :options='typeOptions',
+        :value='item.type',
+        @input='onInput'
+      )
 
   template(v-if='item.type')
     component(:is='`organisms-${item.type}-editor`')
@@ -29,14 +29,36 @@ export default {
     isNew() {
       return !this.$store.state.editingItemId
     },
-    types() {
-      return TYPES
+    typeOptions() {
+      return TYPES.map((type) => {
+        return { label: type, value: type }
+      })
     },
   },
   methods: {
     cancel() {
       this.$store.commit('resetEditingItem')
     },
+    onInput(value) {
+      this.$store.commit('setDailyNoteType', value)
+    },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/stylesheets/form';
+.t-daily-form {
+  &__item {
+    @extend %form__item;
+  }
+
+  &__label {
+    @extend %form__label;
+  }
+
+  &__content {
+    @extend %form__content;
+  }
+}
+</style>

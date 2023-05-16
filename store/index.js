@@ -33,6 +33,10 @@ export const mutations = {
     })
   },
 
+  setDailyNoteType(state, type) {
+    state.editingItem.setType(type)
+  },
+
   setEditingItem(state, item) {
     state.editingItem = item || new DailyItem()
   },
