@@ -11,14 +11,12 @@
 
 <script>
 import { client } from '~/plugins/algolia'
-import { doc, getDoc } from 'firebase/firestore'
-import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
 
 export default {
   name: 'TemplatesSearchFoodItem',
   data() {
     return {
-      string: 'プロテイン',
+      string: '',
       items: [],
       detail: null,
     }
@@ -41,8 +39,7 @@ export default {
         })
     },
     async showDetail(id) {
-      const snapshot = await getDoc(doc(dbFoodDatabase, 'foodItems', id))
-      this.$store.commit('foodItem/setFoodItem', snapshot.data())
+      this.$store.dispatch('foodItem/showFoodItemDetail', id)
     },
   },
 }
