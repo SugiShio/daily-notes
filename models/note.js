@@ -5,6 +5,7 @@ import { DailyItem } from './dailyItem'
 export class Note extends DailyItem {
   constructor(note = {}) {
     super(note)
+    this.type = 'note'
     this.content = note.content || ''
     this.title = note.title || ''
   }

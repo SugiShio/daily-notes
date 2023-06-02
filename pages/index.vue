@@ -7,6 +7,7 @@
 
 <script>
 import { convertDateToDateId } from '~/scripts/dateHelper'
+
 const dailyId = convertDateToDateId(new Date())
 
 export default {
@@ -22,14 +23,13 @@ export default {
   watch: {
     uid(uid) {
       if (uid) {
-        this.$store.commit('setDailyId', dailyId)
         this.$store.dispatch('fetchDailyNotes')
       }
     },
   },
   created() {
+    this.$store.commit('setDailyId', dailyId)
     if (this.uid) {
-      this.$store.commit('setDailyId', dailyId)
       this.$store.dispatch('fetchDailyNotes')
     }
   },

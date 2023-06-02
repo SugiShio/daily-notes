@@ -21,5 +21,7 @@ module.exports = {
       process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     'vue/order-in-components':
       process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'import/order': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'require-await': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
   },
 }

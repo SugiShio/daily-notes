@@ -1,6 +1,6 @@
 import { Timestamp } from '~/models/timestamp'
 import { convertDateToDateId } from '~/scripts/dateHelper'
-export const TYPES = ['note', 'meal']
+export const TYPES = ['meal', 'note']
 
 export class DailyItem extends Timestamp {
   constructor(dailyItem = {}) {

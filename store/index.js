@@ -10,6 +10,7 @@ import {
 import { db } from '~/plugins/firebase'
 import { DailyItem } from '~/models/dailyItem'
 import { Note } from '~/models/note'
+import { Meal } from '~/models/meal'
 
 export const state = () => ({
   user: {},
@@ -28,8 +29,15 @@ export const mutations = {
   setDailyNotes(state, dailyNotes) {
     state.dailyNotes = {}
     dailyNotes.forEach((dailyNote) => {
-      // todo typeによってモデル変える
-      state.dailyNotes[dailyNote.id] = new Note(dailyNote.data())
+      const data = dailyNote.data()
+      switch (data.type) {
+        case 'meal':
+          state.dailyNotes[dailyNote.id] = new Meal(data)
+          break
+
+        default:
+          state.dailyNotes[dailyNote.id] = new Note(data)
+      }
     })
   },
 
