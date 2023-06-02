@@ -1,7 +1,7 @@
 <template lang="pug">
 .t-search-food-item
-  atoms-input-text(v-model='string')
-  atoms-button(@click='search', text='search')
+  atoms-search(v-model='string', @search-clicked='search')
+
   ul
     li(v-for='item in items', @click='showDetail(item.objectId)')
       span(@click='$emit("food-item-selected", item.objectId)') ＋

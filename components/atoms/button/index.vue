@@ -11,10 +11,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
+
 .a-button {
   text-align: center;
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px double #fff;
+  padding: 5px 15px;
+  border-radius: 8px;
+  background-color: #fff;
+  color: $color-main;
 }
 </style>
