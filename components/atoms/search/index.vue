@@ -5,7 +5,8 @@
     :value='value',
     @input='$emit("input", $event.target.value)'
   )
-  button.a-search__button(@click='$emit("search-clicked", value)') Search
+  button.a-search__button(@click='$emit("search-clicked", value)')
+    i.el-icon-search
 </template>
 
   <script>
@@ -19,7 +20,9 @@ export default {
 </script>
 
   <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
 @import '~/assets/stylesheets/input';
+
 .a-search {
   @extend %input;
   align-items: center;
@@ -35,6 +38,10 @@ export default {
 
   &__input {
     flex-grow: 1;
+  }
+
+  &__button {
+    color: $color-main-dark;
   }
 }
 </style>

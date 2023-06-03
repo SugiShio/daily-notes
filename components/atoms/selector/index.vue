@@ -10,7 +10,10 @@
       :name='fieldName',
       @input='onInput'
     )
-    label.a-selector__label(:for='option.value') {{ option.label }}
+    label.a-selector__label(:for='option.value')
+      .a-selector__icon(v-if='option.icon')
+        i(:class='`el-icon-${option.icon}`')
+      template(v-else) {{ option.label }}
 </template>
 
 <script>
@@ -31,6 +34,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
 .a-selector {
   display: flex;
   &__item {
@@ -44,6 +48,14 @@ export default {
 
   &__input:checked + &__label {
     font-weight: bold;
+    color: $color-main-dark;
+  }
+
+  &__icon {
+    display: inline-block;
+    padding: 5px;
+    font-size: 20px;
+    line-height: 1;
   }
 }
 </style>

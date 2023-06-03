@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   updateDoc,
@@ -82,6 +83,15 @@ export const actions = {
         uid: state.user.uid,
       })
       commit('resetEditingItem')
+      dispatch('fetchDailyNotes')
+    } catch (e) {
+      console.error(e)
+    }
+  },
+
+  async deleteItem({ commit, dispatch, state }, id) {
+    try {
+      await deleteDoc(doc(db, 'dailyNotes', id))
       dispatch('fetchDailyNotes')
     } catch (e) {
       console.error(e)

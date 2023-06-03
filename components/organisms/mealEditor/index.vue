@@ -1,21 +1,22 @@
 <template lang="pug">
-div
-  ul
-    li(v-for='(item, index) in items')
-      | {{ item.name }}
-      input(v-model='item.value')
-      select(v-model='item.unit')
-        option(v-for='unit in item.units') {{ unit.unit }}
-      span(@click='deleteItem(index)') ×
+.o-meal-editor
+  .o-meal-editor__label(for='items') Items
+    ul.o-meal-editor__content
+      li(v-for='(item, index) in items')
+        | {{ item.name }}
+        input(v-model='item.value')
+        select(v-model='item.unit')
+          option(v-for='unit in item.units') {{ unit.unit }}
+        span(@click='deleteItem(index)') ×
 
   templates-search-food-item(@food-item-selected='onFoodItemSelected')
   atoms-button(@click='onSaveClicked', text='save')
 </template>
 
 <script>
-import { Meal } from '~/models/meal'
 import { doc, getDoc } from 'firebase/firestore'
 import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
+import { Meal } from '~/models/meal'
 
 export default {
   name: 'OrganismsMealEditor',
@@ -46,3 +47,18 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/stylesheets/form';
+.o-meal-editor {
+  @extend %form__item;
+
+  &__label {
+    @extend %form__label;
+  }
+
+  &__content {
+    @extend %form__content;
+  }
+}
+</style>

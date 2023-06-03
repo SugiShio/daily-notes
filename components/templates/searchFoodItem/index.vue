@@ -1,12 +1,20 @@
 <template lang="pug">
-.t-search-food-item
-  atoms-search(v-model='string', @search-clicked='search')
+transition(name='showUp')
+  .t-search-food-item
+    atoms-search(v-model='string', @search-clicked='search')
 
-  ul
-    li(v-for='item in items', @click='showDetail(item.objectId)')
-      span(@click='$emit("food-item-selected", item.objectId)') ＋
-      | {{ item.name }}
-      span(@click='showDetail(item.objectId)') detail
+    ul.t-search-food-item__list
+      li.t-search-food-item__item(
+        v-for='item in items',
+        @click='showDetail(item.objectId)'
+      )
+        button.t-search-food-item__add-button(
+          @click='$emit("food-item-selected", item.objectId)'
+        )
+          i.el-icon-circle-plus-outline
+        a.t-search-food-item__detail-link(@click='showDetail(item.objectId)')
+          | {{ item.name }}
+          i.el-icon-top-right
 </template>
 
 <script>
@@ -38,9 +46,24 @@ export default {
           console.error(error)
         })
     },
-    async showDetail(id) {
+    showDetail(id) {
       this.$store.dispatch('foodItem/showFoodItemDetail', id)
     },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.t-search-food-item {
+  &__list {
+    margin: 20px 0;
+  }
+
+  &__item {
+    margin: 10px 0;
+  }
+  &__add-button {
+    padding: 3px 5px;
+  }
+}
+</style>

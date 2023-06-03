@@ -18,6 +18,6 @@ export default {
   padding: 5px 15px;
   border-radius: 8px;
   background-color: #fff;
-  color: $color-main;
+  color: $color-main-dark;
 }
 </style>

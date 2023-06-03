@@ -25,7 +25,18 @@ export class Timestamp {
     return `${y}.${m + 1}.${d} ${DAY_TEXTS[day]}`
   }
 
+  getTimeText(timestamp) {
+    const date = new Date(timestamp)
+    const hours = date.getHours()
+    const minutes = `0${date.getMinutes()}`.slice(-2)
+    return `${hours}:${minutes}`
+  }
+
   get createdAtDateText() {
     return this.getDateText(this.createdAt)
+  }
+
+  get createdAtTimeText() {
+    return this.getTimeText(this.createdAt)
   }
 }

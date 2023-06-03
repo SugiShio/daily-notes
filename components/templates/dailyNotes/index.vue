@@ -6,8 +6,10 @@ section.t-daily-notes
       span.t-daily-notes__day {{ day }}
 
   .t-daily-notes__selector
-    nuxt-link.t-daily-notes__prev(:to='linkPrevious') Prev
-    nuxt-link.t-daily-notes__next(:to='linkNext') Next
+    nuxt-link.t-daily-notes__prev(:to='linkPrevious')
+      i.el-icon-arrow-left
+    nuxt-link.t-daily-notes__next(:to='linkNext')
+      i.el-icon-arrow-right
 
   ul
     li.t-daily-notes__item(v-for='(dailyNote, id) in dailyNotes')
@@ -16,7 +18,11 @@ section.t-daily-notes
         :item='dailyNote',
         @item-updated='updateDailyNote($event, id)'
       )
-      button(@click='editItem(dailyNote, id)') Edit
+      .t-daily-notes__actions
+        button.t-daily-notes__action(@click='editItem(dailyNote, id)')
+          i.el-icon-edit
+        button.t-daily-notes__action(@click='deleteItem(id)')
+          i.el-icon-delete
 </template>
 
 <script>
@@ -69,6 +75,11 @@ export default {
     },
   },
   methods: {
+    deleteItem(id) {
+      if (confirm('削除します。よろしいですか？')) {
+        this.$store.dispatch('deleteItem', id)
+      }
+    },
     editItem(dailyNote, id) {
       this.$store.commit('setEditingItem', dailyNote)
       this.$store.commit('setEditingItemId', id)
@@ -113,7 +124,21 @@ export default {
   }
 
   &__item {
-    margin: 20px 0;
+    margin: 10px;
+    background: rgba(#fff, 0.75);
+    box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
+    padding: 15px 20px;
+    border-radius: 8px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__action {
+    padding: 2px 5px;
+    margin: 0 5px;
   }
 }
 </style>

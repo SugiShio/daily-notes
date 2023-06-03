@@ -1,7 +1,12 @@
 <template lang="pug">
 .t-daily-form
   .t-daily-form__item
-    .t-daily-form__label(for='title') Type
+    .t-daily-form__label(for='date') Date
+    .t-daily-form__content
+      | {{ date }}
+
+  .t-daily-form__item
+    .t-daily-form__label(for='type') Type
     .t-daily-form__content
       atoms-selector(
         :disabled='!isNew',
@@ -19,10 +24,18 @@
 
 <script>
 import { TYPES } from '~/models/dailyItem'
+import { convertDateIdToDate } from '~/scripts/dateHelper'
 
 export default {
   name: 'TemplatesDailyForm',
   computed: {
+    date() {
+      const dateObject = convertDateIdToDate(this.item.date)
+      const year = dateObject.getFullYear()
+      const month = dateObject.getMonth()
+      const date = dateObject.getDate()
+      return `${year}.${month + 1}.${date}`
+    },
     item() {
       return this.$store.state.editingItem
     },
@@ -31,7 +44,7 @@ export default {
     },
     typeOptions() {
       return TYPES.map((type) => {
-        return { label: type, value: type }
+        return { label: type.value, value: type.value, icon: type.icon }
       })
     },
   },

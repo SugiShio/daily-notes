@@ -1,7 +1,7 @@
 <template lang="pug">
 .o-note
   h2.o-note__title(v-if='item.title') {{ item.title }}
-  div(v-html='item.markedContent')
+  .o-note__content(v-html='item.markedContent')
 </template>
 
 <script>
@@ -21,6 +21,21 @@ export default {
 .o-note {
   &__title {
     font-family: $font-family-accent;
+  }
+
+  &__content:deep {
+    ul,
+    ol {
+      margin: 5px 0;
+      padding-left: 20px;
+    }
+
+    > ul > li {
+      list-style-type: disc;
+      > ul > li {
+        list-style-type: square;
+      }
+    }
   }
 }
 </style>

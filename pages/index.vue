@@ -43,6 +43,5 @@ export default {
 
 <style lang="scss" scoped>
 .p-index {
-  padding: 0 20px;
 }
 </style>

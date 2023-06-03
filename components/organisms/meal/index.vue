@@ -1,14 +1,18 @@
 <template lang="pug">
-div
-  | {{ item.createdAt }}
-  div(v-for='mealItem in mealItems')
-    | {{ mealItem.name }} ({{ mealItem.value }}{{ mealItem.unit }})
+.o-meal
+  header.o-meal__head
+    i(:class='`el-icon-${item.mark}`')
+    time.o-meal__time {{ item.createdAtTimeText }}
+
+  ul.o-meal__list
+    li.o-meal__item(v-for='mealItem in mealItems')
+      | {{ mealItem.name }} ({{ mealItem.value }}{{ mealItem.unit }})
 </template>
 
   <script>
-import { Meal } from '~/models/meal'
 import { doc, getDoc } from 'firebase/firestore'
 import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
+import { Meal } from '~/models/meal'
 
 export default {
   name: 'OrganismsMeal',
@@ -33,3 +37,18 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.o-meal {
+  &__head {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+  }
+
+  &__time {
+    font-size: 11px;
+    margin-left: 5px;
+  }
+}
+</style>
