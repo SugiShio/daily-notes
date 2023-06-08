@@ -17,8 +17,7 @@
       )
 
   template(v-if='item.type')
-    component(:is='`organisms-${item.type}-editor`')
-    button(@click='cancel') cancel
+    component(:is='`organisms-${item.type}-editor`', @cancel-clicked='cancel')
 </template>
 
 

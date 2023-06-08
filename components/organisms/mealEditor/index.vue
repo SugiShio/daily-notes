@@ -10,7 +10,8 @@
         span(@click='deleteItem(index)') ×
 
   templates-search-food-item(@food-item-selected='onFoodItemSelected')
-  atoms-button(@click='onSaveClicked', text='save')
+  atoms-button(@click='onCancelClicked', text='Cancel', outline)
+  atoms-button(@click='onSaveClicked', text='Save')
 </template>
 
 <script>
@@ -39,6 +40,9 @@ export default {
         value: 100,
         units: item.units,
       })
+    },
+    onCancelClicked() {
+      this.$emit('cancel-clicked')
     },
     onSaveClicked() {
       const meal = new Meal({ items: this.items })

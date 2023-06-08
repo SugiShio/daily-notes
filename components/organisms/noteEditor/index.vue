@@ -11,7 +11,12 @@
       atoms-markdown-editor(v-model='localContent')
 
   .o-note-editor__item
-    button(@click='onSaveClicked', :disabled='!isSaveAvailable') save
+    atoms-button(@click='onCancelClicked', text='Cancel', outline)
+    atoms-button(
+      @click='onSaveClicked',
+      text='Save',
+      :disabled='!isSaveAvailable'
+    )
 </template>
 
 <script>
@@ -38,6 +43,9 @@ export default {
     this.localContent = this.$store.state.editingItem.content
   },
   methods: {
+    onCancelClicked() {
+      this.$emit('cancel-clicked')
+    },
     onSaveClicked() {
       this.$store.state.editingItemId ? this.updateItem() : this.addItem()
     },
