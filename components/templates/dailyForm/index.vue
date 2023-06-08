@@ -60,8 +60,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
 @import '~/assets/stylesheets/form';
+
 .t-daily-form {
+  margin: 10px;
+  background: rgba(#fff, 0.75);
+  box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
+  padding: 15px 20px;
+  border-radius: 8px;
+
   &__item {
     @extend %form__item;
   }

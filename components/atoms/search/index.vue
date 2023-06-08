@@ -24,7 +24,6 @@ export default {
 @import '~/assets/stylesheets/input';
 
 .a-search {
-  @extend %input;
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -38,9 +37,15 @@ export default {
 
   &__input {
     flex-grow: 1;
+    border-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
   }
 
   &__button {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
     color: $color-main-dark;
   }
 }

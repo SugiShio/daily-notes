@@ -48,6 +48,5 @@ export default {
 
 <style lang="scss" scoped>
 .p-id {
-  padding: 0 20px;
 }
 </style>
