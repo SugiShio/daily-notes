@@ -2,12 +2,17 @@
 .o-meal-editor
   .o-meal-editor__label(for='items') Items
     ul.o-meal-editor__content
-      li(v-for='(item, index) in items')
-        | {{ item.name }}
-        input(v-model='item.value')
-        select(v-model='item.unit')
-          option(v-for='unit in item.units') {{ unit.unit }}
-        span(@click='deleteItem(index)') ×
+      li.o-meal-editor__item(v-for='(item, index) in items')
+        .o-meal-editor__item-name
+          span {{ item.name }}
+        atoms-input-number-with-unit(
+          :value='item.value',
+          :units='unitOptions(item)',
+          @value-input='onValueInput(index, $event)',
+          @unit-changed='onUnitChanged(index, $event)'
+        )
+        span(@click='deleteItem(index)')
+          i.el-icon-delete
 
   templates-search-food-item(@food-item-selected='onFoodItemSelected')
   atoms-button(@click='onCancelClicked', text='Cancel', outline)
@@ -48,6 +53,19 @@ export default {
       const meal = new Meal({ items: this.items })
       this.$store.dispatch('addItem', meal)
     },
+    onUnitChanged(index, unit) {
+      const item = this.items[index]
+      this.items.splice(index, 1, { ...item, unit })
+    },
+    onValueInput(index, value) {
+      const item = this.items[index]
+      this.items.splice(index, 1, { ...item, value })
+    },
+    unitOptions(item) {
+      return item.units.map((unit) => {
+        return { value: unit.unit, label: unit.unit }
+      })
+    },
   },
 }
 </script>
@@ -63,6 +81,27 @@ export default {
 
   &__content {
     @extend %form__content;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+
+    & + & {
+      margin-top: 5px;
+    }
+  }
+
+  &__item-name {
+    overflow: hidden;
+
+    span {
+      display: block;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      // width: 100%;
+    }
   }
 }
 </style>
