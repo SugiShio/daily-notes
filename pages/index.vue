@@ -2,7 +2,7 @@
 .p-index
   templates-daily-notes
   templates-daily-form(v-if='isEditing')
-  button(v-if='!isEditing', @click='addItem') New
+  atoms-pager(@pager-button-clicked='onPagerButtonClicked')
 </template>
 
 <script>
@@ -36,6 +36,9 @@ export default {
   methods: {
     addItem() {
       this.$store.commit('setEditingItem')
+    },
+    onPagerButtonClicked() {
+      this.$store.commit('setTemplateNames', 'templates-daily-form')
     },
   },
 }

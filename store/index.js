@@ -20,6 +20,7 @@ export const state = () => ({
   dailyNotes: {},
   editingItem: null,
   editingItemId: null,
+  templateNames: [],
 })
 
 export const mutations = {
@@ -60,6 +61,10 @@ export const mutations = {
 
   setIsSignin(state) {
     state.isSignin = true
+  },
+
+  setTemplateNames(state, templateName) {
+    state.templateNames.push(templateName)
   },
 
   setUser(state, user = {}) {
