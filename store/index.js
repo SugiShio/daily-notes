@@ -9,6 +9,7 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
+import { Check } from '~/models/check'
 import { DailyItem } from '~/models/dailyItem'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
@@ -19,7 +20,8 @@ export const state = () => ({
   dailyId: '',
   dailyNotes: {},
   editingItem: null,
-  editingItemId: null,
+  originalItem: null,
+  originalItemId: null,
   templateNames: [],
 })
 
@@ -33,6 +35,10 @@ export const mutations = {
     dailyNotes.forEach((dailyNote) => {
       const data = dailyNote.data()
       switch (data.type) {
+        case 'check':
+          state.dailyNotes[dailyNote.id] = new Check(data)
+          break
+
         case 'meal':
           state.dailyNotes[dailyNote.id] = new Meal(data)
           break
@@ -51,12 +57,24 @@ export const mutations = {
     state.editingItem = item || new DailyItem()
   },
 
-  setEditingItemId(state, id) {
-    state.editingItemId = id
-  },
-
   resetEditingItem(state) {
     state.editingItem = null
+  },
+
+  setOriginalItem(state, item) {
+    state.originalItem = item
+  },
+
+  setOriginalItemId(state, id) {
+    state.originalItemId = id
+  },
+
+  resetOriginalItem(state) {
+    state.originalItem = null
+  },
+
+  resetOriginalItemId(state) {
+    state.originalItemId = null
   },
 
   setIsSignin(state) {
@@ -65,6 +83,10 @@ export const mutations = {
 
   setTemplateNames(state, templateName) {
     state.templateNames.push(templateName)
+  },
+
+  resetTemplateNames(state) {
+    state.templateNames = []
   },
 
   setUser(state, user = {}) {
@@ -81,20 +103,25 @@ export const mutations = {
 }
 
 export const actions = {
-  async addItem({ commit, dispatch, state }, item) {
+  async addItem({ state }, item) {
     try {
       await addDoc(collection(db, 'dailyNotes'), {
         ...item,
         uid: state.user.uid,
       })
-      commit('resetEditingItem')
-      dispatch('fetchDailyNotes')
     } catch (e) {
       console.error(e)
     }
   },
 
-  async deleteItem({ commit, dispatch, state }, id) {
+  closeForm({ commit }) {
+    commit('resetTemplateNames')
+    commit('resetOriginalItem')
+    commit('resetOriginalItemId')
+    commit('resetEditingItem')
+  },
+
+  async deleteItem({ dispatch }, id) {
     try {
       await deleteDoc(doc(db, 'dailyNotes', id))
       dispatch('fetchDailyNotes')
@@ -113,22 +140,48 @@ export const actions = {
     commit('setDailyNotes', snapShots)
   },
 
-  async updateItem({ commit, dispatch, state }, updated) {
+  async updateItem({ commit, dispatch, state }, item) {
+    const updated = {}
+    Object.keys(item).forEach((key) => {
+      if (item[key] !== state.originalItem[key]) {
+        updated[key] = item[key]
+      }
+    })
+    if (!Object.keys.length) return
     try {
-      await updateDoc(doc(db, 'dailyNotes', state.editingItemId), {
+      await updateDoc(doc(db, 'dailyNotes', state.originalItemId), {
         ...updated,
         updatedAt: new Date().getTime(),
       })
+    } catch (e) {
+      console.error(e)
+    }
+  },
+
+  async onSaveClicked({ commit, dispatch, state }, item) {
+    try {
+      if (state.originalItemId) {
+        await dispatch('updateItem', item)
+      } else {
+        await dispatch('addItem', item)
+      }
+      commit('resetOriginalItem')
+      commit('resetOriginalItemId')
       commit('resetEditingItem')
+      commit('resetTemplateNames')
       dispatch('fetchDailyNotes')
     } catch (e) {
       console.error(e)
     }
   },
-}
 
-export const getters = {
-  isEditing(state) {
-    return !!state.editingItem
+  openEditForm({ commit }, { dailyNote, id }) {
+    commit('setOriginalItem', dailyNote)
+    commit('setOriginalItemId', id)
+    commit('setTemplateNames', 'templates-daily-form')
+  },
+
+  openNewForm({ commit }) {
+    commit('setTemplateNames', 'templates-daily-form')
   },
 }

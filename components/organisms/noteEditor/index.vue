@@ -3,20 +3,12 @@
   .o-note-editor__item
     label.o-note-editor__label(for='title') Title
     .o-note-editor__content
-      atoms-input-text(v-model='localTitle')
+      atoms-input-text(v-model='editingItem.title')
 
   .o-note-editor__item
     label.o-note-editor__label(for='content') Content
     .o-note-editor__content
-      atoms-markdown-editor(v-model='localContent')
-
-  .o-note-editor__item
-    atoms-button(@click='onCancelClicked', text='Cancel', outline)
-    atoms-button(
-      @click='onSaveClicked',
-      text='Save',
-      :disabled='!isSaveAvailable'
-    )
+      atoms-markdown-editor(v-model='editingItem.content')
 </template>
 
 <script>
@@ -24,50 +16,8 @@ import { Note } from '~/models/note'
 
 export default {
   name: 'OrganismsNoteEditor',
-  data() {
-    return {
-      localTitle: '',
-      localContent: '',
-    }
-  },
-  computed: {
-    isSaveAvailable() {
-      return !!(this.localTitle || this.localContent)
-    },
-    item() {
-      return this.$store.state.editingItem
-    },
-  },
-  created() {
-    this.localTitle = this.$store.state.editingItem.title
-    this.localContent = this.$store.state.editingItem.content
-  },
-  methods: {
-    onCancelClicked() {
-      this.$emit('cancel-clicked')
-    },
-    onSaveClicked() {
-      this.$store.state.editingItemId ? this.updateItem() : this.addItem()
-    },
-    addItem() {
-      this.$store.dispatch(
-        'addItem',
-        new Note({
-          title: this.localTitle,
-          content: this.localContent,
-        })
-      )
-    },
-    updateItem() {
-      const updated = {}
-      if (this.localTitle !== this.$store.state.editingItem.title) {
-        updated.title = this.localTitle
-      }
-      if (this.localContent !== this.$store.state.editingItem.content) {
-        updated.content = this.localContent
-      }
-      this.$store.dispatch('updateItem', updated)
-    },
+  props: {
+    editingItem: { type: Note },
   },
 }
 </script>

@@ -81,8 +81,7 @@ export default {
       }
     },
     editItem(dailyNote, id) {
-      this.$store.commit('setEditingItem', dailyNote)
-      this.$store.commit('setEditingItemId', id)
+      this.$emit('edit-clicked', { dailyNote, id })
     },
   },
 }

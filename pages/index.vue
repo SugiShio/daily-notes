@@ -1,7 +1,6 @@
 <template lang="pug">
 .p-index
-  templates-daily-notes
-  templates-daily-form(v-if='isEditing')
+  templates-daily-notes(@edit-clicked='onEditClicked')
   atoms-pager(@pager-button-clicked='onPagerButtonClicked')
 </template>
 
@@ -13,9 +12,6 @@ const dailyId = convertDateToDateId(new Date())
 export default {
   name: 'PagesIndex',
   computed: {
-    isEditing() {
-      return this.$store.getters.isEditing
-    },
     uid() {
       return this.$store.state.user.uid
     },
@@ -34,11 +30,11 @@ export default {
     }
   },
   methods: {
-    addItem() {
-      this.$store.commit('setEditingItem')
+    onEditClicked({ dailyNote, id }) {
+      this.$store.dispatch('openEditForm', { dailyNote, id })
     },
     onPagerButtonClicked() {
-      this.$store.commit('setTemplateNames', 'templates-daily-form')
+      this.$store.dispatch('openNewForm')
     },
   },
 }

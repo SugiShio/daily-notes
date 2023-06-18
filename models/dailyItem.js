@@ -1,8 +1,9 @@
 import { Timestamp } from '~/models/timestamp'
 import { convertDateToDateId } from '~/scripts/dateHelper'
 export const TYPES = [
-  { value: 'meal', icon: 'apple' },
   { value: 'note', icon: 'document' },
+  { value: 'check', icon: 'circle-check' },
+  { value: 'meal', icon: 'apple' },
 ]
 
 export class DailyItem extends Timestamp {

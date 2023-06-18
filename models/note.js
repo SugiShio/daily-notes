@@ -17,4 +17,8 @@ export class Note extends DailyItem {
   get markedContent() {
     return DOMPurify.sanitize(marked.parse(this.content.replace(/\\n/g, '\n')))
   }
+
+  get isSaveAvailable() {
+    return !!(this.title || this.content)
+  }
 }
