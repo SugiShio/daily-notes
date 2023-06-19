@@ -1,5 +1,6 @@
 <template lang="pug">
 section.t-daily-notes
+  organisms-task-list
   time.t-daily-notes__title(:datetime='`${year}-${month}-${date}`')
     span.t-daily-notes__year {{ year }}
     span.t-daily-notes__date {{ month }}.{{ date }}

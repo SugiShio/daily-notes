@@ -30,7 +30,7 @@
 
 <script>
 import { TYPES } from '~/models/dailyItem'
-import { Check } from '~/models/check'
+import { Task } from '~/models/task'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
 import { convertDateIdToDate } from '~/scripts/dateHelper'
@@ -76,8 +76,8 @@ export default {
     },
     getObjectType(type) {
       switch (type) {
-        case 'check':
-          return Check
+        case 'task':
+          return Task
 
         case 'meal':
           return Meal

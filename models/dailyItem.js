@@ -2,7 +2,7 @@ import { Timestamp } from '~/models/timestamp'
 import { convertDateToDateId } from '~/scripts/dateHelper'
 export const TYPES = [
   { value: 'note', icon: 'document' },
-  { value: 'check', icon: 'circle-check' },
+  { value: 'task', icon: 'circle-check' },
   { value: 'meal', icon: 'apple' },
 ]
 

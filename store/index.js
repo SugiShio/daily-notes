@@ -9,7 +9,7 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
-import { Check } from '~/models/check'
+import { Task } from '~/models/task'
 import { DailyItem } from '~/models/dailyItem'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
@@ -35,10 +35,6 @@ export const mutations = {
     dailyNotes.forEach((dailyNote) => {
       const data = dailyNote.data()
       switch (data.type) {
-        case 'check':
-          state.dailyNotes[dailyNote.id] = new Check(data)
-          break
-
         case 'meal':
           state.dailyNotes[dailyNote.id] = new Meal(data)
           break
