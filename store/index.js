@@ -81,6 +81,10 @@ export const mutations = {
     state.templateNames.push(templateName)
   },
 
+  removeTemplateNames(state) {
+    state.templateNames.pop()
+  },
+
   resetTemplateNames(state) {
     state.templateNames = []
   },
