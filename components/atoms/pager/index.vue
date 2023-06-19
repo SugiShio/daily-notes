@@ -58,10 +58,10 @@ export default {
     bottom: 5px;
     box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
     height: calc(100vh - 10px);
-    padding: 15px 10px;
+    padding: 15px 20px;
     position: fixed;
     left: 5px;
-    transition: 0.5s;
+    transition: 0.3s;
     width: calc(100vw - 10px);
 
     &.isMinimized {
