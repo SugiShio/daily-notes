@@ -1,6 +1,7 @@
 <template lang="pug">
 transition(name='showUp')
   .t-search-food-item
+    button(@click='onCloseClicked') close
     atoms-search(v-model='string', @search-clicked='search')
 
     ul.t-search-food-item__list
@@ -30,6 +31,10 @@ export default {
     }
   },
   methods: {
+    onCloseClicked() {
+      this.$store.commit('removeTemplateNames')
+    },
+
     search() {
       const index = client.initIndex('index_fooditems')
       index

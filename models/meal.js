@@ -14,4 +14,8 @@ export class Meal extends DailyItem {
         })
       : []
   }
+
+  get isSaveAvailable() {
+    return !!this.items.length
+  }
 }

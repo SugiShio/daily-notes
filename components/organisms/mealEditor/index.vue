@@ -1,8 +1,13 @@
 <template lang="pug">
 .o-meal-editor
+  atoms-button(
+    @click='$store.commit("setTemplateNames", "templates-search-food-item")',
+    text='Search'
+  )
+
   .o-meal-editor__label(for='items') Items
     ul.o-meal-editor__content
-      li.o-meal-editor__item(v-for='(item, index) in items')
+      li.o-meal-editor__item(v-for='(item, index) in editingItem.items')
         .o-meal-editor__item-name
           span {{ item.name }}
         atoms-input-number-with-unit(
@@ -13,10 +18,6 @@
         )
         span(@click='deleteItem(index)')
           i.el-icon-delete
-
-  templates-search-food-item(@food-item-selected='onFoodItemSelected')
-  atoms-button(@click='onCancelClicked', text='Cancel', outline)
-  atoms-button(@click='onSaveClicked', text='Save')
 </template>
 
 <script>
@@ -26,6 +27,14 @@ import { Meal } from '~/models/meal'
 
 export default {
   name: 'OrganismsMealEditor',
+  props: {
+    editingItem: {
+      type: Meal,
+      default: () => {
+        return new Meal()
+      },
+    },
+  },
   data() {
     return {
       items: [],
@@ -45,13 +54,6 @@ export default {
         value: 100,
         units: item.units,
       })
-    },
-    onCancelClicked() {
-      this.$emit('cancel-clicked')
-    },
-    onSaveClicked() {
-      const meal = new Meal({ items: this.items })
-      this.$store.dispatch('addItem', meal)
     },
     onUnitChanged(index, unit) {
       const item = this.items[index]
