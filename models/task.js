@@ -13,6 +13,10 @@ export class Task extends Timestamp {
     this.type = 'task'
   }
 
+  setDoneAt() {
+    this.doneAt = new Date()
+  }
+
   setLimit(date) {
     this.limit = date
   }

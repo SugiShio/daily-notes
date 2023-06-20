@@ -1,7 +1,7 @@
 <template lang="pug">
 ul.o-task-list
-  li.o-task-list__item(v-for='task in tasks')
-    span.o-task-list__checkbox
+  li.o-task-list__item(v-for='(task, index) in tasks')
+    span.o-task-list__checkbox(@click='setTaskDone(index)')
     .o-task-list__content
       h3.o-task-list__title {{ task.title }}
       time.o-task-list__time(v-if='task.limit')
@@ -11,7 +11,14 @@ ul.o-task-list
 </template>
 
 <script>
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+  query,
+  where,
+} from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
 import { Task } from '~/models/task'
 
@@ -20,6 +27,7 @@ export default {
   data() {
     return {
       tasks: [],
+      taskIds: [],
     }
   },
   computed: {
@@ -48,17 +56,19 @@ export default {
       const snapShots = await getDocs(q)
       snapShots.forEach((snapShot) => {
         this.tasks.push(new Task(snapShot.data()))
+        this.taskIds.push(snapShot.id)
       })
     },
-
-    limitText(limit) {
-      const dateObject = new Date(limit)
-      const year = dateObject.getFullYear()
-      const month = dateObject.getMonth()
-      const date = dateObject.getDate()
-      const hours = dateObject.getHours()
-      const minutes = dateObject.getMinutes()
-      return `${year}.${month + 1}.${date} ${hours}:${minutes}`
+    async setTaskDone(index) {
+      this.tasks[index].setDoneAt()
+      const id = this.taskIds[index]
+      try {
+        await updateDoc(doc(db, 'dailyNotes', id), {
+          doneAt: this.tasks[index].doneAt,
+        })
+      } catch (e) {
+        console.error(e)
+      }
     },
   },
 }
