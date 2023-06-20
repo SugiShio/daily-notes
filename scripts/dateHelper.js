@@ -17,3 +17,7 @@ export const getDayText = (dateObject) => {
   const dayText = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   return dayText[dateObject.getDay()]
 }
+
+export const convertFirebaseDateToDateObject = (firebaseDate) => {
+  return new Date(firebaseDate.seconds * 1000)
+}

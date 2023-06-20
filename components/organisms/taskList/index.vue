@@ -1,7 +1,13 @@
 <template lang="pug">
-.o-task-list
-  ul
-    li(v-for='task in tasks') {{ task.title }}
+ul.o-task-list
+  li.o-task-list__item(v-for='task in tasks')
+    span.o-task-list__checkbox
+    .o-task-list__content
+      h3.o-task-list__title {{ task.title }}
+      time.o-task-list__time(v-if='task.limit')
+        i.el-icon-warning-outline
+        | {{ task.limitDateText }}
+        | {{ task.limitTimeText }}
 </template>
 
 <script>
@@ -44,6 +50,74 @@ export default {
         this.tasks.push(new Task(snapShot.data()))
       })
     },
+
+    limitText(limit) {
+      const dateObject = new Date(limit)
+      const year = dateObject.getFullYear()
+      const month = dateObject.getMonth()
+      const date = dateObject.getDate()
+      const hours = dateObject.getHours()
+      const minutes = dateObject.getMinutes()
+      return `${year}.${month + 1}.${date} ${hours}:${minutes}`
+    },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
+.o-task-list {
+  padding: 15px 20px;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    line-height: 1;
+  }
+
+  &__checkbox {
+    position: relative;
+    display: block;
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid $color-main-dark;
+    background: rgba(#fff, 0.3);
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      background-color: rgba($color-main-dark, 0.6);
+    }
+
+    &::before {
+      border-right: 1px solid #fff;
+      border-bottom: 1px solid #fff;
+      content: '';
+      width: 5px;
+      height: 8px;
+      transform: rotate(45deg);
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
+    }
+  }
+
+  &__title {
+    line-height: 1;
+  }
+
+  &__content {
+    align-self: center;
+  }
+
+  &__time {
+    font-size: 11px;
+  }
+}
+</style>

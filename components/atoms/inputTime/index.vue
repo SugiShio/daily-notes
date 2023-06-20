@@ -80,7 +80,8 @@ export default {
         this.hours,
         this.minutes
       )
-      this.$emit('input', date)
+      const isTimeNull = this.hours === null && this.minutes === null
+      this.$emit('input', date, isTimeNull)
     },
     onYearChanged(year) {
       this.year = year

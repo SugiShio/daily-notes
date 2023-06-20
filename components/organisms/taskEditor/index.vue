@@ -8,7 +8,7 @@
   .o-task-editor__item
     label.o-task-editor__label(for='limit') Limit
     .o-task-editor__content
-      atoms-input-time(v-model='editingItem.limit')
+      atoms-input-time(v-model='limit', @input='onLimitInput')
 
   .o-task-editor__item
     label.o-task-editor__label(for='description') Description
@@ -27,6 +27,17 @@ export default {
       default: () => {
         return new Task()
       },
+    },
+  },
+  data() {
+    return {
+      limit: { type: Date, default: null },
+    }
+  },
+  methods: {
+    onLimitInput(datetime, isTimeNull) {
+      this.editingItem.setLimit(datetime)
+      this.editingItem.setIsTimeNull(isTimeNull)
     },
   },
 }
