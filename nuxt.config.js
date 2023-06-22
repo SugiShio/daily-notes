@@ -1,5 +1,7 @@
 import Sass from 'sass'
 export default {
+  target: 'static',
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     title: 'daily-notes',
@@ -59,5 +61,9 @@ export default {
         implementation: Sass,
       },
     },
+  },
+
+  generate: {
+    exclude: [/^\/\d{8}/],
   },
 }
