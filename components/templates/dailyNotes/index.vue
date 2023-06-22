@@ -61,7 +61,6 @@ export default {
       return getDayText(this.dateObject)
     },
     linkNext() {
-      return '/'
       const nextDate = new Date(this.dateObject)
       nextDate.setDate(this.dateObject.getDate() + 1)
       const id = convertDateToDateId(nextDate)
@@ -69,7 +68,6 @@ export default {
       return { name: 'id', params: { id } }
     },
     linkPrevious() {
-      return '/'
       const previousDate = new Date(this.dateObject)
       previousDate.setDate(this.dateObject.getDate() - 1)
       const id = convertDateToDateId(previousDate)
