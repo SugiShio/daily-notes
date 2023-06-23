@@ -17,12 +17,20 @@ export class Task extends Timestamp {
     this.doneAt = new Date()
   }
 
+  resetDoneAt() {
+    this.doneAt = null
+  }
+
   setLimit(date) {
     this.limit = date
   }
 
   setIsTimeNull(isTimeNull) {
     this.isTimeNull = isTimeNull
+  }
+
+  get isDone() {
+    return this.doneAt != null
   }
 
   get limitDateText() {

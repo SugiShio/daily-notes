@@ -1,7 +1,10 @@
 <template lang="pug">
 ul.o-task-list
   li.o-task-list__item(v-for='(task, index) in tasks')
-    span.o-task-list__checkbox(@click='setTaskDone(index)')
+    span.o-task-list__checkbox(
+      @click='toggleTaskDone(index)',
+      :class='{ isDone: task.isDone }'
+    )
     .o-task-list__content
       h3.o-task-list__title {{ task.title }}
       time.o-task-list__time(v-if='task.limit')
@@ -21,6 +24,7 @@ import {
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
 import { Task } from '~/models/task'
+import { convertDateIdToDate } from '~/scripts/dateHelper'
 
 export default {
   name: 'OrganismsTaskList',
@@ -47,11 +51,38 @@ export default {
   },
   methods: {
     async fetchTasks() {
+      await this.fetchTasksToDo()
+      await this.fetchTasksDone()
+    },
+    async fetchTasksToDo() {
       const q = query(
         collection(db, 'dailyNotes'),
         where('uid', '==', this.uid),
         where('type', '==', 'task'),
         where('doneAt', '==', null)
+      )
+
+      const snapShots = await getDocs(q)
+      snapShots.forEach((snapShot) => {
+        this.tasks.push(new Task(snapShot.data()))
+        this.taskIds.push(snapShot.id)
+      })
+    },
+    async fetchTasksDone() {
+      const dateId = this.$store.state.dailyId
+      const startAt = convertDateIdToDate(dateId)
+      const endAt = new Date(
+        startAt.getFullYear(),
+        startAt.getMonth(),
+        startAt.getDate() + 1
+      )
+
+      const q = query(
+        collection(db, 'dailyNotes'),
+        where('uid', '==', this.uid),
+        where('type', '==', 'task'),
+        where('doneAt', '>=', startAt),
+        where('doneAt', '<', endAt)
       )
       const snapShots = await getDocs(q)
       snapShots.forEach((snapShot) => {
@@ -59,13 +90,18 @@ export default {
         this.taskIds.push(snapShot.id)
       })
     },
-    async setTaskDone(index) {
-      this.tasks[index].setDoneAt()
+
+    async toggleTaskDone(index) {
+      const task = this.tasks[index]
+      task.isDone ? task.resetDoneAt() : task.setDoneAt()
       const id = this.taskIds[index]
       try {
         await updateDoc(doc(db, 'dailyNotes', id), {
           doneAt: this.tasks[index].doneAt,
         })
+        this.tasks = []
+        this.taskIds = []
+        this.fetchTasks()
       } catch (e) {
         console.error(e)
       }
@@ -96,25 +132,30 @@ export default {
     border: 1px solid $color-main-dark;
     background: rgba(#fff, 0.3);
     cursor: pointer;
+    top: -2px;
     transition: 0.3s;
 
     &:hover {
       background-color: rgba($color-main-dark, 0.6);
     }
 
-    &::before {
-      border-right: 1px solid #fff;
-      border-bottom: 1px solid #fff;
-      content: '';
-      width: 5px;
-      height: 8px;
-      transform: rotate(45deg);
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      margin: auto;
+    &.isDone {
+      background-color: $color-main-dark;
+
+      &::before {
+        border-right: 1px solid #fff;
+        border-bottom: 1px solid #fff;
+        content: '';
+        width: 5px;
+        height: 8px;
+        transform: rotate(45deg);
+        position: absolute;
+        top: -2px;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+      }
     }
   }
 
