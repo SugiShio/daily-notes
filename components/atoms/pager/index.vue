@@ -9,7 +9,7 @@
       v-if='isMinimized',
       @click='$emit("pager-button-clicked")'
     )
-      i.a-pager__icon.el-icon-plus
+      i.a-pager__icon(:class='`el-icon-${icon}`')
 
     template(v-else)
       component(:is='componentName')
@@ -18,12 +18,13 @@
 <script>
 export default {
   name: 'AtomsPager',
+  props: {
+    icon: { type: String, default: 'plus' },
+    isMinimized: { type: Boolean, default: true },
+  },
   computed: {
     componentNames() {
       return this.templateNames.length ? this.templateNames : ['']
-    },
-    isMinimized() {
-      return !this.templateNames.length
     },
     templateNames() {
       return this.$store.state.templateNames
@@ -49,31 +50,36 @@ export default {
 
 .a-pager {
   &__button {
-    line-height: 40px;
+    line-height: 50px;
+    font-size: 20px;
   }
 
   &__page {
     background: rgba(#fff, 0.95);
     border-radius: 8px;
-    bottom: 5px;
     box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
     height: calc(100vh - 10px);
     padding: 15px 20px;
     position: fixed;
-    left: 5px;
     transition: 0.3s;
     width: calc(100vw - 10px);
+    margin: auto;
+
+    &:not(.isMinimized) {
+      top: 5px;
+      right: 5px;
+      bottom: 5px;
+      left: 5px;
+    }
 
     &.isMinimized {
-      border-radius: 20px;
-      bottom: 10px;
+      border-radius: 5px;
       color: $color-main-dark;
-      height: 40px;
-      left: 10px;
-      line-height: 40px;
+      height: 50px;
       padding: 0;
+      position: relative;
       text-align: center;
-      width: 40px;
+      width: 50px;
     }
   }
 }

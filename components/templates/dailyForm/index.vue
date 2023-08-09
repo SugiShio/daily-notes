@@ -1,26 +1,9 @@
 <template lang="pug">
 .t-daily-form
-  .t-daily-form__item
-    .t-daily-form__label(for='type') Type
-    .t-daily-form__content
-      atoms-selector(
-        :disabled='!isNew',
-        field-name='type',
-        :options='typeOptions',
-        v-model='type',
-        @input='onTypeSelected'
-      )
-
-  template(v-if='type')
-    component(
-      :is='`organisms-${type}-editor`',
-      :editing-item='editingItem',
-      @cancel-clicked='cancel'
-    )
+  component(:is='componentEditor', :editing-item='editingItem')
   .t-daily-form__footer
     atoms-button(@click='cancel', text='Cancel', outline)
     atoms-button(
-      v-if='type',
       :disabled='!editingItem.isSaveAvailable',
       text='Save',
       @click='onSaveClicked'
@@ -29,66 +12,27 @@
 
 
 <script>
-import { TYPES } from '~/models/dailyItem'
-import { Task } from '~/models/task'
-import { Note } from '~/models/note'
-import { Meal } from '~/models/meal'
-import { convertDateIdToDate } from '~/scripts/dateHelper'
-
 export default {
   name: 'TemplatesDailyForm',
   data() {
     return {
       editingItem: null,
-      type: '',
     }
   },
   computed: {
-    date() {
-      const dateObject = convertDateIdToDate(this.item.date)
-      const year = dateObject.getFullYear()
-      const month = dateObject.getMonth()
-      const date = dateObject.getDate()
-      return `${year}.${month + 1}.${date}`
-    },
-    item() {
-      return this.$store.state.editingItem
-    },
-    isNew() {
-      return !this.$store.state.originalItemId
-    },
-    typeOptions() {
-      return TYPES.map((type) => {
-        return { label: type.value, value: type.value, icon: type.icon }
-      })
+    componentEditor() {
+      const type = this.editingItem.type
+      return `organisms-${type}-editor`
     },
   },
   created() {
-    if (!this.isNew) {
-      this.type = this.$store.state.originalItem.type
-      const Obj = this.getObjectType(this.type)
-      this.editingItem = new Obj(this.$store.state.originalItem)
-    }
+    this.editingItem = this.$store.state.originalItemId
+      ? this.$store.state.originalItem
+      : this.$store.state.editingItem
   },
   methods: {
     cancel() {
       this.$store.dispatch('closeForm')
-    },
-    getObjectType(type) {
-      switch (type) {
-        case 'task':
-          return Task
-
-        case 'meal':
-          return Meal
-
-        default:
-          return Note
-      }
-    },
-    onTypeSelected(type) {
-      const Obj = this.getObjectType(type)
-      this.editingItem = new Obj()
     },
     onSaveClicked() {
       this.$store.dispatch('onSaveClicked', this.editingItem)

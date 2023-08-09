@@ -181,7 +181,22 @@ export const actions = {
     commit('setTemplateNames', 'templates-daily-form')
   },
 
-  openNewForm({ commit }) {
+  openNewForm({ commit }, { type }) {
+    const Obj = getObject(type)
+    commit('setEditingItem', new Obj())
     commit('setTemplateNames', 'templates-daily-form')
   },
+}
+
+const getObject = (type) => {
+  switch (type) {
+    case 'task':
+      return Task
+
+    case 'meal':
+      return Meal
+
+    default:
+      return Note
+  }
 }
