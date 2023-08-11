@@ -86,15 +86,6 @@ export const actions = {
     }
   },
 
-  async deleteItem({ dispatch }, id) {
-    try {
-      await deleteDoc(doc(db, 'dailyNotes', id))
-      dispatch('fetchDailyNotes')
-    } catch (e) {
-      console.error(e)
-    }
-  },
-
   async fetchDailyNotes({ commit, state }) {
     const q = query(
       collection(db, 'dailyNotes'),

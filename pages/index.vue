@@ -4,9 +4,9 @@
 
   ul.p-index__create-icons
     li.p-index__create-icon(v-for='(t, index) in types')
-      button(@click='onPagerButtonClicked(index)')
+      button(@click='onCreateButtonClicked(index)')
         i(:class='`el-icon-${t.icon}`')
-  templates-daily-notes(@edit-clicked='onEditClicked')
+  templates-daily-notes
 </template>
 
 <script>
@@ -39,10 +39,7 @@ export default {
     }
   },
   methods: {
-    onEditClicked({ dailyNote, id }) {
-      this.$store.dispatch('openEditForm', { dailyNote, id })
-    },
-    onPagerButtonClicked(index) {
+    onCreateButtonClicked(index) {
       this.$store.commit(
         'setTemplateNames',
         `organisms-${TYPES[index].value}-editor`

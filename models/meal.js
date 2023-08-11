@@ -1,10 +1,11 @@
 import { DailyItem } from './dailyItem'
 
-class Item {
+export class Item {
   constructor(foodItem = {}) {
     this.id = foodItem.id
     this.name = foodItem.name
     this.unit = foodItem.unit
+    this.units = foodItem.units
     this.value = foodItem.value
   }
 }

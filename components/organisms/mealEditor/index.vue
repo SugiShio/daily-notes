@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { Meal } from '~/models/meal'
+import { Item, Meal } from '~/models/meal'
 
 export default {
   name: 'OrganismsMealEditor',
@@ -40,17 +40,21 @@ export default {
     selectedFoodItem() {
       return this.$store.state.searchFoodItem.selectedFoodItem
     },
+    originalItem() {
+      return this.$store.state.dailyForm.originalItem
+    },
   },
   watch: {
     selectedFoodItem(foodItem) {
-      this.items.push({
-        id: foodItem.id,
-        name: foodItem.name,
-        unit: foodItem.units[0].unit,
-        units: foodItem.units,
-        value: 100,
-      })
+      this.items.push(new Item(foodItem))
     },
+  },
+  created() {
+    if (this.originalItem) {
+      this.originalItem.items.forEach((item) => {
+        this.items.push(new Item(item))
+      })
+    }
   },
   methods: {
     deleteItem(index) {
@@ -60,7 +64,7 @@ export default {
     async onSaveClicked() {
       const item = new Meal({ items: this.items })
       try {
-        await this.$store.dispatch('dailyForm/addItem', item)
+        await this.$store.dispatch('dailyForm/onSaveClicked', item)
         this.$store.commit('resetTemplateNames')
         this.$store.dispatch('fetchDailyNotes')
       } catch (error) {
@@ -115,7 +119,6 @@ export default {
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
-      // width: 100%;
     }
   }
 }

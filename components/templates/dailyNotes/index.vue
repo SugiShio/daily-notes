@@ -76,13 +76,18 @@ export default {
     },
   },
   methods: {
-    deleteItem(id) {
+    async deleteItem(id) {
       if (confirm('削除します。よろしいですか？')) {
-        this.$store.dispatch('deleteItem', id)
+        await this.$store.dispatch('dailyForm/deleteItem', id)
+        this.$store.dispatch('fetchDailyNotes')
       }
     },
     editItem(dailyNote, id) {
-      this.$emit('edit-clicked', { dailyNote, id })
+      this.$store.commit(
+        'setTemplateNames',
+        `organisms-${dailyNote.type}-editor`
+      )
+      this.$store.commit('dailyForm/setOriginalItem', { item: dailyNote, id })
     },
   },
 }

@@ -1,17 +1,23 @@
-import { addDoc, collection } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from 'firebase/firestore'
 import { db, getFirestoreFormat } from '~/plugins/firebase'
-import { Note } from '~/models/note'
-import { Meal } from '~/models/meal'
-import { Task } from '~/models/task'
+
 export const state = () => {
   return {
     originalItem: null,
+    originalItemId: null,
   }
 }
 
 export const mutations = {
-  setOriginalItem(state, item) {
+  setOriginalItem(state, { item, id }) {
     state.originalItem = item
+    state.originalItemId = id
   },
 }
 
@@ -28,29 +34,31 @@ export const actions = {
     }
   },
 
-  async onSaveClicked({ commit, dispatch, state }, item) {
+  async deleteItem(_, id) {
     try {
-      await dispatch('addItem', item)
+      await deleteDoc(doc(db, 'dailyNotes', id))
     } catch (e) {
       console.error(e)
     }
   },
 
-  openNewForm({ commit }, { type }) {
-    const Obj = getObject(type)
-    commit('setOriginalItem', new Obj())
+  async updateItem({ commit, dispatch, state }, item) {
+    const postItem = getFirestoreFormat(item)
+    try {
+      await updateDoc(doc(db, 'dailyNotes', state.originalItemId), {
+        ...postItem,
+        updatedAt: new Date().getTime(),
+      })
+    } catch (e) {
+      console.error(e)
+    }
   },
-}
 
-const getObject = (type) => {
-  switch (type) {
-    case 'task':
-      return Task
-
-    case 'meal':
-      return Meal
-
-    default:
-      return Note
-  }
+  async onSaveClicked({ commit, dispatch, state }, item) {
+    try {
+      await dispatch(state.originalItemId ? 'updateItem' : 'addItem', item)
+    } catch (e) {
+      console.error(e)
+    }
+  },
 }
