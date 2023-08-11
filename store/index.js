@@ -9,17 +9,17 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
-import { Task } from '~/models/task'
 import { DailyItem } from '~/models/dailyItem'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
+import { ShoppingList } from '~/models/shoppingList'
+import { Task } from '~/models/task'
 
 export const state = () => ({
   user: {},
   isSignin: false,
   dailyId: '',
   dailyNotes: {},
-  editingItem: null,
   originalItem: null,
   originalItemId: null,
   templateNames: [],
@@ -43,34 +43,6 @@ export const mutations = {
           state.dailyNotes[dailyNote.id] = new Note(data)
       }
     })
-  },
-
-  setDailyNoteType(state, type) {
-    state.editingItem.setType(type)
-  },
-
-  setEditingItem(state, item) {
-    state.editingItem = item || new DailyItem()
-  },
-
-  resetEditingItem(state) {
-    state.editingItem = null
-  },
-
-  setOriginalItem(state, item) {
-    state.originalItem = item
-  },
-
-  setOriginalItemId(state, id) {
-    state.originalItemId = id
-  },
-
-  resetOriginalItem(state) {
-    state.originalItem = null
-  },
-
-  resetOriginalItemId(state) {
-    state.originalItemId = null
   },
 
   setIsSignin(state) {
@@ -114,13 +86,6 @@ export const actions = {
     }
   },
 
-  closeForm({ commit }) {
-    commit('resetTemplateNames')
-    commit('resetOriginalItem')
-    commit('resetOriginalItemId')
-    commit('resetEditingItem')
-  },
-
   async deleteItem({ dispatch }, id) {
     try {
       await deleteDoc(doc(db, 'dailyNotes', id))
@@ -156,35 +121,6 @@ export const actions = {
     } catch (e) {
       console.error(e)
     }
-  },
-
-  async onSaveClicked({ commit, dispatch, state }, item) {
-    try {
-      if (state.originalItemId) {
-        await dispatch('updateItem', item)
-      } else {
-        await dispatch('addItem', item)
-      }
-      commit('resetOriginalItem')
-      commit('resetOriginalItemId')
-      commit('resetEditingItem')
-      commit('resetTemplateNames')
-      dispatch('fetchDailyNotes')
-    } catch (e) {
-      console.error(e)
-    }
-  },
-
-  openEditForm({ commit }, { dailyNote, id }) {
-    commit('setOriginalItem', dailyNote)
-    commit('setOriginalItemId', id)
-    commit('setTemplateNames', 'templates-daily-form')
-  },
-
-  openNewForm({ commit }, { type }) {
-    const Obj = getObject(type)
-    commit('setEditingItem', new Obj())
-    commit('setTemplateNames', 'templates-daily-form')
   },
 }
 

@@ -4,10 +4,9 @@
     @click='$store.commit("setTemplateNames", "templates-search-food-item")',
     text='Search'
   )
-
   .o-meal-editor__label(for='items') Items
     ul.o-meal-editor__content
-      li.o-meal-editor__item(v-for='(item, index) in editingItem.items')
+      li.o-meal-editor__item(v-for='(item, index) in items')
         .o-meal-editor__item-name
           span {{ item.name }}
         atoms-input-number-with-unit(
@@ -18,51 +17,65 @@
         )
         span(@click='deleteItem(index)')
           i.el-icon-delete
+    .o-meal-editor__content
+      atoms-button(
+        :disabled='!items.length',
+        text='Save',
+        @click='onSaveClicked'
+      )
 </template>
 
 <script>
-import { doc, getDoc } from 'firebase/firestore'
-import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
 import { Meal } from '~/models/meal'
 
 export default {
   name: 'OrganismsMealEditor',
-  props: {
-    editingItem: {
-      type: Meal,
-      default: () => {
-        return new Meal()
-      },
-    },
-  },
   data() {
     return {
+      editingItem: new Meal(),
       items: [],
     }
+  },
+  computed: {
+    selectedFoodItem() {
+      return this.$store.state.searchFoodItem.selectedFoodItem
+    },
+  },
+  watch: {
+    selectedFoodItem(foodItem) {
+      this.items.push({
+        id: foodItem.id,
+        name: foodItem.name,
+        unit: foodItem.units[0].unit,
+        units: foodItem.units,
+        value: 100,
+      })
+    },
   },
   methods: {
     deleteItem(index) {
       this.items.splice(index, 1)
     },
-    async onFoodItemSelected(id) {
-      const snapshot = await getDoc(doc(dbFoodDatabase, 'foodItems', id))
-      const item = snapshot.data()
-      this.items.push({
-        unit: item.units[0].unit,
-        id: item.id,
-        name: item.name,
-        value: 100,
-        units: item.units,
-      })
+
+    async onSaveClicked() {
+      const item = new Meal({ items: this.items })
+      try {
+        await this.$store.dispatch('dailyForm/addItem', item)
+        this.$store.commit('resetTemplateNames')
+        this.$store.dispatch('fetchDailyNotes')
+      } catch (error) {
+        console.error(error)
+      }
     },
+
     onUnitChanged(index, unit) {
-      const item = this.items[index]
-      this.items.splice(index, 1, { ...item, unit })
+      this.items[index].unit = unit
     },
+
     onValueInput(index, value) {
-      const item = this.items[index]
-      this.items.splice(index, 1, { ...item, value })
+      this.items[index].value = value
     },
+
     unitOptions(item) {
       return item.units.map((unit) => {
         return { value: unit.unit, label: unit.unit }

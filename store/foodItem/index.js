@@ -20,5 +20,6 @@ export const actions = {
   async showFoodItemDetail({ commit }, id) {
     const snapshot = await getDoc(doc(dbFoodDatabase, 'foodItems', id))
     commit('setFoodItem', snapshot.data())
+    commit('setTemplateNames', 'templates-food-item', { root: true })
   },
 }

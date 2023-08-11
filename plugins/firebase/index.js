@@ -1,6 +1,31 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
 
+export const getFirestoreFormat = (object) => {
+  return normalizeObject(object)
+}
+
+const normalizeObject = (object) => {
+  if (object === undefined) {
+    return null
+  } else if (typeof object === 'string' || object === null) {
+    return object
+  } else if (Array.isArray(object)) {
+    return object.map((o) => {
+      return normalizeObject(o)
+    })
+  } else if (Object.keys(object).length) {
+    const result = {}
+
+    Object.keys(object).forEach((key) => {
+      result[key] = normalizeObject(object[key])
+    })
+    return result
+  }
+
+  return object
+}
+
 const firebaseConfig = {
   apiKey: 'AIzaSyDYRTl3RfrKZP6T3wCuOtT05LJZRGtSTLU',
   authDomain: 'daily-notes-eb5dc.firebaseapp.com',

@@ -1,13 +1,12 @@
 <template lang="pug">
 .p-index
-  templates-daily-notes(@edit-clicked='onEditClicked')
+  atoms-pager
+
   ul.p-index__create-icons
     li.p-index__create-icon(v-for='(t, index) in types')
-      atoms-pager(
-        :icon='t.icon',
-        :is-minimized='!isActive(index)',
-        @pager-button-clicked='onPagerButtonClicked(index)'
-      )
+      button(@click='onPagerButtonClicked(index)')
+        i(:class='`el-icon-${t.icon}`')
+  templates-daily-notes(@edit-clicked='onEditClicked')
 </template>
 
 <script>
@@ -25,13 +24,6 @@ export default {
     types() {
       return TYPES
     },
-    typeIndex() {
-      const editingItem = this.$store.state.editingItem
-      if (!editingItem) return null
-      return TYPES.findIndex(
-        (t) => t.value === this.$store.state.editingItem.type
-      )
-    },
   },
   watch: {
     uid(uid) {
@@ -47,14 +39,14 @@ export default {
     }
   },
   methods: {
-    isActive(index) {
-      return this.typeIndex === index
-    },
     onEditClicked({ dailyNote, id }) {
       this.$store.dispatch('openEditForm', { dailyNote, id })
     },
     onPagerButtonClicked(index) {
-      this.$store.dispatch('openNewForm', { type: TYPES[index].value })
+      this.$store.commit(
+        'setTemplateNames',
+        `organisms-${TYPES[index].value}-editor`
+      )
     },
   },
 }
