@@ -19,6 +19,7 @@ export default {
   methods: {
     onCloseClicked() {
       this.$store.commit('foodItem/resetFoodItem')
+      this.$store.commit('removeTemplateNames')
     },
   },
 }

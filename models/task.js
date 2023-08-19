@@ -7,7 +7,11 @@ export class Task extends Timestamp {
     this.category = task.category || ''
     this.descripton = task.descripton || ''
     this.doneAt = task.doneAt || null
-    this.limit = task.limit ? convertFirebaseDateToDateObject(task.limit) : null
+    this.limit = task.limit
+      ? task.limit instanceof Date
+        ? task.limit
+        : convertFirebaseDateToDateObject(task.limit)
+      : null
     this.isTimeNull = task.isTimeNull === true
     this.title = task.title || ''
     this.type = 'task'
