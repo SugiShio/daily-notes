@@ -4,7 +4,7 @@
     v-for='(templateName, index) in templateNames',
     :style='positionStyle(index)'
   )
-    button(@click='onCloseClicked') <
+    button(@click='onBackClicked') <
     component(:is='templateName')
 </template>
 
@@ -17,8 +17,11 @@ export default {
     },
   },
   methods: {
-    onCloseClicked() {
+    onBackClicked() {
       this.$store.commit('removeTemplateNames')
+      if (!this.templateNames.length) {
+        this.$store.commit('dailyForm/resetOriginalItem')
+      }
     },
     positionStyle(index) {
       const reversedIndex = this.templateNames.length - index

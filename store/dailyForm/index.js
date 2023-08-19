@@ -19,6 +19,11 @@ export const mutations = {
     state.originalItem = item
     state.originalItemId = id
   },
+
+  resetOriginalItem(state) {
+    state.originalItem = null
+    state.originalItemId = null
+  },
 }
 
 export const actions = {
@@ -57,6 +62,7 @@ export const actions = {
   async onSaveClicked({ commit, dispatch, state }, item) {
     try {
       await dispatch(state.originalItemId ? 'updateItem' : 'addItem', item)
+      commit('resetOriginalItem')
     } catch (e) {
       console.error(e)
     }
