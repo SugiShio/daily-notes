@@ -12,7 +12,6 @@ import { db } from '~/plugins/firebase'
 import { DailyItem } from '~/models/dailyItem'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
-import { ShoppingList } from '~/models/shoppingList'
 import { Task } from '~/models/task'
 
 export const state = () => ({
