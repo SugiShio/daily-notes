@@ -1,15 +1,13 @@
 <template lang="pug">
 .a-date-box
+  nuxt-link.a-date-box__prev(:to='linkPrevious') Prev
+
   time.a-date-box__main(:datetime='`${year}-${month}-${date}`')
     span.a-date-box__year {{ year }}
     span.a-date-box__date {{ month }}.{{ date }}
       span.a-date-box__day {{ day }}
 
-  .a-date-box__selector
-    nuxt-link.a-date-box__prev(:to='linkPrevious')
-      i.el-icon-arrow-left
-    nuxt-link.a-date-box__next(:to='linkNext')
-      i.el-icon-arrow-right
+  nuxt-link.a-date-box__next(:to='linkNext') Next
 </template>
 
 <script>
@@ -59,9 +57,14 @@ export default {
 @import '~/assets/stylesheets/variables';
 
 .a-date-box {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
   &__main {
     display: block;
     font-family: $font-family-accent;
+    text-align: center;
   }
 
   &__year {
@@ -87,6 +90,15 @@ export default {
   &__next {
     text-decoration: none;
     font-size: 14px;
+    font-family: $font-family-accent;
+  }
+
+  &__prev {
+    transform: rotate(90deg);
+  }
+
+  &__next {
+    transform: rotate(-90deg);
   }
 }
 </style>
