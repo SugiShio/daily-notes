@@ -1,5 +1,6 @@
 <template lang="pug">
 section
+  atoms-pager
   header
     button(v-if='$store.state.isSignin', type='button', @click='signout') Signout
     button(v-else, type='button', @click='showSigninForm = true') Signin

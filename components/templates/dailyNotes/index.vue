@@ -1,7 +1,10 @@
 <template lang="pug">
 section.t-daily-notes
-  atoms-date-box
+  .t-daily-notes__block
+    atoms-date-box
 
+  .t-daily-notes__block
+    organisms-create-icons
   organisms-task-list
   ul
     li.t-daily-notes__item(v-for='(dailyNote, id) in dailyNotes')
@@ -53,6 +56,10 @@ export default {
 @import '~/assets/stylesheets/variables';
 
 .t-daily-notes {
+  &__block {
+    margin: 20px 0;
+  }
+
   &__item {
     margin: 10px;
     background: rgba(#fff, 0.75);

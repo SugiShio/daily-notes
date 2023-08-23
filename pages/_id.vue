@@ -1,7 +1,6 @@
 <template lang="pug">
 .p-id
   templates-daily-notes(@edit-clicked='onEditClicked')
-  atoms-pager(@pager-button-clicked='onPagerButtonClicked')
 </template>
 
 <script>
@@ -37,9 +36,6 @@ export default {
   methods: {
     onEditClicked({ dailyNote, id }) {
       this.$store.dispatch('openEditForm', { dailyNote, id })
-    },
-    onPagerButtonClicked() {
-      this.$store.dispatch('openNewForm')
     },
   },
 }

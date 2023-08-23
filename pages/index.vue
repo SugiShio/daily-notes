@@ -1,11 +1,5 @@
 <template lang="pug">
 .p-index
-  atoms-pager
-
-  ul.p-index__create-icons
-    li.p-index__create-icon(v-for='(t, index) in types')
-      button(@click='onCreateButtonClicked(index)')
-        i(:class='`el-icon-${t.icon}`')
   templates-daily-notes
 </template>
 
@@ -50,17 +44,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~/assets/stylesheets/variables';
-.p-index {
-  &__create-icons {
-    display: flex;
-    justify-content: center;
-    margin: -4px;
-    padding: 0 $padding-h;
-  }
-
-  &__create-icon {
-    padding: 4px;
-  }
-}
 </style>
