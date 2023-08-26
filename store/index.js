@@ -27,10 +27,7 @@ export const mutations = {
   },
 
   setDailyNotes(state, dailyNotes) {
-    state.dailyNotes = {}
-    dailyNotes.forEach((dailyNote) => {
-      state.dailyNotes[dailyNote.id] = dailyNote
-    })
+    state.dailyNotes = dailyNotes
   },
 
   setIsSignin(state) {
@@ -82,16 +79,16 @@ export const actions = {
     )
     const snapShots = await getDocs(q)
 
-    const dailyNotes = []
+    const dailyNotes = {}
     snapShots.forEach((snapShot) => {
       const data = snapShot.data()
       switch (data.type) {
         case 'meal':
-          dailyNotes.push(new Meal(data))
+          dailyNotes[snapShot.id] = new Meal(data)
           break
 
         default:
-          dailyNotes.push(new Note(data))
+          dailyNotes[snapShot.id] = new Note(data)
       }
     })
 
