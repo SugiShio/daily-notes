@@ -32,15 +32,7 @@ export const mutations = {
   setDailyNotes(state, dailyNotes) {
     state.dailyNotes = {}
     dailyNotes.forEach((dailyNote) => {
-      const data = dailyNote.data()
-      switch (data.type) {
-        case 'meal':
-          state.dailyNotes[dailyNote.id] = new Meal(data)
-          break
-
-        default:
-          state.dailyNotes[dailyNote.id] = new Note(data)
-      }
+      state.dailyNotes[dailyNote.id] = dailyNote
     })
   },
 
@@ -92,7 +84,21 @@ export const actions = {
       where('date', '==', state.dailyId)
     )
     const snapShots = await getDocs(q)
-    commit('setDailyNotes', snapShots)
+
+    const dailyNotes = []
+    snapShots.forEach(async (snapShot) => {
+      const data = snapShot.data()
+      switch (data.type) {
+        case 'meal':
+          dailyNotes.push(new Meal(data))
+          break
+
+        default:
+          dailyNotes.push(new Note(data))
+      }
+    })
+
+    commit('setDailyNotes', dailyNotes)
   },
 
   async updateItem({ commit, dispatch, state }, item) {

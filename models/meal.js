@@ -11,7 +11,8 @@ export class Item {
 }
 export class Meal extends DailyItem {
   constructor(meal = {}) {
-    super(meal)
+    const mark = meal.mark || 'apple'
+    super({ ...meal, mark })
     this.type = 'meal'
     this.items = meal.items
       ? meal.items.map((item) => {
