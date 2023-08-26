@@ -1,22 +1,34 @@
 <template lang="pug">
 .o-meal-editor
-  atoms-button(
-    @click='$store.commit("setTemplateNames", "templates-search-food-item")',
-    text='Search'
-  )
-  .o-meal-editor__label(for='items') Items
-    ul.o-meal-editor__content
-      li.o-meal-editor__item(v-for='(item, index) in items')
-        .o-meal-editor__item-name
-          span {{ item.name }}
-        atoms-input-number-with-unit(
-          :value='item.value',
-          :units='unitOptions(item)',
-          @value-input='onValueInput(index, $event)',
-          @unit-changed='onUnitChanged(index, $event)'
+  .o-meal-editor__item
+    label.o-meal-editor__label(for='date') Date
+      .o-meal-editor__content
+        | {{ editingItem.dateText }}
+
+  .o-meal-editor__item
+    .o-meal-editor__label(for='items') Items
+      .o-meal-editor__content
+        ul.o-meal-editor__food-items
+          li.o-meal-editor__food-item(v-for='(item, index) in items')
+            .o-meal-editor__food-item-name
+              span {{ item.name }}
+            atoms-input-number-with-unit(
+              :value='item.value',
+              :units='unitOptions(item)',
+              size='small',
+              @value-input='onValueInput(index, $event)',
+              @unit-changed='onUnitChanged(index, $event)'
+            )
+            button.o-meal-editor__button-delete(@click='deleteItem(index)')
+              i.el-icon-delete
+
+        button.o-meal-editor__button-add(
+          @click='$store.commit("setTemplateNames", "templates-search-food-item")'
         )
-        span(@click='deleteItem(index)')
-          i.el-icon-delete
+          i.el-icon-circle-plus-outline
+          | Add items
+
+  .o-meal-editor__item
     .o-meal-editor__content
       atoms-button(
         :disabled='!items.length',
@@ -62,7 +74,7 @@ export default {
     },
 
     async onSaveClicked() {
-      const item = new Meal({ items: this.items })
+      const item = new Meal({ ...this.originalItem, items: this.items })
       try {
         await this.$store.dispatch('dailyForm/onSaveClicked', item)
         this.$store.commit('resetTemplateNames')
@@ -91,9 +103,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
 @import '~/assets/stylesheets/form';
 .o-meal-editor {
-  @extend %form__item;
+  &__item {
+    @extend %form__item;
+  }
 
   &__label {
     @extend %form__label;
@@ -103,16 +118,21 @@ export default {
     @extend %form__content;
   }
 
-  &__item {
+  &__food-items {
+    margin: 10px 0;
+  }
+
+  &__food-item {
     display: flex;
     align-items: center;
 
     & + & {
-      margin-top: 5px;
+      margin-top: 10px;
     }
   }
 
-  &__item-name {
+  &__food-item-name {
+    flex-grow: 1;
     overflow: hidden;
 
     span {
@@ -121,6 +141,17 @@ export default {
       text-overflow: ellipsis;
       overflow: hidden;
     }
+  }
+
+  &__button-delete {
+    color: $color-red;
+    padding: 5px 10px;
+    margin-left: 5px;
+  }
+
+  &__button-add {
+    color: $color-main-dark;
+    padding: 5px 0;
   }
 }
 </style>

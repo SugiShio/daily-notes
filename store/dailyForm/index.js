@@ -47,7 +47,7 @@ export const actions = {
     }
   },
 
-  async updateItem({ commit, dispatch, state }, item) {
+  async updateItem({ state }, item) {
     const postItem = getFirestoreFormat(item)
     try {
       await updateDoc(doc(db, 'dailyNotes', state.originalItemId), {

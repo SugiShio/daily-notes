@@ -3,7 +3,8 @@
   input.a-input-number-with-unit__input(
     type='number',
     @input='onValueInput',
-    :value='value'
+    :value='value',
+    :class='size'
   )
   select.a-input-number-with-unit__selector(@change='onUnitChanged')
     option(v-for='unit in units', :value='unit.value') {{ unit.label }}
@@ -13,6 +14,7 @@
 export default {
   name: 'AtomsInputNumberWithUnit',
   props: {
+    size: { type: String, default: 'midium' },
     units: { type: Array, default: () => [] },
     value: { type: [String, Number], default: '' },
   },
@@ -47,12 +49,12 @@ export default {
 
   &__selector {
     width: 40px;
+    background-color: $color-gray-light;
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     color: $color-main-dark;
-    padding-left: 0;
-    padding-right: 5px;
+    padding: 0 5px 0 10px;
   }
 }
 </style>

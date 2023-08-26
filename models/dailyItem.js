@@ -1,5 +1,9 @@
 import { Timestamp } from '~/models/timestamp'
-import { convertDateToDateId } from '~/scripts/dateHelper'
+import {
+  convertDateToDateId,
+  convertDateIdToDate,
+  getDayText,
+} from '~/scripts/dateHelper'
 export const TYPES = [
   { value: 'note', icon: 'document' },
   { value: 'task', icon: 'circle-check' },
@@ -19,5 +23,14 @@ export class DailyItem extends Timestamp {
     if (!TYPES.map((type) => type.value).includes(type))
       throw new Error('Type is invalid')
     this.type = type
+  }
+
+  get dateText() {
+    const dateObject = convertDateIdToDate(this.date)
+    const year = dateObject.getFullYear()
+    const month = dateObject.getMonth()
+    const date = dateObject.getDate()
+    const day = getDayText(dateObject)
+    return `${year}.${month + 1}.${date} ${day}`
   }
 }
