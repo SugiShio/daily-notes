@@ -1,14 +1,23 @@
+import { doc, getDoc } from 'firebase/firestore'
 import { DailyItem } from './dailyItem'
+import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
+import { FoodItem } from '~/models/foodItem'
 
 export class Item {
   constructor(foodItem = {}) {
     this.id = foodItem.id
     this.name = foodItem.name
     this.unit = foodItem.unit
-    this.units = foodItem.units
     this.value = foodItem.value
   }
+
+  async getFoodItem() {
+    const snapshot = await getDoc(doc(dbFoodDatabase, 'foodItems', this.id))
+    const data = snapshot.data()
+    return new FoodItem(this.id, data)
+  }
 }
+
 export class Meal extends DailyItem {
   constructor(meal = {}) {
     const mark = meal.mark || 'apple'
@@ -23,5 +32,13 @@ export class Meal extends DailyItem {
 
   get isSaveAvailable() {
     return !!this.items.length
+  }
+
+  async getFoodItems() {
+    return await Promise.all(
+      this.items.map(async (item) => {
+        return await item.getFoodItem()
+      })
+    )
   }
 }
