@@ -3,7 +3,8 @@
   input.a-search__input(
     :placeholder='placeholder',
     :value='value',
-    @input='$emit("input", $event.target.value)'
+    @input='$emit("input", $event.target.value)',
+    @keydown.enter='onEnter'
   )
   button.a-search__button(@click='$emit("search-clicked", value)')
     i.el-icon-search
@@ -15,6 +16,11 @@ export default {
   props: {
     placeholder: { type: String, default: 'Keyword...' },
     value: { type: [String, Number], default: '' },
+  },
+  methods: {
+    onEnter($event) {
+      if (!$event.isComposing) this.$emit('search-clicked', this.value)
+    },
   },
 }
 </script>
