@@ -29,7 +29,10 @@ export default {
       const foodItems = await this.item.getFoodItems()
       const items = Object.keys(NUTRIENTS).map((key) => {
         const values = this.item.items.map((i, index) => {
-          return Math.round(foodItems[index].nutrients[key] * i.value) / 100
+          const foodItem = foodItems[index]
+          const unit = foodItem.units.find((u) => u.unit === i.unit)
+          const rate = unit ? unit.rate : 1
+          return Math.round(foodItem.nutrients[key] * i.value * rate) / 100
         })
         const base = this.nutrientBasis[key]
         return {
