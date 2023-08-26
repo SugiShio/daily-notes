@@ -4,7 +4,9 @@
     v-for='(templateName, index) in templateNames',
     :style='positionStyle(index)'
   )
-    button(@click='onBackClicked') <
+    .a-pager__head
+      button(@click='onBackClicked')
+        i.el-icon-arrow-left
     component(:is='templateName')
 </template>
 
