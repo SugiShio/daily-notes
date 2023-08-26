@@ -81,6 +81,7 @@ export default {
     },
 
     unitOptions(item) {
+      if (!item.units) return []
       return item.units.map((unit) => {
         return { value: unit.unit, label: unit.unit }
       })

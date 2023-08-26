@@ -1,7 +1,6 @@
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   getDocs,
   updateDoc,
@@ -9,10 +8,8 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
-import { DailyItem } from '~/models/dailyItem'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
-import { Task } from '~/models/task'
 
 export const state = () => ({
   user: {},
@@ -86,7 +83,7 @@ export const actions = {
     const snapShots = await getDocs(q)
 
     const dailyNotes = []
-    snapShots.forEach(async (snapShot) => {
+    snapShots.forEach((snapShot) => {
       const data = snapShot.data()
       switch (data.type) {
         case 'meal':
@@ -101,7 +98,7 @@ export const actions = {
     commit('setDailyNotes', dailyNotes)
   },
 
-  async updateItem({ commit, dispatch, state }, item) {
+  async updateItem({ state }, item) {
     const updated = {}
     Object.keys(item).forEach((key) => {
       if (item[key] !== state.originalItem[key]) {
@@ -118,17 +115,4 @@ export const actions = {
       console.error(e)
     }
   },
-}
-
-const getObject = (type) => {
-  switch (type) {
-    case 'task':
-      return Task
-
-    case 'meal':
-      return Meal
-
-    default:
-      return Note
-  }
 }
