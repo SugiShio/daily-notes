@@ -8,6 +8,7 @@ export class Item {
     this.id = foodItem.id
     this.name = foodItem.name
     this.unit = foodItem.unit
+    this.units = foodItem.units
     this.value = foodItem.value
   }
 

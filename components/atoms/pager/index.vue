@@ -5,9 +5,11 @@
     :style='positionStyle(index)'
   )
     .a-pager__head
-      button(@click='onBackClicked')
-        i.el-icon-arrow-left
-    component(:is='templateName')
+      button.a-pager__button(@click='onBackClicked')
+        i.el-icon-close(v-if='index === 0')
+        i.el-icon-arrow-left(v-else)
+    .a-pager__content
+      component(:is='templateName')
 </template>
 
 <script>
@@ -28,7 +30,7 @@ export default {
     positionStyle(index) {
       const reversedIndex = this.templateNames.length - index
       return {
-        transform: `scale(${0.95 ** reversedIndex}) translateX(${
+        transform: `scale(${0.95 ** (reversedIndex - 1)}) translateX(${
           -(reversedIndex - 1) * 50
         }px)`,
       }
@@ -48,12 +50,23 @@ export default {
     background: rgba(#fff, 0.95);
     border-radius: 8px;
     box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
-    height: calc(100vh - 10px);
-    padding: 15px 20px;
+    height: calc(100vh - 20px);
+    overflow: scroll;
     position: fixed;
     transition: 0.3s;
-    width: calc(100vw - 10px);
-    margin: auto;
+    width: calc(100vw - 20px);
+    margin: 10px;
+  }
+  &__head {
+    padding: 15px 10px 5px;
+  }
+
+  &__button {
+    padding: 5px 10px;
+  }
+
+  &__content {
+    padding: 15px 20px;
   }
 }
 </style>

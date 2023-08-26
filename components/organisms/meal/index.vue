@@ -7,7 +7,7 @@
     li.o-meal__item(v-for='i in item.items')
       | {{ i.name }} ({{ i.value }}{{ i.unit }})
 
-  button(@click='onButtonClicked') グラフを見る
+  button.o-meal__button-graph(@click='onButtonClicked') グラフを見る
 </template>
 
   <script>
@@ -19,6 +19,11 @@ export default {
   props: {
     item: { type: Meal, default: new Meal() },
   },
+  computed: {
+    nutrientBasis() {
+      return this.$store.state.user.nutrientBasis
+    },
+  },
   methods: {
     async onButtonClicked() {
       const foodItems = await this.item.getFoodItems()
@@ -26,9 +31,11 @@ export default {
         const values = this.item.items.map((i, index) => {
           return Math.round(foodItems[index].nutrients[key] * i.value) / 100
         })
+        const base = this.nutrientBasis[key]
         return {
           title: NUTRIENTS[key].label,
           values,
+          base,
           unit: NUTRIENTS[key].unit,
         }
       })
@@ -40,6 +47,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
+
 .o-meal {
   &__head {
     display: flex;
@@ -50,6 +59,15 @@ export default {
   &__time {
     font-size: 11px;
     margin-left: 5px;
+  }
+
+  &__list {
+    margin: 10px 0;
+  }
+
+  &__button-graph {
+    color: $color-main-dark;
+    font-size: 12px;
   }
 }
 </style>

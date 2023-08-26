@@ -5,6 +5,7 @@ section.t-daily-notes
 
   .t-daily-notes__block
     organisms-create-icons
+
   organisms-task-list
   ul
     li.t-daily-notes__item(v-for='(dailyNote, id) in dailyNotes')
