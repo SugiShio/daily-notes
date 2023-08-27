@@ -3,13 +3,16 @@ transition(name='showUp')
   .t-search-food-item
     atoms-search(v-model='string', @search-clicked='search')
 
-    ul.t-search-food-item__list
+    ul.t-search-food-item__list(v-if='items.length')
       li.t-search-food-item__item(v-for='item in items')
         button.t-search-food-item__add-button(@click='onFoodItemClicked(item)')
           i.el-icon-circle-plus-outline
         a.t-search-food-item__detail-link(@click='showDetail(item)')
           | {{ item.name }}
           i.el-icon-top-right
+
+    .t-search-food-item__text(v-else)
+      | {{ resultText }}
 </template>
 
 <script>
@@ -23,6 +26,7 @@ export default {
       string: '',
       items: [],
       detail: null,
+      resultText: '',
     }
   },
   methods: {
@@ -31,13 +35,19 @@ export default {
     },
 
     async search() {
+      this.resultText = '検索中...'
+      this.items = []
       const index = client.initIndex('index_fooditems')
       await index
         .search(this.string)
         .then(({ hits }) => {
-          this.items = hits.map((hit) => {
-            return new FoodItem(hit.objectID, hit)
-          })
+          if (hits.length) {
+            this.items = hits.map((hit) => {
+              return new FoodItem(hit.objectID, hit)
+            })
+          } else {
+            this.resultText = '条件に合う食材が見つかりませんでした'
+          }
         })
         .catch((error) => {
           console.error(error)
@@ -53,7 +63,8 @@ export default {
 
 <style lang="scss" scoped>
 .t-search-food-item {
-  &__list {
+  &__list,
+  &__text {
     margin: 20px 0;
   }
 
