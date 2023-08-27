@@ -54,8 +54,8 @@ export default {
         })
     },
 
-    showDetail(id) {
-      this.$store.dispatch('foodItem/showFoodItemDetail', id)
+    showDetail(item) {
+      this.$store.dispatch('foodItem/showFoodItemDetail', item.id)
     },
   },
 }

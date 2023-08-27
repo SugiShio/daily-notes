@@ -4,7 +4,7 @@
     i(:class='`el-icon-${item.mark}`')
     time.o-meal__time {{ item.createdAtTimeText }}
   ul.o-meal__list
-    li.o-meal__item(v-for='i in item.items')
+    li.o-meal__item(v-for='i in item.items', @click='showDetail(i)')
       | {{ i.name }} ({{ i.value }}{{ i.unit }})
 
   button.o-meal__button-graph(@click='onButtonClicked') グラフを見る
@@ -42,8 +42,12 @@ export default {
           unit: NUTRIENTS[key].unit,
         }
       })
-      this.$store.commit('setTemplateNames', 'templates-graph')
+      this.$store.commit('setTemplateNames', 'templates-meal-graph')
       this.$store.commit('graph/setItems', items)
+    },
+
+    showDetail(item) {
+      this.$store.dispatch('foodItem/showFoodItemDetail', item.id)
     },
   },
 }

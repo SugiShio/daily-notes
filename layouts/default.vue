@@ -9,7 +9,6 @@ section
       button(type='button', @click='showSigninForm = false') close
   section
     nuxt
-  templates-food-item
 </template>
 
   <script>

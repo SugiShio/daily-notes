@@ -1,16 +1,16 @@
 <template lang="pug">
-.t-graph
-  span.t-graph__base-line(:style='stylePositionBaseLine')
+.a-graph
+  span.a-graph__base-line(:style='stylePositionBaseLine')
   dl
-    .t-graph__item(v-for='item in items')
-      dt.t-graph__dt
-        .t-graph__title {{ item.title }}
-        .t-graph__value
+    .a-graph__item(v-for='item in graphItems')
+      dt.a-graph__dt
+        .a-graph__title {{ item.title }}
+        .a-graph__value
           | {{ totalValue(item) }}
-          span.t-graph__unit {{ item.unit }}
-      dd.t-graph__dd
-        ul.t-graph__bar
-          li.t-graph__bar-item(
+          span.a-graph__unit {{ item.unit }}
+      dd.a-graph__dd
+        ul.a-graph__bar
+          li.a-graph__bar-item(
             v-for='value in item.values',
             :style='style(value, item.base)'
           )
@@ -18,16 +18,16 @@
 
 <script>
 export default {
-  name: 'TemplatesGraph',
+  name: 'AtomsGraph',
+  props: {
+    graphItems: { type: Array, default: () => [] },
+  },
   data() {
     return {
       widthBarContainer: 100,
     }
   },
   computed: {
-    items() {
-      return this.$store.state.graph.items
-    },
     stylePositionBaseLine() {
       const left = 100 + this.widthBarContainer * 0.7
       return { left: `${left}px` }
@@ -58,7 +58,7 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/stylesheets/variables';
 
-.t-graph {
+.a-graph {
   position: relative;
 
   &__base-line {
