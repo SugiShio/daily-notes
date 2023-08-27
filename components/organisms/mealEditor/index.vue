@@ -9,7 +9,9 @@
     .o-meal-editor__label(for='items') Items
       .o-meal-editor__content
         ul.o-meal-editor__food-items
-          li.o-meal-editor__food-item(v-for='(item, index) in items')
+          li.o-meal-editor__food-item(
+            v-for='(item, index) in editingItem.items'
+          )
             .o-meal-editor__food-item-name
               span {{ item.name }}
             atoms-input-number-with-unit(
@@ -31,7 +33,7 @@
   .o-meal-editor__item
     .o-meal-editor__content
       atoms-button(
-        :disabled='!items.length',
+        :disabled='!editingItem.items.length',
         text='Save',
         @click='onSaveClicked'
       )
@@ -58,23 +60,21 @@ export default {
   },
   watch: {
     selectedFoodItem(foodItem) {
-      this.items.push(new Item(foodItem))
+      this.editingItem.items.push(new Item(foodItem))
     },
   },
   created() {
     if (this.originalItem) {
-      this.originalItem.items.forEach((item) => {
-        this.items.push(new Item(item))
-      })
+      this.editingItem = new Meal(this.originalItem)
     }
   },
   methods: {
     deleteItem(index) {
-      this.items.splice(index, 1)
+      this.editingItem.items.splice(index, 1)
     },
 
     async onSaveClicked() {
-      const item = new Meal({ ...this.originalItem, items: this.items })
+      const item = new Meal(this.editingItem)
       try {
         await this.$store.dispatch('dailyForm/onSaveClicked', item)
         this.$store.commit('resetTemplateNames')
@@ -85,11 +85,11 @@ export default {
     },
 
     onUnitChanged(index, unit) {
-      this.items[index].unit = unit
+      this.editingItem.items[index].unit = unit
     },
 
     onValueInput(index, value) {
-      this.items[index].value = value
+      this.editingItem.items[index].value = value
     },
 
     unitOptions(item) {
