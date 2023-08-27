@@ -20,7 +20,8 @@ export default {
   },
   methods: {
     onValueInput($event) {
-      this.$emit('value-input', $event.target.value)
+      const number = Number($event.target.value)
+      if (!isNaN(number)) this.$emit('value-input', number)
     },
     onUnitChanged($event) {
       this.$emit('unit-changed', $event.target.value)
