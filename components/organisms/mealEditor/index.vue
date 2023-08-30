@@ -16,6 +16,7 @@
               span {{ item.name }}
             atoms-input-number-with-unit(
               :value='item.value',
+              :unit='item.unit',
               :units='unitOptions(item)',
               size='small',
               @value-input='onValueInput(index, $event)',
@@ -40,7 +41,7 @@
 </template>
 
 <script>
-import { Item, Meal } from '~/models/meal'
+import { MealItem, Meal } from '~/models/meal'
 
 export default {
   name: 'OrganismsMealEditor',
@@ -60,7 +61,7 @@ export default {
   },
   watch: {
     selectedFoodItem(foodItem) {
-      this.editingItem.items.push(new Item(foodItem))
+      this.editingItem.items.push(new MealItem(foodItem))
     },
   },
   created() {

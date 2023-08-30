@@ -4,9 +4,13 @@
     type='number',
     @input='onValueInput',
     :value='value',
-    :class='size'
+    :class='size',
+    :unit='unit'
   )
-  select.a-input-number-with-unit__selector(@change='onUnitChanged')
+  select.a-input-number-with-unit__selector(
+    @change='onUnitChanged',
+    :value='unit'
+  )
     option(v-for='unit in units', :value='unit.value') {{ unit.label }}
 </template>
 
@@ -16,6 +20,7 @@ export default {
   props: {
     size: { type: String, default: 'midium' },
     units: { type: Array, default: () => [] },
+    unit: { type: String, default: '' },
     value: { type: [String, Number], default: '' },
   },
   methods: {

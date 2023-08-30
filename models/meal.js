@@ -3,13 +3,13 @@ import { DailyItem } from './dailyItem'
 import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
 import { FoodItem } from '~/models/foodItem'
 
-export class Item {
+export class MealItem {
   constructor(foodItem = {}) {
     this.id = foodItem.id
     this.name = foodItem.name
-    this.unit = foodItem.unit
+    this.unit = foodItem.unit || 'g'
     this.units = foodItem.units
-    this.value = foodItem.value
+    this.value = isNaN(Number(foodItem.value)) ? 100 : Number(foodItem.value)
   }
 
   async getFoodItem() {
@@ -26,7 +26,7 @@ export class Meal extends DailyItem {
     this.type = 'meal'
     this.items = meal.items
       ? meal.items.map((item) => {
-          return new Item(item)
+          return new MealItem(item)
         })
       : []
   }
