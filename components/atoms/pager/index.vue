@@ -67,6 +67,7 @@ export default {
 
   &__content {
     padding: 15px 20px;
+    overflow: hidden;
   }
 }
 </style>

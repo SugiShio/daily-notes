@@ -2,6 +2,7 @@
 .a-search
   input.a-search__input(
     :placeholder='placeholder',
+    type='search',
     :value='value',
     @input='$emit("input", $event.target.value)',
     @keydown.enter='onEnter'
@@ -39,6 +40,10 @@ export default {
   &__button {
     @extend %input;
     background-color: transparent;
+
+    &::-webkit-search-cancel-button {
+      display: none;
+    }
   }
 
   &__input {

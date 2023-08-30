@@ -30,7 +30,11 @@ export default {
     }
   },
   methods: {
-    onFoodItemClicked(item) {
+    isAdded(index) {
+      return this.addedIndexes.includes(index)
+    },
+    onFoodItemClicked(item, index) {
+      this.addedIndexes.push(index)
       this.$store.commit('searchFoodItem/setSelectedFoodItem', item)
     },
 
@@ -62,6 +66,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
+
 .t-search-food-item {
   &__list,
   &__text {
@@ -70,7 +76,12 @@ export default {
 
   &__item {
     margin: 10px 0;
+
+    &.isAdded {
+      color: $color-main-dark;
+    }
   }
+
   &__add-button {
     padding: 3px 5px;
   }
