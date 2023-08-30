@@ -68,4 +68,15 @@ export default {
   generate: {
     exclude: [/^\/\d{8}/],
   },
+
+  // PWA module configuration: https://go.nuxtjs.dev/pwa
+  pwa: {
+    meta: {
+      background_color: '#fef6b7',
+      theme_color: '#fef6b7',
+    },
+    manifest: {
+      lang: 'ja',
+    },
+  },
 }
