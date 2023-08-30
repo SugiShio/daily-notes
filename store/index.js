@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   updateDoc,
   query,
   where,
@@ -75,7 +76,8 @@ export const actions = {
     const q = query(
       collection(db, 'dailyNotes'),
       where('uid', '==', state.user.uid),
-      where('date', '==', state.dailyId)
+      where('date', '==', state.dailyId),
+      orderBy('createdAt', 'asc')
     )
     const snapShots = await getDocs(q)
 

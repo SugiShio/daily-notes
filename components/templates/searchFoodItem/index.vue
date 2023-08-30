@@ -4,9 +4,16 @@ transition(name='showUp')
     atoms-search(v-model='string', @search-clicked='search')
 
     ul.t-search-food-item__list(v-if='items.length')
-      li.t-search-food-item__item(v-for='item in items')
-        button.t-search-food-item__add-button(@click='onFoodItemClicked(item)')
-          i.el-icon-circle-plus-outline
+      li.t-search-food-item__item(
+        v-for='(item, index) in items',
+        :class='{ isAdded: isAdded(index) }'
+      )
+        button.t-search-food-item__add-button(
+          @click='onFoodItemClicked(item, index)',
+          :disabled='isAdded(index)'
+        )
+          i.el-icon-circle-check(v-if='isAdded(index)')
+          i.el-icon-circle-plus-outline(v-else)
         a.t-search-food-item__detail-link(@click='showDetail(item)')
           | {{ item.name }}
           i.el-icon-top-right
@@ -23,6 +30,7 @@ export default {
   name: 'TemplatesSearchFoodItem',
   data() {
     return {
+      addedIndexes: [],
       string: '',
       items: [],
       detail: null,

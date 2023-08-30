@@ -8,14 +8,18 @@ section.t-daily-notes
 
   organisms-task-list
   ul
-    li.t-daily-notes__item(v-for='(dailyNote, id) in dailyNotes')
-      component(
-        :is='`organisms-${dailyNote.type}`',
-        :item='dailyNote',
-        @item-updated='updateDailyNote($event, id)'
-      )
+    li.t-daily-notes__item(v-for='(meal, id) in meals')
+      organisms-meal(:item='meal')
       .t-daily-notes__actions
-        button.t-daily-notes__action(@click='editItem(dailyNote, id)')
+        button.t-daily-notes__action(@click='editItem(meal, id)')
+          i.el-icon-edit
+        button.t-daily-notes__action(@click='deleteItem(id)')
+          i.el-icon-delete
+  ul
+    li.t-daily-notes__item(v-for='(note, id) in notes')
+      organisms-note(:item='note')
+      .t-daily-notes__actions
+        button.t-daily-notes__action(@click='editItem(note, id)')
           i.el-icon-edit
         button.t-daily-notes__action(@click='deleteItem(id)')
           i.el-icon-delete
@@ -31,8 +35,27 @@ export default {
     uid() {
       return this.$store.state.user.uid
     },
+
     dailyNotes() {
-      return this.$store.state.dailyNotes
+      return this.$store.state.dailyNotes || []
+    },
+
+    meals() {
+      const meals = {}
+      Object.keys(this.dailyNotes).forEach((key) => {
+        if (this.dailyNotes[key].type === 'meal')
+          meals[key] = this.dailyNotes[key]
+      })
+      return meals
+    },
+
+    notes() {
+      const notes = {}
+      Object.keys(this.dailyNotes).forEach((key) => {
+        if (this.dailyNotes[key].type === 'note')
+          notes[key] = this.dailyNotes[key]
+      })
+      return notes
     },
   },
   methods: {
