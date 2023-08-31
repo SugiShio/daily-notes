@@ -5,7 +5,11 @@
     time.o-meal__time {{ item.createdAtTimeText }}
   ul.o-meal__list
     li.o-meal__item(v-for='i in item.items', @click='showDetail(i)')
-      | {{ i.name }} ({{ i.value }}{{ i.unit }})
+      .o-meal__item-name
+        span {{ i.name }}
+      .o-meal__item-value
+        | {{ i.value }}
+        span {{ i.unit }}
 
   button.o-meal__button-graph(@click='onButtonClicked') グラフを見る
 </template>
@@ -70,6 +74,38 @@ export default {
 
   &__list {
     margin: 10px 0;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    width: 100%;
+  }
+
+  &__item-name {
+    flex-grow: 1;
+    margin-right: 10px;
+    overflow: hidden;
+
+    span {
+      display: block;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__item-value {
+    color: $color-text-light;
+    font-size: 12px;
+  }
+
+  &__meal-item span {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__button-graph {
