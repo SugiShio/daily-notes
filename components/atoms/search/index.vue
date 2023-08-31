@@ -7,7 +7,9 @@
     @input='$emit("input", $event.target.value)',
     @keydown.enter='onEnter'
   )
-  button.a-search__button(@click='$emit("search-clicked", value)')
+  button.a-search__button-clear(@click='$emit("clear-clicked")')
+    i.el-icon-error
+  button.a-search__button-search(@click='$emit("search-clicked", value)')
     i.el-icon-search
 </template>
 
@@ -37,7 +39,8 @@ export default {
   padding: 0;
 
   &__input,
-  &__button {
+  &__button-clear,
+  &__button-search {
     @extend %input;
     background-color: transparent;
 
@@ -53,7 +56,15 @@ export default {
     border-bottom-right-radius: 0;
   }
 
-  &__button {
+  &__button-clear {
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+    color: $color-main-dark;
+  }
+
+  &__button-search {
+    background-color: $color-gray-light;
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

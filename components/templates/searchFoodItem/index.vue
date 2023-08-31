@@ -1,7 +1,11 @@
 <template lang="pug">
 transition(name='showUp')
   .t-search-food-item
-    atoms-search(v-model='string', @search-clicked='search')
+    atoms-search(
+      v-model='string',
+      @clear-clicked='string = ""',
+      @search-clicked='search'
+    )
 
     ul.t-search-food-item__list(v-if='items.length')
       li.t-search-food-item__item(
@@ -54,6 +58,7 @@ export default {
         .search(this.string)
         .then(({ hits }) => {
           if (hits.length) {
+            this.addedIndexes = []
             this.items = hits.map((hit) => {
               return new FoodItem(hit.objectID, hit)
             })
