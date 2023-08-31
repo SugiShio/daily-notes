@@ -1,7 +1,7 @@
 <template lang="pug">
 section.t-food-item(v-if='foodItem')
   h2.t-food-item__title {{ foodItem.name }}
-  .t-food-item__description {{ foodItem.description }}
+  .t-food-item__description(v-html='description')
   atoms-input-number-with-unit(
     :value='value',
     :units='units',
@@ -14,7 +14,9 @@ section.t-food-item(v-if='foodItem')
 </template>
 
 <script>
+import DOMPurify from 'dompurify'
 import { NUTRIENTS } from '~/constants/nutrients'
+
 export default {
   name: 'TemplatesFoodItem',
   data() {
@@ -24,6 +26,9 @@ export default {
     }
   },
   computed: {
+    description() {
+      return DOMPurify.sanitize(this.foodItem.description)
+    },
     foodItem() {
       return this.$store.state.foodItem.foodItem
     },
@@ -67,13 +72,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~/assets/stylesheets/variables';
+
 .t-food-item {
   &__title {
     font-size: 20px;
   }
 
-  &__description {
+  &__description::v-deep {
     margin: 15px 0;
+
+    p {
+      margin: 10px 0;
+    }
+
+    a {
+      color: $color-main-dark;
+    }
   }
 }
 </style>
