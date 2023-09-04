@@ -9,12 +9,12 @@ section.t-daily-notes
   organisms-task-list
   ul
     li.t-daily-notes__item(v-for='(meal, id) in meals')
-      organisms-meal(:item='meal')
-      .t-daily-notes__actions
-        button.t-daily-notes__action(@click='editItem(meal, id)')
-          i.el-icon-edit
-        button.t-daily-notes__action(@click='deleteItem(id)')
-          i.el-icon-delete
+      organisms-meal(:item='meal', :show-count='5')
+        .t-daily-notes__actions
+          button.t-daily-notes__action(@click='editItem(meal, id)')
+            i.el-icon-edit
+          button.t-daily-notes__action(@click='deleteItem(id)')
+            i.el-icon-delete
   ul
     li.t-daily-notes__item(v-for='(note, id) in notes')
       organisms-note(:item='note')
@@ -88,7 +88,6 @@ export default {
     margin: 10px;
     background: rgba(#fff, 0.75);
     box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
-    padding: 15px 20px;
     border-radius: 8px;
   }
 

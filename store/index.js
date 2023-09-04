@@ -17,6 +17,7 @@ export const state = () => ({
   isSignin: false,
   dailyId: '',
   dailyNotes: {},
+  meal: null,
   originalItem: null,
   originalItemId: null,
   templateNames: [],
@@ -33,6 +34,10 @@ export const mutations = {
 
   setIsSignin(state) {
     state.isSignin = true
+  },
+
+  setMeal(state, meal) {
+    state.meal = meal
   },
 
   setTemplateNames(state, templateName) {
