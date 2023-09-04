@@ -6,6 +6,23 @@
         | {{ editingItem.dateText }}
 
   .o-meal-editor__item
+    label.o-meal-editor__label(for='date') Image
+      .o-meal-editor__content
+        ul.o-meal-editor__images
+          li.o-meal-editor__image-item(v-for='src in srcs')
+            img.o-meal-editor__image(:src='src')
+          li.o-meal-editor__image-item
+            label
+              input.o-meal-editor__image-input(
+                type='file',
+                accept='image/*',
+                capture='camera',
+                @input='addFile'
+              )
+              i.el-icon-circle-plus-outline
+                | Add photo
+
+  .o-meal-editor__item
     .o-meal-editor__label(for='items') Items
       .o-meal-editor__content
         ul.o-meal-editor__food-items
@@ -41,6 +58,8 @@
 </template>
 
 <script>
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { storage } from '~/plugins/firebase'
 import { MealItem, Meal } from '~/models/meal'
 
 export default {
@@ -49,6 +68,8 @@ export default {
     return {
       editingItem: new Meal(),
       items: [],
+      files: [],
+      srcs: [],
     }
   },
   computed: {
@@ -70,12 +91,22 @@ export default {
     }
   },
   methods: {
+    addFile($event) {
+      const file = $event.target.files[0]
+      this.files.push(file)
+      const reader = new FileReader()
+      reader.onload = (_) => {
+        this.srcs.push(reader.result)
+      }
+      reader.readAsDataURL(file)
+    },
     deleteItem(index) {
       this.editingItem.items.splice(index, 1)
     },
 
     async onSaveClicked() {
-      const item = new Meal(this.editingItem)
+      const files = await this.uploadFiles()
+      const item = new Meal({ ...this.editingItem, files })
       try {
         await this.$store.dispatch('dailyForm/onSaveClicked', item)
         this.$store.commit('resetTemplateNames')
@@ -91,6 +122,17 @@ export default {
 
     onValueInput(index, value) {
       this.editingItem.items[index].value = value
+    },
+
+    async uploadFiles() {
+      return await Promise.all(
+        this.files.map(async (file, index) => {
+          const ref_ = ref(storage, `uploads/images/hoge-${index}.png`)
+          await uploadBytes(ref_, file)
+          const url = await getDownloadURL(ref_)
+          return url
+        })
+      )
     },
 
     unitOptions(item) {
@@ -117,6 +159,14 @@ export default {
 
   &__content {
     @extend %form__content;
+  }
+
+  &__image {
+    width: 100px;
+  }
+
+  &__image-input {
+    display: none;
   }
 
   &__food-items {

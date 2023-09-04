@@ -29,6 +29,7 @@ export class Meal extends DailyItem {
           return new MealItem(item)
         })
       : []
+    this.files = meal.files || []
   }
 
   get isSaveAvailable() {
