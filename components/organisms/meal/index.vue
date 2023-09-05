@@ -1,9 +1,9 @@
 <template lang="pug">
 .o-meal(@click='showDetail')
   header.o-meal__head
-    i(:class='`el-icon-${item.mark}`')
-    time.o-meal__time {{ item.createdAtTimeText }}
-  organisms-meal-list(:meal-items='items', :show-count='5')
+    i(:class='`el-icon-${meal.mark}`')
+    time.o-meal__time {{ meal.createdAtTimeText }}
+  organisms-meal-list(:meal-items='meal.items', :show-count='5')
   slot
 </template>
 
@@ -13,37 +13,12 @@ import { Meal } from '~/models/meal'
 export default {
   name: 'OrganismsMeal',
   props: {
-    item: { type: Meal, default: new Meal() },
-  },
-  data() {
-    return {
-      foodItems: [],
-      items: [],
-    }
-  },
-  async created() {
-    this.foodItems = await this.item.getFoodItems()
-    this.items = this.item.items.map((item) => {
-      const rate = item.units.find((u) => u.unit === item.unit).rate
-      const foodItem = this.foodItems.find(
-        (foodItem) => foodItem.id === item.id
-      )
-      if (!foodItem) return item
-      const calorie =
-        Math.round(foodItem.nutrients.calorie * item.value * rate) / 100
-      const valueText = `${item.value}${item.unit} / ${calorie}kcal`
-
-      return {
-        ...item,
-        calorie,
-        valueText,
-      }
-    })
+    meal: { type: Meal, default: new Meal() },
   },
   methods: {
     showDetail() {
       this.$store.commit('setTemplateNames', 'templates-meal-detail')
-      this.$store.commit('setMeal', this.item)
+      this.$store.commit('setMeal', this.meal)
     },
   },
 }

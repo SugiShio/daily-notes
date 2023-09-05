@@ -4,12 +4,10 @@ import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
 import { FoodItem } from '~/models/foodItem'
 
 export class MealItem {
-  constructor(foodItem = {}) {
-    this.id = foodItem.id
-    this.name = foodItem.name
-    this.unit = foodItem.unit || 'g'
-    this.units = foodItem.units
-    this.value = isNaN(Number(foodItem.value)) ? 100 : Number(foodItem.value)
+  constructor(mealItem = {}) {
+    this.id = mealItem.id
+    this.unit = mealItem.unit || 'g'
+    this.value = isNaN(Number(mealItem.value)) ? 100 : Number(mealItem.value)
   }
 
   async getFoodItem() {

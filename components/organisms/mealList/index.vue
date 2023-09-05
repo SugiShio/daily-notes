@@ -16,17 +16,26 @@
 </template>
 
 <script>
+import { doc, getDoc } from 'firebase/firestore'
+import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
+import { FoodItem } from '~/models/foodItem'
+
 export default {
   name: 'OrganismsMealList',
   props: {
     mealItems: { type: Array, default: () => [] },
     showCount: { type: Number, default: null },
   },
+  data() {
+    return {
+      mealItemsWithData: [],
+    }
+  },
   computed: {
     itemsToShow() {
       return this.showCount
-        ? this.mealItems.slice(0, this.showCount)
-        : this.mealItems
+        ? this.mealItemsWithData.slice(0, this.showCount)
+        : this.mealItemsWithData
     },
     moreText() {
       return this.showCount && this.mealItems.length > this.showCount
@@ -34,10 +43,46 @@ export default {
         : ''
     },
     totalCarolie() {
-      const total = this.mealItems.reduce((a, c) => {
+      const total = this.mealItemsWithData.reduce((a, c) => {
         return a + c.calorie
       }, 0)
       return Math.round(total * 100) / 100
+    },
+  },
+  watch: {
+    async mealItems() {
+      await this.fetchMealItemData()
+    },
+  },
+  async created() {
+    await this.fetchMealItemData()
+  },
+  methods: {
+    async fetchMealItemData() {
+      this.mealItemsWithData = []
+      await Promise.all(
+        this.mealItems.map(async (item) => {
+          const snapshot = await getDoc(
+            doc(dbFoodDatabase, 'foodItems', item.id)
+          )
+          const data = snapshot.data()
+          const foodItem = new FoodItem(item.id, data)
+
+          const rate = foodItem.units.find((u) => u.unit === item.unit).rate
+
+          const calorie =
+            Math.round(foodItem.nutrients.calorie * item.value * rate) / 100
+          const valueText = `${item.value}${item.unit} / ${calorie}kcal`
+
+          this.mealItemsWithData.push({
+            ...item,
+            name: foodItem.name,
+            units: foodItem.units,
+            calorie,
+            valueText,
+          })
+        })
+      )
     },
   },
 }

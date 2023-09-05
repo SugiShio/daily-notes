@@ -9,7 +9,7 @@ section.t-daily-notes
   organisms-task-list
   ul
     li.t-daily-notes__item(v-for='(meal, id) in meals')
-      organisms-meal(:item='meal', :show-count='5')
+      organisms-meal(:meal='meal', :show-count='5')
         .t-daily-notes__actions
           button.t-daily-notes__action(@click='editItem(meal, id)')
             i.el-icon-edit
