@@ -18,11 +18,11 @@ section.t-daily-notes
   ul
     li.t-daily-notes__item(v-for='(note, id) in notes')
       organisms-note(:item='note')
-      .t-daily-notes__actions
-        button.t-daily-notes__action(@click='editItem(note, id)')
-          i.el-icon-edit
-        button.t-daily-notes__action(@click='deleteItem(id)')
-          i.el-icon-delete
+        .t-daily-notes__actions
+          button.t-daily-notes__action(@click='editItem(note, id)')
+            i.el-icon-edit
+          button.t-daily-notes__action(@click='deleteItem(id)')
+            i.el-icon-delete
 </template>
 
 <script>

@@ -2,6 +2,7 @@
 .o-note
   h2.o-note__title(v-if='item.title') {{ item.title }}
   .o-note__content(v-html='item.markedContent')
+  slot
 </template>
 
 <script>
@@ -19,6 +20,8 @@ export default {
 @import '~/assets/stylesheets/variables';
 
 .o-note {
+  padding: 15px 20px;
+
   &__title {
     font-family: $font-family-accent;
   }
