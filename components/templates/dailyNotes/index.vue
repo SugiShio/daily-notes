@@ -11,9 +11,11 @@ section.t-daily-notes
     li.t-daily-notes__item(v-for='(meal, id) in meals')
       organisms-meal(:meal='meal', :show-count='5')
         .t-daily-notes__actions
-          button.t-daily-notes__action(@click='editItem(meal, id)')
+          button.t-daily-notes__action(
+            @click.stop.prevent='editItem(meal, id)'
+          )
             i.el-icon-edit
-          button.t-daily-notes__action(@click='deleteItem(id)')
+          button.t-daily-notes__action(@click.stop.prevent='deleteItem(id)')
             i.el-icon-delete
   ul
     li.t-daily-notes__item(v-for='(note, id) in notes')
