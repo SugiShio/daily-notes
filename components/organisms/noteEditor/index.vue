@@ -1,6 +1,11 @@
 <template lang="pug">
 .o-note-editor
   .o-note-editor__item
+    label.o-note-editor__label(for='date') Date
+    .o-note-editor__content
+      atoms-input-date(v-model='date')
+
+  .o-note-editor__item
     label.o-note-editor__label(for='title') Title
     .o-note-editor__content
       atoms-input-text(v-model='title')
@@ -17,12 +22,14 @@
 
 <script>
 import { Note } from '~/models/note'
+import { convertDateToDateId, convertDateIdToDate } from '~/scripts/dateHelper'
 
 export default {
   name: 'OrganismsNoteEditor',
   data() {
     return {
       content: '',
+      date: null,
       title: '',
     }
   },
@@ -35,11 +42,14 @@ export default {
     if (this.originalItem) {
       this.title = this.originalItem.title
       this.content = this.originalItem.content
+      this.date = convertDateIdToDate(this.originalItem.date)
     }
   },
   methods: {
     async onSaveClicked() {
       const item = new Note({
+        ...this.originalItem,
+        date: convertDateToDateId(this.date),
         title: this.title,
         content: this.content,
       })
