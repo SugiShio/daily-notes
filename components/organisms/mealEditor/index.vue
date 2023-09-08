@@ -126,10 +126,14 @@ export default {
 
     async uploadFiles() {
       return await Promise.all(
-        this.files.map(async (file, index) => {
-          const ref_ = ref(storage, `uploads/images/hoge-${index}.png`)
-          await uploadBytes(ref_, file)
-          const url = await getDownloadURL(ref_)
+        this.files.map(async (file) => {
+          const filePath = file.name.replace(
+            /(.*?)\./,
+            `uploads/images/${this.uid}/$1-${new Date().getTime()}.`
+          )
+          const fileRef = ref(storage, filePath)
+          await uploadBytes(fileRef, file)
+          const url = await getDownloadURL(fileRef)
           return url
         })
       )
