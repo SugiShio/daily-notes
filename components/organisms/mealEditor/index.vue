@@ -6,6 +6,11 @@
         atoms-input-date(v-model='date')
 
   .o-meal-editor__item
+    label.o-meal-editor__label(for='mark') Mark
+      .o-meal-editor__content
+        atoms-mark-selector(v-model='mark', :marks='marks')
+
+  .o-meal-editor__item
     label.o-meal-editor__label(for='date') Image
       .o-meal-editor__content
         ul.o-meal-editor__images
@@ -49,7 +54,7 @@
   .o-meal-editor__item
     .o-meal-editor__content
       atoms-button(
-        :disabled='!items.length',
+        :disabled='!items.length || !mark',
         text='Save',
         @click='onSaveClicked'
       )
@@ -68,6 +73,8 @@ export default {
       date: new Date(),
       items: [],
       files: [],
+      mark: '',
+      marks: ['sunrise-1', 'sunny', 'moon', 'apple', 'coffee-cup'],
       srcs: [],
     }
   },
@@ -115,6 +122,7 @@ export default {
       }
       reader.readAsDataURL(file)
     },
+
     deleteItem(index) {
       this.items.splice(index, 1)
     },
@@ -126,6 +134,7 @@ export default {
         date: convertDateToDateId(this.date),
         items: this.items.map((item) => new MealItem(item)),
         files,
+        mark: this.mark,
       })
       try {
         await this.$store.dispatch('dailyForm/onSaveClicked', item)
