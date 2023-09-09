@@ -3,7 +3,7 @@
   .o-meal-editor__item
     label.o-meal-editor__label(for='date') Date
       .o-meal-editor__content
-        | {{ editingItem.dateText }}
+        atoms-input-date(v-model='date')
 
   .o-meal-editor__item
     label.o-meal-editor__label(for='date') Image
@@ -26,9 +26,7 @@
     .o-meal-editor__label(for='items') Items
       .o-meal-editor__content
         ul.o-meal-editor__food-items
-          li.o-meal-editor__food-item(
-            v-for='(item, index) in editingItem.items'
-          )
+          li.o-meal-editor__food-item(v-for='(item, index) in items')
             .o-meal-editor__food-item-name
               span {{ item.name }}
             atoms-input-number-with-unit(
@@ -51,7 +49,7 @@
   .o-meal-editor__item
     .o-meal-editor__content
       atoms-button(
-        :disabled='!editingItem.items.length',
+        :disabled='!items.length',
         text='Save',
         @click='onSaveClicked'
       )
@@ -61,12 +59,13 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { storage } from '~/plugins/firebase'
 import { MealItem, Meal } from '~/models/meal'
+import { convertDateToDateId, convertDateIdToDate } from '~/scripts/dateHelper'
 
 export default {
   name: 'OrganismsMealEditor',
   data() {
     return {
-      editingItem: new Meal(),
+      date: new Date(),
       items: [],
       files: [],
       srcs: [],
@@ -76,18 +75,34 @@ export default {
     selectedFoodItem() {
       return this.$store.state.searchFoodItem.selectedFoodItem
     },
+    uid() {
+      return this.$store.state.user.uid
+    },
     originalItem() {
       return this.$store.state.dailyForm.originalItem
     },
   },
   watch: {
     selectedFoodItem(foodItem) {
-      this.editingItem.items.push(new MealItem(foodItem))
+      const unit = foodItem.unitDefault
+      const value = unit === 'g' ? 100 : 1
+      this.items.push({
+        ...foodItem,
+        unit,
+        value,
+      })
     },
   },
   created() {
     if (this.originalItem) {
-      this.editingItem = new Meal(this.originalItem)
+      this.date = convertDateIdToDate(this.originalItem.date)
+
+      const foodItems = this.$store.state.foodItems
+      this.items = this.originalItem.items.map((item) => {
+        const foodItem = foodItems.find((foodItem) => foodItem.id === item.id)
+        return { ...foodItem, ...item }
+      })
+      this.files = this.originalItem.files
     }
   },
   methods: {
@@ -101,12 +116,17 @@ export default {
       reader.readAsDataURL(file)
     },
     deleteItem(index) {
-      this.editingItem.items.splice(index, 1)
+      this.items.splice(index, 1)
     },
 
     async onSaveClicked() {
       const files = await this.uploadFiles()
-      const item = new Meal({ ...this.editingItem, files })
+      const item = new Meal({
+        ...this.originalItem,
+        date: convertDateToDateId(this.date),
+        items: this.items.map((item) => new MealItem(item)),
+        files,
+      })
       try {
         await this.$store.dispatch('dailyForm/onSaveClicked', item)
         this.$store.commit('resetTemplateNames')
@@ -117,11 +137,11 @@ export default {
     },
 
     onUnitChanged(index, unit) {
-      this.editingItem.items[index].unit = unit
+      this.items[index].unit = unit
     },
 
     onValueInput(index, value) {
-      this.editingItem.items[index].value = value
+      this.items[index].value = value
     },
 
     async uploadFiles() {

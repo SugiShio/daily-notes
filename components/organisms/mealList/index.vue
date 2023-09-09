@@ -16,10 +16,6 @@
 </template>
 
 <script>
-import { doc, getDoc } from 'firebase/firestore'
-import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
-import { FoodItem } from '~/models/foodItem'
-
 export default {
   name: 'OrganismsMealList',
   props: {
@@ -59,30 +55,27 @@ export default {
   },
   methods: {
     async fetchMealItemData() {
-      this.mealItemsWithData = []
-      await Promise.all(
-        this.mealItems.map(async (item) => {
-          const snapshot = await getDoc(
-            doc(dbFoodDatabase, 'foodItems', item.id)
-          )
-          const data = snapshot.data()
-          const foodItem = new FoodItem(item.id, data)
+      const ids = this.mealItems.map((mealItem) => mealItem.id)
+      await this.$store.dispatch('fetchFoodItems', ids)
+      const foodItems = this.$store.state.foodItems
 
-          const rate = foodItem.units.find((u) => u.unit === item.unit).rate
+      this.mealItemsWithData = this.mealItems.map((item) => {
+        const foodItem = foodItems.find((foodItem) => foodItem.id === item.id)
 
-          const calorie =
-            Math.round(foodItem.nutrients.calorie * item.value * rate) / 100
-          const valueText = `${item.value}${item.unit} / ${calorie}kcal`
+        const rate = foodItem.units.find((u) => u.unit === item.unit).rate
 
-          this.mealItemsWithData.push({
-            ...item,
-            name: foodItem.name,
-            units: foodItem.units,
-            calorie,
-            valueText,
-          })
-        })
-      )
+        const calorie =
+          Math.round(foodItem.nutrients.calorie * item.value * rate) / 100
+        const valueText = `${item.value}${item.unit} / ${calorie}kcal`
+
+        return {
+          ...item,
+          name: foodItem.name,
+          units: foodItem.units,
+          calorie,
+          valueText,
+        }
+      })
     },
   },
 }

@@ -57,7 +57,6 @@ export default {
   },
   created() {
     if (this.value) {
-      console.log(this.value)
       this.year = this.value.getFullYear()
       this.month = this.value.getMonth() + 1
       this.date = this.value.getDate()

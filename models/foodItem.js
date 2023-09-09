@@ -13,6 +13,7 @@ export class FoodItem {
     this.provider = foodItem ? foodItem.provider : ''
     this.type = foodItem ? foodItem.type : ''
     this.url = foodItem ? foodItem.url : ''
+    this.unitDefault = foodItem ? foodItem.unitDefault || 'g' : 'g'
     this.units = foodItem ? foodItem.units || [{ unit: 'g', rate: 1 }] : []
   }
 }

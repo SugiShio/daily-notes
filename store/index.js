@@ -2,6 +2,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   updateDoc,
@@ -9,6 +10,8 @@ import {
   where,
 } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
+import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
+import { FoodItem } from '~/models/foodItem'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
 
@@ -17,6 +20,7 @@ export const state = () => ({
   isSignin: false,
   dailyId: '',
   dailyNotes: {},
+  foodItems: [],
   meal: null,
   originalItem: null,
   originalItemId: null,
@@ -30,6 +34,10 @@ export const mutations = {
 
   setDailyNotes(state, dailyNotes) {
     state.dailyNotes = dailyNotes
+  },
+
+  setFoodItems(state, foodItems) {
+    state.foodItems = [...state.foodItems, ...foodItems]
   },
 
   setIsSignin(state) {
@@ -100,6 +108,26 @@ export const actions = {
     })
 
     commit('setDailyNotes', dailyNotes)
+  },
+
+  async fetchFoodItem(_, id) {
+    const snapshot = await getDoc(doc(dbFoodDatabase, 'foodItems', id))
+    return new FoodItem(id, snapshot.data())
+  },
+
+  async fetchFoodItems({ commit, dispatch, state }, ids) {
+    const idsToFetch = ids.filter((id) => {
+      const isIdExist = state.foodItems
+        .map((foodItem) => foodItem.id)
+        .find((i) => i === id)
+      return !isIdExist
+    })
+    const foodItems = await Promise.all(
+      idsToFetch.map(async (id) => {
+        return await dispatch('fetchFoodItem', id)
+      })
+    )
+    commit('setFoodItems', foodItems)
   },
 
   async updateItem({ state }, item) {

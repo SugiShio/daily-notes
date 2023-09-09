@@ -5,7 +5,6 @@
     input(
       type='file',
       accept='image/*',
-      capture='camera',
       :value='value',
       @input='$emit("input", $event.target.value)'
     )
