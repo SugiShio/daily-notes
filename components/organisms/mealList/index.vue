@@ -8,7 +8,10 @@
       | kcal
 
   ul.o-meal-list__list
-    li.o-meal-list__item(v-for='i in itemsToShow')
+    li.o-meal-list__item(
+      v-for='i in itemsToShow',
+      @click.stop.default='showDetail(i)'
+    )
       .o-meal-list__item-name
         span {{ i.name }}
       .o-meal-list__item-value {{ i.valueText }}
@@ -76,6 +79,9 @@ export default {
           valueText,
         }
       })
+    },
+    showDetail(item) {
+      this.$store.dispatch('foodItem/showFoodItemDetail', item.id)
     },
   },
 }
