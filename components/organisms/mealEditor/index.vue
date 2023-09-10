@@ -11,23 +11,6 @@
         atoms-mark-selector(v-model='mark', :marks='marks')
 
   .o-meal-editor__item
-    label.o-meal-editor__label(for='date') Image
-      .o-meal-editor__content
-        ul.o-meal-editor__images
-          li.o-meal-editor__image-item(v-for='src in srcs')
-            img.o-meal-editor__image(:src='src')
-          li.o-meal-editor__image-item
-            label
-              input.o-meal-editor__image-input(
-                type='file',
-                accept='image/*',
-                capture='camera',
-                @input='addFile'
-              )
-              i.el-icon-circle-plus-outline
-                | Add photo
-
-  .o-meal-editor__item
     .o-meal-editor__label(for='items') Items
       .o-meal-editor__content
         ul.o-meal-editor__food-items
@@ -52,6 +35,15 @@
           | Add items
 
   .o-meal-editor__item
+    label.o-meal-editor__label(for='date') Image
+      .o-meal-editor__content
+        atoms-input-image(
+          :original-files='files',
+          @delete-clicked='onImageDeleteClicked',
+          @input='onImageInput'
+        )
+
+  .o-meal-editor__item
     .o-meal-editor__content
       atoms-button(
         :disabled='!items.length || !mark',
@@ -70,12 +62,12 @@ export default {
   name: 'OrganismsMealEditor',
   data() {
     return {
+      addedFiles: [],
       date: new Date(),
       items: [],
       files: [],
       mark: '',
       marks: ['sunrise-1', 'sunny', 'moon', 'apple', 'coffee-cup'],
-      srcs: [],
     }
   },
   computed: {
@@ -103,37 +95,28 @@ export default {
   created() {
     if (this.originalItem) {
       this.date = convertDateIdToDate(this.originalItem.date)
+      this.mark = this.originalItem.mark
 
       const foodItems = this.$store.state.foodItems
       this.items = this.originalItem.items.map((item) => {
         const foodItem = foodItems.find((foodItem) => foodItem.id === item.id)
         return { ...foodItem, ...item }
       })
-      this.files = this.originalItem.files
+      this.files = [...this.originalItem.files]
     }
   },
   methods: {
-    addFile($event) {
-      const file = $event.target.files[0]
-      this.files.push(file)
-      const reader = new FileReader()
-      reader.onload = (_) => {
-        this.srcs.push(reader.result)
-      }
-      reader.readAsDataURL(file)
-    },
-
     deleteItem(index) {
       this.items.splice(index, 1)
     },
 
     async onSaveClicked() {
-      const files = await this.uploadFiles()
+      const addedFiles = await this.uploadFiles()
       const item = new Meal({
         ...this.originalItem,
         date: convertDateToDateId(this.date),
         items: this.items.map((item) => new MealItem(item)),
-        files,
+        files: [...this.files, ...addedFiles],
         mark: this.mark,
       })
       try {
@@ -143,6 +126,17 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+
+    onImageDeleteClicked(index) {
+      if (index < this.files.length) {
+        this.files.splice(index, 1)
+      } else {
+        this.addedFiles.splice(index - this.files.length, 1)
+      }
+    },
+    onImageInput(file) {
+      this.addedFiles.push(file)
     },
 
     onUnitChanged(index, unit) {
@@ -155,7 +149,7 @@ export default {
 
     async uploadFiles() {
       return await Promise.all(
-        this.files.map(async (file) => {
+        this.addedFiles.map(async (file) => {
           const filePath = file.name.replace(
             /(.*?)\./,
             `uploads/images/${this.uid}/$1-${new Date().getTime()}.`

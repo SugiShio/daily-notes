@@ -49,6 +49,7 @@ export default {
   &__image-list {
     display: flex;
     margin: -5px;
+    flex-wrap: wrap;
   }
 
   &__image-item {
