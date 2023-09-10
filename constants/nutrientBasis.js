@@ -1,8 +1,8 @@
 export const NUTRIENT_BASIS = {
   calorie: 1750,
-  protein: 50,
-  fat: 25,
-  carbohydrate: 57.5,
+  protein: 131,
+  fat: 40,
+  carbohydrate: 109,
   sugariness: 200,
   dietaryFiber: 18,
   salt: 6.5,
