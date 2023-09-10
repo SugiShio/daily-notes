@@ -25,6 +25,7 @@ export default {
   },
   methods: {
     onValueInput($event) {
+      if ($event.isComposing) return
       const number = Number($event.target.value)
       if (!isNaN(number)) this.$emit('value-input', number)
     },

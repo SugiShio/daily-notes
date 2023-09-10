@@ -6,8 +6,8 @@
       dt.a-graph__dt
         .a-graph__title {{ item.title }}
         .a-graph__value
-          | {{ totalValue(item) }}
-          span.a-graph__unit {{ item.unit }}
+          | {{ valueText(item) }}
+
       dd.a-graph__dd
         ul.a-graph__bar
           li.a-graph__bar-item(
@@ -51,6 +51,11 @@ export default {
 
       return Math.round(totalValue * 100) / 100
     },
+    valueText(item) {
+      const value = this.totalValue(item)
+      const percentage = Math.round((value / item.base) * 1000) / 10
+      return `${value}${item.unit} / ${percentage}%`
+    },
   },
 }
 </script>
@@ -76,7 +81,7 @@ export default {
 
   &__dt {
     flex-shrink: 0;
-    width: 100px;
+    width: 110px;
   }
 
   &__dd {

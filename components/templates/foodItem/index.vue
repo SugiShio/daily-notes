@@ -14,15 +14,20 @@ section.t-food-item(v-if='foodItem')
       li.t-food-item__unit-item(v-for='text in unitsText')
         | {{ text }}
 
-  atoms-input-number-with-unit(
-    :value='value',
-    :units='units',
-    size='small',
-    @value-input='onValueInput($event)',
-    @unit-changed='onUnitChanged($event)'
-  )
-  | あたり
-  atoms-graph(:graph-items='graphItems')
+  section.t-food-item__section
+    h3.t-food-item__title-secondary 栄養素
+    .t-food-item__content
+      atoms-input-number-with-unit(
+        :value='value',
+        :units='units',
+        :unit='unit',
+        size='small',
+        @value-input='onValueInput($event)',
+        @unit-changed='onUnitChanged($event)'
+      )
+      span.t-food-item__rate-text あたり
+    .t-food-item__content
+      atoms-graph(:graph-items='graphItems')
 </template>
 
 <script>
@@ -33,9 +38,12 @@ import { FOOD_DATABASE_URL } from '~/constants/url'
 export default {
   name: 'TemplatesFoodItem',
   data() {
+    const foodItem = this.$store.state.foodItem.foodItem
+    const unit = foodItem.unitDefault || foodItem.units[0].unit
+    const value = foodItem.unitDefault ? 1 : 100
     return {
-      value: 100,
-      unit: 'g',
+      value,
+      unit,
     }
   },
   computed: {
@@ -103,6 +111,7 @@ export default {
   &__title {
     font-size: 20px;
     display: inline;
+    margin-right: 5px;
   }
 
   &__title-secondary {
@@ -112,6 +121,14 @@ export default {
 
   &__section {
     margin: 20px 0;
+  }
+
+  &__content {
+    margin: 10px 0;
+  }
+
+  &__rate-text {
+    margin-left: 10px;
   }
 
   &__description::v-deep {
