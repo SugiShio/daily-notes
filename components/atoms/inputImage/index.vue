@@ -44,10 +44,10 @@ export default {
       reader.readAsDataURL(file)
     },
     onDeleteClicked(index) {
-      this.$emit('delete-clicked', index)
       if (index >= this.originalFiles.length) {
         this.srcs.splice(index - this.originalFiles.length, 1)
       }
+      this.$emit('delete-clicked', index)
     },
   },
 }

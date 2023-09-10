@@ -4,11 +4,12 @@
     i(:class='`el-icon-${meal.mark}`')
     time.o-meal__time {{ meal.createdAtTimeText }}
 
+  organisms-meal-list(:meal-items='meal.items', :show-count='5')
+
   ul.o-meal__image-list
     li.o-meal__image-item(v-for='src in meal.files')
       img.o-meal__image(:src='src')
 
-  organisms-meal-list(:meal-items='meal.items', :show-count='5')
   slot
 </template>
 
@@ -58,9 +59,9 @@ export default {
 
   &__image {
     border-radius: 5px;
-    height: 100px;
+    height: 90px;
     object-fit: cover;
-    width: 100px;
+    width: 90px;
   }
 }
 </style>
