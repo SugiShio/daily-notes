@@ -1,50 +1,31 @@
 <template lang="pug">
 section
   atoms-pager
-  header
-    button(v-if='$store.state.isSignin', type='button', @click='signout') Signout
-    button(v-else, type='button', @click='showSigninForm = true') Signin
-    template(v-if='showSigninForm')
-      atoms-signin
-      button(type='button', @click='showSigninForm = false') close
-  section
-    nuxt
+  organisms-header
+  nuxt(v-if='isSignin')
+  atoms-signin(v-else)
 </template>
 
   <script>
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { app } from '~/plugins/firebase'
-import { User } from '~/models/user'
-
 const auth = getAuth(app)
+
 export default {
   name: 'LayoutsDefault',
-  data() {
-    return {
-      showSigninForm: false,
-    }
+  computed: {
+    isSignin() {
+      return this.$store.state.isSignin
+    },
   },
   created() {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        this.$store.commit('setUser', new User({ ...user }))
-        this.$store.commit('setIsSignin')
-        this.showSigninForm = false
+        this.$store.dispatch('setUser', user.uid)
       } else {
         this.$store.commit('resetUser')
       }
     })
-  },
-  methods: {
-    async signout() {
-      try {
-        await signOut(auth)
-        this.$store.commit('resetIsSignin')
-        this.$store.commit('resetUser')
-      } catch (error) {
-        console.error(error)
-      }
-    },
   },
 }
 </script>

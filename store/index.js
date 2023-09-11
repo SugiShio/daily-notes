@@ -1,3 +1,4 @@
+import { getAuth, signOut } from 'firebase/auth'
 import {
   addDoc,
   collection,
@@ -9,11 +10,13 @@ import {
   query,
   where,
 } from 'firebase/firestore'
-import { db } from '~/plugins/firebase'
+import { app, db } from '~/plugins/firebase'
 import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
 import { FoodItem } from '~/models/foodItem'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
+import { User } from '~/models/user'
+const auth = getAuth(app)
 
 export const state = () => ({
   user: {},
@@ -60,8 +63,8 @@ export const mutations = {
     state.templateNames = []
   },
 
-  setUser(state, user = {}) {
-    state.user = { ...user }
+  setUser(state, user) {
+    state.user = new User(user)
   },
 
   resetIsSignin(state) {
@@ -128,6 +131,24 @@ export const actions = {
       })
     )
     commit('setFoodItems', foodItems)
+  },
+
+  async setUser({ commit }, uid) {
+    const snapshot = await getDoc(doc(db, 'users', uid))
+    if (snapshot.exists()) {
+      commit('setUser', { ...snapshot.data(), uid: snapshot.id })
+      commit('setIsSignin')
+    }
+  },
+
+  async signout({ commit }) {
+    try {
+      await signOut(auth)
+      commit('resetIsSignin')
+      commit('resetUser')
+    } catch (error) {
+      console.error(error)
+    }
   },
 
   async updateItem({ state }, item) {

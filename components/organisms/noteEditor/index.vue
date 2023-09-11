@@ -29,7 +29,7 @@ export default {
   data() {
     return {
       content: '',
-      date: null,
+      date: new Date(),
       title: '',
     }
   },
