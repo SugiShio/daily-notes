@@ -140,11 +140,13 @@ export default {
     },
 
     onUnitChanged(index, unit) {
-      this.items[index].unit = unit
+      const item = this.items[index]
+      this.items.splice(index, 1, { ...item, unit })
     },
 
     onValueInput(index, value) {
-      this.items[index].value = value
+      const item = this.items[index]
+      this.items.splice(index, 1, { ...item, value })
     },
 
     async uploadFiles() {
