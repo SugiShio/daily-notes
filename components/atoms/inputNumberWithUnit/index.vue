@@ -25,9 +25,8 @@ export default {
   },
   methods: {
     onValueInput($event) {
-      if ($event.isComposing) return
-      const number = Number($event.target.value)
-      if (!isNaN(number)) this.$emit('value-input', number)
+      const value = Number($event.target.value)
+      this.$emit('value-input', isNaN(value) ? '' : $event.target.value)
     },
     onUnitChanged($event) {
       this.$emit('unit-changed', $event.target.value)
