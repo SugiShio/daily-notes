@@ -7,9 +7,17 @@ transition(name='showUp')
       @search-clicked='search'
     )
 
-    ul.t-search-food-item__list(v-if='items.length')
-      li.t-search-food-item__item(
-        v-for='(item, index) in items',
+    ul.t-search-food-item__tab
+      li.t-search-food-item__tab-item(
+        v-for='(itemType, index) in itemTypes',
+        @click='indexItemType = index',
+        :class='{ isSelected: indexItemType === index }'
+      )
+        | {{ itemType.label }}
+
+    ul.t-search-food-item__list
+      li(
+        v-for='(item, index) in itemsToShow',
         :class='{ isAdded: isAdded(index) }'
       )
         button.t-search-food-item__add-button(
@@ -22,13 +30,25 @@ transition(name='showUp')
           | {{ item.name }}
           i.el-icon-top-right
 
-    .t-search-food-item__text(v-else)
+    //- .t-search-food-item__text(v-else)
       | {{ resultText }}
 </template>
 
 <script>
 import { client } from '~/plugins/algolia'
 import { FoodItem } from '~/models/foodItem'
+const ITEM_TYPES = [
+  { key: 'foodItems', label: 'Food items', indexName: 'index_fooditems' },
+  { key: 'recipes', label: 'Recipes', indexName: 'index_recipes' },
+]
+
+const initItems = () => {
+  const items = {}
+  ITEM_TYPES.forEach((itemType) => {
+    items[itemType.key] = []
+  })
+  return items
+}
 
 export default {
   name: 'TemplatesSearchFoodItem',
@@ -36,10 +56,18 @@ export default {
     return {
       addedIndexes: [],
       string: '',
-      items: [],
+      indexItemType: 0,
+      items: initItems(),
+      itemTypes: ITEM_TYPES,
       detail: null,
       resultText: '',
     }
+  },
+  computed: {
+    itemsToShow() {
+      const selectedItemTypeKey = ITEM_TYPES[this.indexItemType].key
+      return this.items[selectedItemTypeKey]
+    },
   },
   methods: {
     isAdded(index) {
@@ -52,14 +80,38 @@ export default {
 
     async search() {
       this.resultText = '検索中...'
-      this.items = []
+      this.items = initItems()
+      await this.searchFoodItems()
+      await this.searchRecipes()
+    },
+
+    async searchFoodItems() {
       const index = client.initIndex('index_fooditems')
       await index
         .search(this.string)
         .then(({ hits }) => {
           if (hits.length) {
             this.addedIndexes = []
-            this.items = hits.map((hit) => {
+            this.items.foodItems = hits.map((hit) => {
+              return new FoodItem(hit.objectID, hit)
+            })
+          } else {
+            this.resultText = '条件に合う食材が見つかりませんでした'
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+
+    async searchRecipes() {
+      const index = client.initIndex('index_recipes')
+      await index
+        .search(this.string)
+        .then(({ hits }) => {
+          if (hits.length) {
+            this.addedIndexes = []
+            this.items.recipes = hits.map((hit) => {
               return new FoodItem(hit.objectID, hit)
             })
           } else {
@@ -82,6 +134,28 @@ export default {
 @import '~/assets/stylesheets/variables';
 
 .t-search-food-item {
+  &__tab {
+    display: flex;
+    margin: 10px 0;
+  }
+
+  &__tab-item {
+    border-bottom: 3px solid transparent;
+    padding: 5px 10px;
+
+    &.isSelected {
+      border-color: $color-main;
+    }
+
+    &:not(.isSelected) {
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
   &__list,
   &__text {
     margin: 20px 0;
