@@ -7,6 +7,11 @@ section.t-daily-notes
     organisms-create-icons
 
   organisms-task-list
+
+  .t-daily-notes__item(v-if='Object.keys(meals).length')
+    button.t-daily-notes__button(@click='showMealSummary')
+      i.el-icon-s-data
+      | &nbsp; Show meal summary
   ul
     li.t-daily-notes__item(v-for='(meal, id) in meals')
       organisms-meal(:meal='meal', :show-count='5')
@@ -28,6 +33,8 @@ section.t-daily-notes
 </template>
 
 <script>
+import { NUTRIENTS } from '~/constants/nutrients'
+
 export default {
   name: 'TemplatesDailyNotes',
   props: {
@@ -59,6 +66,9 @@ export default {
       })
       return notes
     },
+    nutrientBasis() {
+      return this.$store.state.user.nutrientBasis
+    },
   },
   methods: {
     async deleteItem(id) {
@@ -73,6 +83,32 @@ export default {
         `organisms-${dailyNote.type}-editor`
       )
       this.$store.commit('dailyForm/setOriginalItem', { item: dailyNote, id })
+    },
+    showMealSummary() {
+      const foodItems = this.$store.state.foodItems
+      const items = Object.keys(NUTRIENTS).map((key) => {
+        const values = Object.values(this.meals).map((meal) => {
+          return meal.items
+            .map((item) => {
+              const foodItem = foodItems.find((fi) => fi.id === item.id)
+              const unit = foodItem.units.find((u) => u.unit === item.unit)
+              const rate = unit ? unit.rate : 1
+              return (
+                Math.round(foodItem.nutrients[key] * item.value * rate) / 100
+              )
+            })
+            .reduce((a, c) => a + c, 0)
+        })
+        const base = this.nutrientBasis[key]
+        return {
+          title: NUTRIENTS[key].label,
+          values,
+          base,
+          unit: NUTRIENTS[key].unit,
+        }
+      })
+      this.$store.commit('graph/setItems', items)
+      this.$store.commit('setTemplateNames', 'templates-meal-graph')
     },
   },
 }
@@ -93,9 +129,18 @@ export default {
     border-radius: 8px;
   }
 
+  &__button {
+    display: block;
+    color: $color-main-dark;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+  }
+
   &__actions {
     display: flex;
     justify-content: flex-end;
+    margin-top: 10px;
   }
 
   &__action {
