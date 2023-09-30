@@ -23,13 +23,22 @@ export default {
     unit: { type: String, default: '' },
     value: { type: [String, Number], default: '' },
   },
+  data() {
+    return {
+      oldUnit: this.unit,
+    }
+  },
   methods: {
     onValueInput($event) {
       const value = Number($event.target.value)
       this.$emit('value-input', isNaN(value) ? '' : $event.target.value)
     },
     onUnitChanged($event) {
-      this.$emit('unit-changed', $event.target.value)
+      this.$emit('unit-changed', {
+        unit: $event.target.value,
+        oldUnit: this.oldUnit,
+      })
+      this.oldUnit = $event.target.value
     },
   },
 }

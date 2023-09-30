@@ -139,9 +139,12 @@ export default {
       this.addedFiles.push(file)
     },
 
-    onUnitChanged(index, unit) {
+    onUnitChanged(index, { unit, oldUnit }) {
       const item = this.items[index]
-      this.items.splice(index, 1, { ...item, unit })
+      const newRate = item.units.find((u) => u.unit === unit).rate
+      const oldRate = item.units.find((u) => u.unit === oldUnit).rate
+      const value = (item.value / newRate) * oldRate
+      this.items.splice(index, 1, { ...item, unit, value })
     },
 
     onValueInput(index, value) {

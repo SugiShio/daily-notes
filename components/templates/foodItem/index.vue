@@ -93,8 +93,8 @@ export default {
     onValueInput(value) {
       this.value = value
     },
-    onUnitChanged(unit) {
-      this.unit = unit
+    onUnitChanged($event) {
+      this.unit = $event.rate
     },
   },
 }
