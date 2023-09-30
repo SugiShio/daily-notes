@@ -2,7 +2,7 @@
 .o-meal(@click='showDetail')
   header.o-meal__head
     i(:class='`el-icon-${meal.mark}`')
-    time.o-meal__time {{ meal.createdAtTimeText }}
+    time.o-meal__time {{ meal.timeText }}
 
   organisms-meal-list(:meal-items='meal.items', :show-count='5')
 

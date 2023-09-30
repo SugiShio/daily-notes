@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       description: '',
-      limit: new Date(),
+      limit: null,
       isTimeNull: true,
       title: '',
     }

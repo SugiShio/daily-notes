@@ -1,18 +1,33 @@
 <template lang="pug">
 .a-input-time
-  select(v-model='year', @input='onYearChanged($event.target.value)')
+  select.a-input-time__select(
+    v-model='year',
+    @input='onYearChanged($event.target.value)'
+  )
     option(v-for='yearOption in yearOptions', :value='yearOption') {{ yearOption }}
   | /
-  select(v-model='month', @input='onMonthChanged($event.target.value)')
+  select.a-input-time__select(
+    v-model='month',
+    @input='onMonthChanged($event.target.value)'
+  )
     option(v-for='monthOption in monthOptions', :value='monthOption') {{ monthOption }}
   | /
-  select(v-model='date', @input='onDateChanged($event.target.value)')
+  select.a-input-time__select(
+    v-model='date',
+    @input='onDateChanged($event.target.value)'
+  )
     option(v-for='dateOption in dateOptions', :value='dateOption') {{ dateOption }}
 
-  select(v-model='hours', @input='onHoursChanged($event.target.value)')
+  select.a-input-time__select(
+    v-model='hours',
+    @input='onHoursChanged($event.target.value)'
+  )
     option(v-for='hoursOption in hoursOptions', :value='hoursOption') {{ hoursOption }}
   | :
-  select(v-model='minutes', @input='onMinutesChanged($event.target.value)')
+  select.a-input-time__select(
+    v-model='minutes',
+    @input='onMinutesChanged($event.target.value)'
+  )
     option(v-for='minutesOption in minutesOptions', :value='minutesOption') {{ minutesOption }}
 
   button(@click='clear')
@@ -26,13 +41,21 @@ export default {
     value: { type: Date, default: '' },
   },
   data() {
-    return {
-      year: null,
-      month: null,
-      date: null,
-      hours: null,
-      minutes: null,
-    }
+    return this.value
+      ? {
+          year: this.value.getFullYear(),
+          month: this.value.getMonth() + 1,
+          date: this.value.getDate(),
+          hours: this.value.getHours(),
+          minutes: this.value.getMinutes(),
+        }
+      : {
+          year: null,
+          month: null,
+          date: null,
+          hours: null,
+          minutes: null,
+        }
   },
   computed: {
     yearOptions() {
@@ -124,9 +147,15 @@ export default {
   <style lang="scss" scoped>
 @import '~/assets/stylesheets/input';
 .a-input-time {
-  @extend %input;
-  select {
+  &__select {
+    @extend %input;
     appearance: none;
+    padding: 5px 10px;
+    margin: 0 5px;
+
+    &:first-child {
+      margin-left: 0;
+    }
   }
 }
 </style>

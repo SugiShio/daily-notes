@@ -1,14 +1,14 @@
 <template lang="pug">
 .o-meal-editor
   .o-meal-editor__item
-    label.o-meal-editor__label(for='date') Date
-      .o-meal-editor__content
-        atoms-input-date(v-model='date')
-
-  .o-meal-editor__item
     label.o-meal-editor__label(for='mark') Mark
       .o-meal-editor__content
         atoms-mark-selector(v-model='mark', :marks='marks')
+
+  .o-meal-editor__item
+    label.o-meal-editor__label(for='date') Date
+      .o-meal-editor__content
+        atoms-input-time(v-model='time')
 
   .o-meal-editor__item
     .o-meal-editor__label(for='items') Items
@@ -56,14 +56,13 @@
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { storage } from '~/plugins/firebase'
 import { MealItem, Meal } from '~/models/meal'
-import { convertDateToDateId, convertDateIdToDate } from '~/scripts/dateHelper'
 
 export default {
   name: 'OrganismsMealEditor',
   data() {
     return {
       addedFiles: [],
-      date: new Date(),
+      time: new Date(),
       items: [],
       files: [],
       mark: '',
@@ -94,7 +93,7 @@ export default {
   },
   created() {
     if (this.originalItem) {
-      this.date = convertDateIdToDate(this.originalItem.date)
+      this.time = new Date(this.originalItem.time)
       this.mark = this.originalItem.mark
 
       const foodItems = this.$store.state.foodItems
@@ -114,7 +113,7 @@ export default {
       const addedFiles = await this.uploadFiles()
       const item = new Meal({
         ...this.originalItem,
-        date: convertDateToDateId(this.date),
+        time: this.time.getTime(),
         items: this.items.map((item) => new MealItem(item)),
         files: [...this.files, ...addedFiles],
         mark: this.mark,

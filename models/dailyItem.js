@@ -15,7 +15,8 @@ export class DailyItem extends Timestamp {
     super(dailyItem)
     this.title = dailyItem.title || ''
     this.type = dailyItem.type || TYPES[0].value
-    this.date = dailyItem.date || convertDateToDateId(new Date())
+    this.time = dailyItem.time || new Date().getTime()
+    this.date = dailyItem.date || convertDateToDateId(new Date(this.time))
     this.mark = dailyItem.mark || ''
   }
 

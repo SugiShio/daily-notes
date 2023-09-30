@@ -24,4 +24,11 @@ export class Meal extends DailyItem {
   get isSaveAvailable() {
     return !!this.items.length
   }
+
+  get timeText() {
+    const date = new Date(this.time)
+    const hours = date.getHours()
+    const minutes = `0${date.getMinutes()}`.slice(-2)
+    return `${hours}:${minutes}`
+  }
 }
