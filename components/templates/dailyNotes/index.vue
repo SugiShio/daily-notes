@@ -8,10 +8,12 @@ section.t-daily-notes
 
   organisms-task-list
 
-  .t-daily-notes__item(v-if='Object.keys(meals).length')
+  .t-daily-notes__item(v-if='$store.state.foodItems.length')
+    organisms-meal-summary(:meals='meals')
+
     button.t-daily-notes__button(@click='showMealSummary')
       i.el-icon-s-data
-      | &nbsp; Show meal summary
+      | &nbsp; Show detail
   ul
     li.t-daily-notes__item(v-for='(meal, id) in meals')
       organisms-meal(:meal='meal', :show-count='5')

@@ -31,3 +31,4 @@ export const NUTRIENTS = {
   molybdenum: { label: 'モリブデン', unit: 'μg' },
   iodine: { label: 'ヨウ素', unit: 'μg' },
 }
+export const MAJOR_NUTRIENT_KEYS = ['calorie', 'protein', 'fat', 'carbohydrate']
