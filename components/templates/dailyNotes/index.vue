@@ -8,7 +8,7 @@ section.t-daily-notes
 
   organisms-task-list
 
-  .t-daily-notes__item(v-if='$store.state.foodItems.length')
+  .t-daily-notes__item(v-if='shouldShowMealSummary')
     organisms-meal-summary(:meals='meals')
 
     button.t-daily-notes__button(@click='showMealSummary')
@@ -70,6 +70,11 @@ export default {
     },
     nutrientBasis() {
       return this.$store.state.user.nutrientBasis
+    },
+    shouldShowMealSummary() {
+      return (
+        Object.keys(this.meals).length && this.$store.state.foodItems.length
+      )
     },
   },
   methods: {

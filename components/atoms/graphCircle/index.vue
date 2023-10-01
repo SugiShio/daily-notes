@@ -33,7 +33,7 @@ export default {
       }, 0)
 
       const values = this.values
-      const wholeValue = this.wholeValue || total
+      const wholeValue = this.wholeValue || total || 1
       const strokeStyles = this.values.map(
         (_, index) => COLORS[index % COLORS.length]
       )
