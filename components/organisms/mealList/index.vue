@@ -64,8 +64,8 @@ export default {
 
       this.mealItemsWithData = this.mealItems.map((item) => {
         const foodItem = foodItems.find((foodItem) => foodItem.id === item.id)
-
-        const rate = foodItem.units.find((u) => u.unit === item.unit).rate
+        const unit = foodItem.units.find((u) => u.unit === item.unit)
+        const rate = unit ? unit.rate : 1
 
         const calorie =
           Math.round(foodItem.nutrients.calorie * item.value * rate) / 100
