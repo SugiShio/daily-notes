@@ -1,25 +1,52 @@
 <template lang="pug">
 transition(name='showUp')
   .t-search-food-item
-    atoms-search(
-      v-model='string',
-      @clear-clicked='string = ""',
-      @search-clicked='search'
-    )
+    .t-search-food-item__form-item
+      .t-search-food-item__content
+        atoms-search(
+          v-model='string',
+          @clear-clicked='string = ""',
+          @search-clicked='search'
+        )
 
-    ul.t-search-food-item__tab
-      li.t-search-food-item__tab-item(
-        v-for='(itemType, index) in itemTypes',
-        @click='indexItemType = index',
-        :class='{ isSelected: indexItemType === index }'
-      )
-        | {{ itemType.label }}
+    .t-search-food-item__form-item
+      .t-search-food-item__label タイプ
+      .t-search-food-item__content
+        ul.t-search-food-item__tags
+          li.t-search-food-item__tag(
+            v-for='(itemType, index) in itemTypes',
+            @click='onItemTypeClicked(index)'
+          )
+            a.t-search-food-item__tag-link(
+              :class='{ isSelected: isItemTypeSelected(index) }'
+            ) {{ itemType.label }}
+
+    .t-search-food-item__form-item
+      .t-search-food-item__label ラベル
+      .t-search-food-item__content
+        ul.t-search-food-item__tags
+          li.t-search-food-item__tag(
+            v-for='(label, index) in labels',
+            @click='onLabelsClicked(index)'
+          )
+            a.t-search-food-item__tag-link(
+              :class='{ isSelected: isLabelSelected(index) }'
+            ) {{ label.name }}
+
+    .t-search-food-item__form-item
+      .t-search-food-item__label タグ
+      .t-search-food-item__content
+        ul.t-search-food-item__tags
+          li.t-search-food-item__tag(
+            v-for='(tag, index) in tags',
+            @click='onTagClicked(index)'
+          )
+            a.t-search-food-item__tag-link(
+              :class='{ isSelected: tag.isSelected }'
+            ) {{ tag.label }}
 
     ul.t-search-food-item__list
-      li(
-        v-for='(item, index) in itemsToShow',
-        :class='{ isAdded: isAdded(index) }'
-      )
+      li(v-for='(item, index) in items', :class='{ isAdded: isAdded(index) }')
         button.t-search-food-item__add-button(
           @click='onFoodItemClicked(item, index)',
           :disabled='isAdded(index)'
@@ -30,25 +57,14 @@ transition(name='showUp')
           | {{ item.name }}
           i.el-icon-top-right
 
-    //- .t-search-food-item__text(v-else)
+    .t-search-food-item__text(v-if='resultText')
       | {{ resultText }}
 </template>
 
 <script>
 import { client } from '~/plugins/algolia'
-import { FoodItem } from '~/models/foodItem'
-const ITEM_TYPES = [
-  { key: 'foodItems', label: 'Food items', indexName: 'index_fooditems' },
-  { key: 'recipes', label: 'Recipes', indexName: 'index_recipes' },
-]
-
-const initItems = () => {
-  const items = {}
-  ITEM_TYPES.forEach((itemType) => {
-    items[itemType.key] = []
-  })
-  return items
-}
+import { FoodItem, TYPES } from '~/models/foodItem'
+const TAGS = ['朝ごはん', '野菜', 'プロテイン']
 
 export default {
   name: 'TemplatesSearchFoodItem',
@@ -56,62 +72,100 @@ export default {
     return {
       addedIndexes: [],
       string: '',
-      indexItemType: 0,
-      items: initItems(),
-      itemTypes: ITEM_TYPES,
+      items: [],
+      itemTypes: TYPES,
       detail: null,
+      selectedItemTypeIndexes: Array(TYPES.length)
+        .fill(null)
+        .map((_, index) => index),
+      selectedFoodItemLabels: [],
+      tags: TAGS.map((tag) => {
+        return { label: tag, isSelected: false }
+      }),
       resultText: '',
     }
   },
   computed: {
-    itemsToShow() {
-      const selectedItemTypeKey = ITEM_TYPES[this.indexItemType].key
-      return this.items[selectedItemTypeKey]
+    labels() {
+      return this.$store.state.user.foodItemLabels
     },
   },
   methods: {
     isAdded(index) {
       return this.addedIndexes.includes(index)
     },
+
+    isItemTypeSelected(index) {
+      return this.selectedItemTypeIndexes.includes(index)
+    },
+
+    isLabelSelected(index) {
+      return this.selectedFoodItemLabels.includes(index)
+    },
+
     onFoodItemClicked(item, index) {
       this.addedIndexes.push(index)
       this.$store.commit('searchFoodItem/setSelectedFoodItem', item)
     },
 
+    onItemTypeClicked(index) {
+      const i = this.selectedItemTypeIndexes.indexOf(index)
+      if (i === -1) this.selectedItemTypeIndexes.push(index)
+      else this.selectedItemTypeIndexes.splice(i, 1)
+      if (!this.selectedItemTypeIndexes.length) {
+        this.selectedItemTypeIndexes = Array(TYPES.length)
+          .fill(null)
+          .map((_, index) => index)
+      }
+      this.search()
+    },
+
+    onLabelsClicked(index) {
+      const i = this.selectedFoodItemLabels.indexOf(index)
+      if (i === -1) this.selectedFoodItemLabels.push(index)
+      else this.selectedFoodItemLabels.splice(i, 1)
+      this.search()
+    },
+
+    onTagClicked(index) {
+      this.tags[index].isSelected = !this.tags[index].isSelected
+      this.search()
+    },
+
     async search() {
-      this.resultText = '検索中...'
-      this.items = initItems()
-      await this.searchFoodItems()
-      await this.searchRecipes()
-    },
-
-    async searchFoodItems() {
       const index = client.initIndex('index_fooditems')
-      await index
-        .search(this.string)
-        .then(({ hits }) => {
-          if (hits.length) {
-            this.addedIndexes = []
-            this.items.foodItems = hits.map((hit) => {
-              return new FoodItem(hit.objectID, hit)
-            })
-          } else {
-            this.resultText = '条件に合う食材が見つかりませんでした'
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    },
+      const tagFilters = this.tags
+        .filter((tag) => tag.isSelected)
+        .map((tag) => tag.label)
 
-    async searchRecipes() {
-      const index = client.initIndex('index_recipes')
+      const itemTypeFilter = this.selectedItemTypeIndexes
+        .map((index) => `type:${TYPES[index].value}`)
+        .join(' OR ')
+
+      const labelFilter = this.selectedFoodItemLabels
+        .map((index) =>
+          this.labels[index].foodItemIds
+            .map((id) => `objectID:${id}`)
+            .join(' OR ')
+        )
+        .join(' OR ')
+      const filters = [itemTypeFilter, labelFilter]
+        .filter((v) => v)
+        .map((filter) => `(${filter})`)
+        .join(' AND ')
+
+      this.resultText = '検索中...'
+      this.items = []
       await index
-        .search(this.string)
+        .search(this.string, {
+          tagFilters: [tagFilters],
+          filters,
+        })
         .then(({ hits }) => {
           if (hits.length) {
+            this.resultText = ''
             this.addedIndexes = []
-            this.items.recipes = hits.map((hit) => {
+            this.items = hits.map((hit) => {
               return new FoodItem(hit.objectID, hit)
             })
           } else {
@@ -132,11 +186,48 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/stylesheets/variables';
+@import '~/assets/stylesheets/form';
+@import '~/assets/stylesheets/input';
 
 .t-search-food-item {
-  &__tab {
+  &__form-item {
+    @extend %form__item;
+  }
+
+  &__label {
+    @extend %form__label;
+  }
+
+  &__content {
+    @extend %form__content;
+  }
+
+  &__type.isSelected {
+    font-weight: bold;
+  }
+
+  &__tags {
     display: flex;
-    margin: 10px 0;
+    margin: -3px;
+  }
+
+  &__tag {
+    padding: 3px;
+  }
+
+  &__tag-link {
+    border-radius: 2px;
+    border: 1px solid $color-main-dark;
+    cursor: pointer;
+    padding: 2px 6px;
+    color: $color-main-dark;
+    text-decoration: none;
+    transition: 0.3s;
+
+    &.isSelected {
+      background-color: $color-main-dark;
+      color: #fff;
+    }
   }
 
   &__tab-item {

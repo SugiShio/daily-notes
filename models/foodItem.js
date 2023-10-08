@@ -1,5 +1,11 @@
 import { Nutrients } from '~/models/nutrients'
 
+export const TYPES = [
+  { value: 'general', label: '一般食品' },
+  { value: 'commercial', label: '市販品' },
+  { value: 'menu', label: '外食メニュー' },
+]
+
 export class FoodItem {
   constructor(id = '', foodItem) {
     this.id = id || ''

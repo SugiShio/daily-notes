@@ -8,6 +8,7 @@ export class User extends Timestamp {
     this.email = user.email || ''
     this.displayName = user.displayName || user.email
     this.birthDate = user.birthDate
+    this.foodItemLabels = user.foodItemLabels || []
     this.nutrientBasis = user.nutrientBasis || NUTRIENT_BASIS
   }
 
