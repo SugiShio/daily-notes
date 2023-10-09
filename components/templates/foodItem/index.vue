@@ -5,7 +5,11 @@ section.t-food-item(v-if='foodItem')
     i.el-icon-top-right
 
   .t-food-item__section
-    .t-food-item__description(v-html='description')
+    .t-food-item__description(
+      :class='{ isDescriptionShow }',
+      @click='isDescriptionShow = !isDescriptionShow',
+      v-html='description'
+    )
 
   .t-food-item__section
     ul.t-food-item__labels
@@ -65,6 +69,7 @@ export default {
     const unit = foodItem.unitDefault || foodItem.units[0].unit
     const value = foodItem.unitDefault ? 1 : 100
     return {
+      isDescriptionShow: false,
       isLabelEditing: false,
       labelText: '',
       value,
@@ -222,6 +227,14 @@ export default {
   }
 
   &__description::v-deep {
+    overflow: hidden;
+
+    &:not(.isDescriptionShow) {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+
     p {
       margin: 10px 0;
     }
