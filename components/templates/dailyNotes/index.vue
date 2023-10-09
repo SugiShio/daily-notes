@@ -15,14 +15,16 @@ section.t-daily-notes
       i.el-icon-s-data
       | &nbsp; Show detail
   ul
-    li.t-daily-notes__item(v-for='(meal, id) in meals')
-      organisms-meal(:meal='meal', :show-count='5')
+    li.t-daily-notes__item(v-for='meal in mealsWithId')
+      organisms-meal(:meal='meal.meal', :show-count='5')
         .t-daily-notes__actions
           button.t-daily-notes__action(
-            @click.stop.prevent='editItem(meal, id)'
+            @click.stop.prevent='editItem(meal.meal, meal.id)'
           )
             i.el-icon-edit
-          button.t-daily-notes__action(@click.stop.prevent='deleteItem(id)')
+          button.t-daily-notes__action(
+            @click.stop.prevent='deleteItem(meal.id)'
+          )
             i.el-icon-delete
   ul
     li.t-daily-notes__item(v-for='(note, id) in notes')
@@ -50,14 +52,21 @@ export default {
     dailyNotes() {
       return this.$store.state.dailyNotes || []
     },
-
     meals() {
-      const meals = {}
-      Object.keys(this.dailyNotes).forEach((key) => {
-        if (this.dailyNotes[key].type === 'meal')
-          meals[key] = this.dailyNotes[key]
-      })
-      return meals
+      return this.mealsWithId.map((mealWithId) => mealWithId.meal)
+    },
+
+    mealsWithId() {
+      return Object.keys(this.dailyNotes)
+        .map((key) => {
+          if (this.dailyNotes[key].type === 'meal')
+            return { id: key, meal: this.dailyNotes[key] }
+          return null
+        })
+        .filter((v) => v)
+        .sort((a, b) => {
+          return a.meal.time - b.meal.time
+        })
     },
 
     notes() {

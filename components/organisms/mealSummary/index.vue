@@ -46,10 +46,8 @@ export default {
   name: 'OrganismsMealSummary',
   props: {
     meals: {
-      type: Object,
-      default: () => {
-        return {}
-      },
+      type: Array,
+      default: () => [],
     },
   },
   computed: {
@@ -57,7 +55,7 @@ export default {
       return this.$store.state.foodItems
     },
     nutrients() {
-      const items = Object.values(this.meals)
+      const items = this.meals
         .map((meal) => meal.items)
         .flat()
         .map((mealItem) => {
