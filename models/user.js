@@ -8,6 +8,7 @@ export class FoodItemLabel {
   }
 
   addId(id) {
+    if (!id) return
     if (!this.foodItemIds.includes(id)) this.foodItemIds.push(id)
   }
 

@@ -167,6 +167,7 @@ export default {
           }
         })
         .catch((error) => {
+          this.resultText = 'エラー'
           console.error(error)
         })
     },
@@ -202,6 +203,7 @@ export default {
 
   &__tags {
     display: flex;
+    flex-wrap: wrap;
     margin: -3px;
   }
 
