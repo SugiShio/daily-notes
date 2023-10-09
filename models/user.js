@@ -1,5 +1,22 @@
 import { Timestamp } from '~/models/timestamp'
 import { NUTRIENT_BASIS } from '~/constants/nutrientBasis'
+
+export class FoodItemLabel {
+  constructor(foodItemLabel = {}) {
+    this.name = foodItemLabel.name || ''
+    this.foodItemIds = foodItemLabel.foodItemIds || []
+  }
+
+  addId(id) {
+    if (!this.foodItemIds.includes(id)) this.foodItemIds.push(id)
+  }
+
+  removeId(id) {
+    const index = this.foodItemIds.indexOf(id)
+    if (index !== -1) this.foodItemIds.splice(index, 1)
+  }
+}
+
 export class User extends Timestamp {
   constructor(user = {}) {
     super(user)
@@ -8,7 +25,10 @@ export class User extends Timestamp {
     this.email = user.email || ''
     this.displayName = user.displayName || user.email
     this.birthDate = user.birthDate
-    this.foodItemLabels = user.foodItemLabels || []
+    this.foodItemLabels =
+      user.foodItemLabels.map(
+        (foodItemLabel) => new FoodItemLabel(foodItemLabel)
+      ) || []
     this.nutrientBasis = user.nutrientBasis || NUTRIENT_BASIS
   }
 
@@ -29,5 +49,29 @@ export class User extends Timestamp {
     const month = dateObject.getMonth() + 1
     const date = dateObject.getDate()
     return `${year}/${month}/${date}`
+  }
+
+  addFoodItemLabelId({ name, foodItemId }) {
+    const foodItemLabel = this.foodItemLabels.find(
+      (foodItemLabel) => foodItemLabel.name === name
+    )
+    if (foodItemLabel) {
+      foodItemLabel.addId(foodItemId)
+    } else {
+      this.foodItemLabels.push(
+        new FoodItemLabel({ name, foodItemIds: [foodItemId] })
+      )
+    }
+  }
+
+  removeFoodItemLabelId({ name, foodItemId }) {
+    const foodItemLabel = this.foodItemLabels.find(
+      (foodItemLabel) => foodItemLabel.name === name
+    )
+    if (foodItemLabel) {
+      foodItemLabel.removeId(foodItemId)
+    } else {
+      throw new Error(`No foodItemLabel with name "${name}"`)
+    }
   }
 }

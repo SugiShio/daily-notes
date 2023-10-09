@@ -7,6 +7,27 @@ section.t-food-item(v-if='foodItem')
   .t-food-item__section
     .t-food-item__description(v-html='description')
 
+  .t-food-item__section
+    ul.t-food-item__labels
+      li.t-food-item__label(v-for='label in labels')
+        atoms-tag(htmlTag='a', removable, @remove-clicked='removeLabel(label)') {{ label }}
+      li.t-food-item__label(v-if='!isLabelEditing')
+        atoms-tag(htmlTag='button', @click='isLabelEditing = true')
+          i.el-icon-plus
+            | &nbsp;Add label
+
+    .t-food-item__label-input-container(v-if='isLabelEditing')
+      atoms-input-text(v-model='labelText')
+      ul.t-food-item__candidates
+        li.t-food-item__candidate(
+          v-for='label in labelCandidates',
+          @click='addFoodItemId(label)'
+        )
+          | {{ label }}
+        li.t-food-item__candidate(v-if='!labelCandidates.length && labelText')
+          button(@click='createNewLabel')
+            | Create a new label "{{ labelText }}"
+
   section.t-food-item__section(v-if='unitsText.length')
     h3.t-food-item__title-secondary
       | 単位
@@ -32,8 +53,10 @@ section.t-food-item(v-if='foodItem')
 
 <script>
 import DOMPurify from 'dompurify'
+import { doc, updateDoc } from 'firebase/firestore'
 import { NUTRIENTS } from '~/constants/nutrients'
 import { FOOD_DATABASE_URL } from '~/constants/url'
+import { db, getFirestoreFormat } from '~/plugins/firebase'
 
 export default {
   name: 'TemplatesFoodItem',
@@ -42,11 +65,30 @@ export default {
     const unit = foodItem.unitDefault || foodItem.units[0].unit
     const value = foodItem.unitDefault ? 1 : 100
     return {
+      isLabelEditing: false,
+      labelText: '',
       value,
       unit,
     }
   },
   computed: {
+    labels() {
+      const usersLabels = this.user.foodItemLabels
+      const foodItem = this.$store.state.foodItem.foodItem
+      const labels = []
+      usersLabels.forEach((label) => {
+        if (label.foodItemIds.includes(foodItem.id)) labels.push(label.name)
+      })
+      return labels
+    },
+
+    labelCandidates() {
+      return this.user.foodItemLabels
+        .map((foodItemLabel) => foodItemLabel.name)
+        .filter((label) => !this.labels.includes(label))
+        .filter((label) => label.includes(this.labelText))
+    },
+
     description() {
       return DOMPurify.sanitize(this.foodItem.description)
     },
@@ -84,8 +126,47 @@ export default {
         .slice(1)
         .map((unit) => `${unit.unit} (${unit.rate}g)`)
     },
+    user() {
+      return this.$store.state.user
+    },
   },
   methods: {
+    addFoodItemId(label) {
+      this.$store.commit('setFoodItemLabel', {
+        name: label,
+        foodItemId: this.foodItem.id,
+      })
+      this.updateFoodItemLabels()
+    },
+
+    createNewLabel() {
+      this.$store.commit('setFoodItemLabel', {
+        name: this.labelText,
+        foodItemId: this.foodItem.id,
+      })
+      this.updateFoodItemLabels()
+    },
+
+    async updateFoodItemLabels() {
+      this.isLabelEditing = false
+      const data = getFirestoreFormat({
+        foodItemLabels: this.user.foodItemLabels,
+        uid: this.user.uid,
+      })
+      try {
+        await updateDoc(doc(db, 'users', this.user.uid), data)
+      } catch (e) {
+        console.error(e)
+      }
+      this.labelText = ''
+    },
+    removeLabel(label) {
+      this.$store.commit('removeFoodItemLabel', {
+        name: label,
+        foodItemId: this.foodItem.id,
+      })
+      this.updateFoodItemLabels()
+    },
     onCloseClicked() {
       this.$store.commit('foodItem/resetFoodItem')
       this.$store.commit('removeTemplateNames')
@@ -127,6 +208,15 @@ export default {
     margin: 10px 0;
   }
 
+  &__labels {
+    display: flex;
+    margin: -3px;
+  }
+
+  &__label {
+    padding: 3px;
+  }
+
   &__rate-text {
     margin-left: 10px;
   }
@@ -138,6 +228,30 @@ export default {
 
     a {
       color: $color-main-dark;
+    }
+  }
+
+  &__label-input-container {
+    position: relative;
+  }
+
+  &__candidates {
+    background: rgba(#fff, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
+    padding: 3px 0;
+    position: absolute;
+    top: calc(100% + 2px);
+  }
+
+  &__candidate {
+    cursor: pointer;
+    min-width: 120px;
+    padding: 3px 10px;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: $color-main-light;
     }
   }
 }

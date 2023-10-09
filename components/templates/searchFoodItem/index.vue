@@ -17,9 +17,7 @@ transition(name='showUp')
             v-for='(itemType, index) in itemTypes',
             @click='onItemTypeClicked(index)'
           )
-            a.t-search-food-item__tag-link(
-              :class='{ isSelected: isItemTypeSelected(index) }'
-            ) {{ itemType.label }}
+            atoms-tag(:is-active='isItemTypeSelected(index)') {{ itemType.label }}
 
     .t-search-food-item__form-item
       .t-search-food-item__label ラベル
@@ -29,9 +27,7 @@ transition(name='showUp')
             v-for='(label, index) in labels',
             @click='onLabelsClicked(index)'
           )
-            a.t-search-food-item__tag-link(
-              :class='{ isSelected: isLabelSelected(index) }'
-            ) {{ label.name }}
+            atoms-tag(:is-active='isLabelSelected(index)') {{ label.name }}
 
     .t-search-food-item__form-item
       .t-search-food-item__label タグ
@@ -41,9 +37,7 @@ transition(name='showUp')
             v-for='(tag, index) in tags',
             @click='onTagClicked(index)'
           )
-            a.t-search-food-item__tag-link(
-              :class='{ isSelected: tag.isSelected }'
-            ) {{ tag.label }}
+            atoms-tag(:is-active='tag.isSelected') {{ tag.label }}
 
     ul.t-search-food-item__list
       li(v-for='(item, index) in items', :class='{ isAdded: isAdded(index) }')
@@ -213,21 +207,6 @@ export default {
 
   &__tag {
     padding: 3px;
-  }
-
-  &__tag-link {
-    border-radius: 2px;
-    border: 1px solid $color-main-dark;
-    cursor: pointer;
-    padding: 2px 6px;
-    color: $color-main-dark;
-    text-decoration: none;
-    transition: 0.3s;
-
-    &.isSelected {
-      background-color: $color-main-dark;
-      color: #fff;
-    }
   }
 
   &__tab-item {

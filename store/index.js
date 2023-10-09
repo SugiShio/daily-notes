@@ -39,6 +39,10 @@ export const mutations = {
     state.dailyNotes = dailyNotes
   },
 
+  setFoodItemLabel(state, { name, foodItemId }) {
+    state.user.addFoodItemLabelId({ name, foodItemId })
+  },
+
   setFoodItems(state, foodItems) {
     state.foodItems = [...state.foodItems, ...foodItems]
   },
@@ -53,6 +57,10 @@ export const mutations = {
 
   setTemplateNames(state, templateName) {
     state.templateNames.push(templateName)
+  },
+
+  removeFoodItemLabel(state, { name, foodItemId }) {
+    state.user.removeFoodItemLabelId({ name, foodItemId })
   },
 
   removeTemplateNames(state) {
