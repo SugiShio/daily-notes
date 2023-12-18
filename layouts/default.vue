@@ -3,10 +3,9 @@ section
   atoms-pager
   organisms-header
   nuxt(v-if='isSignin')
-  atoms-signin(v-else)
 </template>
 
-  <script>
+<script>
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { app } from '~/plugins/firebase'
 const auth = getAuth(app)

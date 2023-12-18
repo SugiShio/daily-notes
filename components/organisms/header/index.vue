@@ -3,15 +3,14 @@ header.o-header
   nuxt-link.o-header__button(
     v-if='$store.state.isSignin',
     :to='{ name: "user" }'
-  ) {{ displayName }}
-  //- button.o-header__button(
+  )
+    i.o-header__user-icon.el-icon-user
+
+  button.o-header__button(
     v-else,
     type='button',
-    @click='showSigninForm = true'
+    @click='showSigninForm'
     ) Signin
-  //- template(v-if='showSigninForm')
-    atoms-signin
-    button(type='button', @click='showSigninForm = false') close
 </template>
 
 <script>
@@ -21,10 +20,10 @@ export default {
     user() {
       return this.$store.state.user
     },
-    displayName() {
-      return this.user.displayName
-        ? this.user.displayName
-        : this.user.email.slice(0, 1)
+  },
+  methods: {
+    showSigninForm() {
+      this.$store.commit('setTemplateNames', 'templates-signin-form')
     },
   },
 }
