@@ -1,5 +1,5 @@
 <template lang="pug">
-section
+section.l-default
   atoms-pager
   organisms-header
   nuxt(v-if='isSignin')
@@ -28,3 +28,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.l-default {
+  min-height: 100vh;
+}
+</style>

@@ -22,7 +22,7 @@
     i.el-icon-error
 </template>
 
-    <script>
+<script>
 export default {
   name: 'AtomsInputTime',
   props: {
@@ -95,7 +95,7 @@ export default {
 }
 </script>
 
-    <style lang="scss" scoped>
+<style lang="scss" scoped>
 @import '~/assets/stylesheets/input';
 .a-input-date {
   @extend %input;

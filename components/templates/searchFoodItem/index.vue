@@ -56,7 +56,7 @@ transition(name='showUp')
 </template>
 
 <script>
-import { client } from '~/plugins/algolia'
+import { clientFoodDatabase } from '~/plugins/algolia'
 import { FoodItem, TYPES } from '~/models/foodItem'
 const TAGS = ['朝ごはん', '野菜', 'プロテイン']
 
@@ -127,7 +127,7 @@ export default {
     },
 
     async search() {
-      const index = client.initIndex('index_fooditems')
+      const index = clientFoodDatabase.initIndex('index_fooditems')
       const tagFilters = this.tags
         .filter((tag) => tag.isSelected)
         .map((tag) => tag.label)
