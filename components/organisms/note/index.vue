@@ -11,7 +11,7 @@ import { Note } from '~/models/note'
 export default {
   name: 'OrganismsNote',
   props: {
-    item: { type: Note, default: new Note() },
+    item: { type: Note, default: () => new Note() },
   },
 }
 </script>

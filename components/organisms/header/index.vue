@@ -11,10 +11,13 @@ header.o-header
     .o-header__search-results-container(v-if='isSearchOpen')
       p(v-if='isSearching') 検索中
       template(v-else)
-        p 検索結果：{{searchHitCount}}件
+        p 検索結果：{{ searchHitCount }}件
 
         ul.o-header__search-results(v-if='searchResults.length')
-          li.o-header__search-result(v-for='searchResult in searchResults')
+          li.o-header__search-result(
+            v-for='searchResult in searchResults',
+            @click='moveToDatePage(searchResult.id)'
+          )
             | {{ searchResult.label }}
         nuxt-link(
           v-if='searchResults.length'
@@ -28,15 +31,14 @@ header.o-header
   )
     i.o-header__user-icon.el-icon-user
 
-  button.o-header__button(
-    v-else,
-    type='button',
-    @click='showSigninForm'
-    ) Signin
+  //- button.o-header__button(v-else, type='button', @click='showSigninForm') Signin
 </template>
 
 <script>
+import { doc, getDoc } from 'firebase/firestore'
 import { client } from '~/plugins/algolia'
+import { db } from '~/plugins/firebase'
+
 const index = client.initIndex('dailyNotes')
 
 class SearchResult {
@@ -62,6 +64,14 @@ export default {
     },
   },
   methods: {
+    async moveToDatePage(id) {
+      const snapshot = await getDoc(doc(db, 'dailyNotes', id))
+      if (snapshot.exists()) {
+        this.isSearchOpen = false
+        const dailyItem = snapshot.data()
+        this.$router.push({ name: 'id', params: { id: dailyItem.date } })
+      }
+    },
     showSigninForm() {
       this.$store.commit('setTemplateNames', 'templates-signin-form')
     },
