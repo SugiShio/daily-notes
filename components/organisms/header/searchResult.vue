@@ -41,7 +41,8 @@ export default {
         let id = ''
         if (dailyItem.date) id = dailyItem.date
         else if (dailyItem.doneAt) {
-          id = convertDateToDateId(dailyItem.doneAt.seconds * 1000)
+          const date = new Date(dailyItem.doneAt.seconds * 1000)
+          id = convertDateToDateId(date)
         }
         this.$emit('search-result-clicked', id)
       }
