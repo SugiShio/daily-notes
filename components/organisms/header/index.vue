@@ -2,10 +2,14 @@
 header.o-header
   organisms-header-search
   nuxt-link.o-header__button(
+    :to='{ name: "index" }'
+  )
+    i.el-icon-date
+  nuxt-link.o-header__button(
     v-if='$store.state.isSignin',
     :to='{ name: "user" }'
   )
-    i.o-header__user-icon.el-icon-user
+    i.el-icon-user
 
   //- button.o-header__button(v-else, type='button', @click='showSigninForm') Signin
 </template>
