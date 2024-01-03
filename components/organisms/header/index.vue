@@ -78,7 +78,8 @@ export default {
       if (snapshot.exists()) {
         this.isSearchOpen = false
         const dailyItem = snapshot.data()
-        this.$router.push({ name: 'id', params: { id: dailyItem.date } })
+        if (dailyItem.date)
+          this.$router.push({ name: 'id', params: { id: dailyItem.date } })
       }
     },
     moveToSearch() {
