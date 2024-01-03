@@ -19,9 +19,9 @@ header.o-header
             @click='moveToDatePage(searchResult.id)'
           )
             | {{ searchResult.label }}
-        nuxt-link(
+        a(
           v-if='searchResults.length'
-          :to='{ name: "search" }'
+          @click='moveToSearch'
         )
           | 全ての検索結果を見る
 
@@ -77,6 +77,13 @@ export default {
         const dailyItem = snapshot.data()
         this.$router.push({ name: 'id', params: { id: dailyItem.date } })
       }
+    },
+    moveToSearch() {
+      this.isSearchOpen = false
+      this.$router.push({
+        name: 'search',
+        query: { keyword: this.searchKeyword },
+      })
     },
     showSigninForm() {
       this.$store.commit('setTemplateNames', 'templates-signin-form')
