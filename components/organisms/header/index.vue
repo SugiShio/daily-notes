@@ -63,6 +63,12 @@ export default {
       return this.$store.state.user
     },
   },
+  mounted() {
+    window.addEventListener('click', ($event) => {
+      const isTargetTrigger = $event.target.closest('.o-header__button')
+      if (!isTargetTrigger) this.isSearchOpen = false
+    })
+  },
   methods: {
     async moveToDatePage(id) {
       const snapshot = await getDoc(doc(db, 'dailyNotes', id))
