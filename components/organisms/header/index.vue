@@ -68,7 +68,7 @@ export default {
   },
   mounted() {
     window.addEventListener('click', ($event) => {
-      const isTargetTrigger = $event.target.closest('.o-header__button')
+      const isTargetTrigger = $event.target.closest('.o-header__search')
       if (!isTargetTrigger) this.isSearchOpen = false
     })
   },
