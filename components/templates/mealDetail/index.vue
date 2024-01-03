@@ -17,7 +17,7 @@ export default {
     },
   },
   methods: {
-    async onButtonClicked() {
+    onButtonClicked() {
       const foodItems = this.$store.state.foodItems
       const items = Object.keys(NUTRIENTS).map((key) => {
         const values = this.mealItems.map((i, index) => {
