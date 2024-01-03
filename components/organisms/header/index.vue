@@ -11,15 +11,16 @@ header.o-header
     .o-header__search-results-container(v-if='isSearchOpen')
       p(v-if='isSearching') 検索中
       template(v-else)
-        p 検索結果：{{ searchHitCount }}件
+        .o-header__search-result-title 検索結果：{{ searchHitCount }}件
 
         ul.o-header__search-results(v-if='searchResults.length')
           li.o-header__search-result(
             v-for='searchResult in searchResults',
             @click='moveToDatePage(searchResult.id)'
           )
+            i.o-header__search-result-type(:class='typeIcon(searchResult.type)')
             | {{ searchResult.label }}
-        a(
+        a.o-header__link-search(
           v-if='searchResults.length'
           @click='moveToSearch'
         )
@@ -38,6 +39,7 @@ header.o-header
 import { doc, getDoc } from 'firebase/firestore'
 import { client } from '~/plugins/algolia'
 import { db } from '~/plugins/firebase'
+import { TYPES } from '~/models/dailyItem'
 
 const index = client.initIndex('dailyNotes')
 
@@ -45,6 +47,7 @@ class SearchResult {
   constructor(params = {}) {
     this.label = params.title || params.content
     this.id = params.objectID
+    this.type = params.type
   }
 }
 export default {
@@ -87,6 +90,10 @@ export default {
     },
     showSigninForm() {
       this.$store.commit('setTemplateNames', 'templates-signin-form')
+    },
+    typeIcon(value) {
+      const type = TYPES.find((t) => t.value === value)
+      return `el-icon-${type ? type.icon : 'question'}`
     },
     onButtonSearchClicked() {
       this.isSearchOpen = true
@@ -162,7 +169,8 @@ export default {
     background: rgba(#fff, 0.75);
     box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
     border-radius: 8px;
-    padding: 15px 20px;
+    backdrop-filter: blur(3px);
+    padding: 20px;
     position: absolute;
     top: 100%;
     right: 0;
@@ -171,12 +179,30 @@ export default {
     width: 80vw;
   }
 
+  &__search-results {
+    margin: 20px 0;
+  }
+
   &__search-result {
     margin: 10px 0;
     display: -webkit-box;
     overflow: hidden;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+
+  &__search-result-title {
+    font-weight: bold;
+  }
+
+  &__search-result-type {
+    color: $color-main-dark;
+    margin-right: 5px;
+  }
+
+  &__link-search {
+    color: $color-main-dark;
+    cursor: pointer;
   }
 }
 </style>
