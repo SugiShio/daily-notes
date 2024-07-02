@@ -2,7 +2,7 @@
 button.a-button(
   :class='{ outline }',
   :disabled='disabled',
-  @click='$emit("click")'
+  @click.prevent='$emit("click")'
 ) {{ text }}
 </template>
 <script>

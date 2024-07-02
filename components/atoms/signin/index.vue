@@ -1,20 +1,20 @@
 <template lang="pug">
 form.a-signin
   .a-signin__item
-    label.a-signin__label(for='date') Email
+    label.a-signin__label(for='email') Email
     .a-signin__content
-      atoms-input-text(v-model='email')
+      atoms-input-text(v-model='email' id='email')
 
   .a-signin__item
-    label.a-signin__label(for='date') Password
+    label.a-signin__label(for='password') Password
     .a-signin__content
-      atoms-input-text(v-model='password')
+      atoms-input-text(v-model='password' type='password' id='password')
 
   p {{ error }}
 
   .a-signin__item
     .a-signin__content
-      atoms-button(text='Signin', @click='signin')
+      atoms-button(text='Signin', @click='signin' :disabled='!email || !password || isConnecting')
 
 </template>
 
@@ -26,6 +26,7 @@ export default {
   data() {
     return {
       email: '',
+      isConnecting: false,
       password: '',
       error: '',
     }
@@ -34,11 +35,14 @@ export default {
     async signin() {
       const auth = getAuth()
       try {
+        this.isConnecting = true
         await signInWithEmailAndPassword(auth, this.email, this.password)
+        this.$store.commit('removeTemplateNames')
       } catch (error) {
         this.error = error
         console.error(error)
       }
+      this.isConnecting = false
     },
   },
 }

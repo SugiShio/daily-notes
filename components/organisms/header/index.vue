@@ -10,8 +10,6 @@ header.o-header
     :to='{ name: "user" }'
   )
     i.el-icon-user
-
-  //- button.o-header__button(v-else, type='button', @click='showSigninForm') Signin
 </template>
 
 <script>
@@ -20,11 +18,6 @@ export default {
   computed: {
     user() {
       return this.$store.state.user
-    },
-  },
-  methods: {
-    showSigninForm() {
-      this.$store.commit('setTemplateNames', 'templates-signin-form')
     },
   },
 }

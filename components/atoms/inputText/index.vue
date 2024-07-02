@@ -1,6 +1,8 @@
 <template lang="pug">
 input.a-input-text(
+  :id='id'
   :placeholder='placeholder',
+  :type='type'
   :value='value',
   @input='$emit("input", $event.target.value)'
 )
@@ -10,8 +12,10 @@ input.a-input-text(
 export default {
   name: 'AtomsInputText',
   props: {
+    id: { type: String, default: undefined },
     placeholder: { type: String, default: '' },
     value: { type: [String, Number], default: '' },
+    type: { type: String, default: '' },
   },
 }
 </script>

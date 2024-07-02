@@ -1,8 +1,12 @@
 <template lang="pug">
 section.l-default
   atoms-pager
-  organisms-header
-  nuxt(v-if='isSignin')
+  template(v-if='isSignin')
+    organisms-header
+    nuxt
+  .l-default__signin(v-else)
+    atoms-button(text='Signin', outline @click='showSigninForm')
+
 </template>
 
 <script>
@@ -26,11 +30,23 @@ export default {
       }
     })
   },
+  methods: {
+    showSigninForm() {
+      this.$store.commit('setTemplateNames', 'templates-signin-form')
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
 .l-default {
   min-height: 100vh;
+
+  &__signin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
 }
 </style>
