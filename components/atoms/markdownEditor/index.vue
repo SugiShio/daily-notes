@@ -2,7 +2,7 @@
 .a-markdown-editor
   .a-markdown-editor__functions
     .a-markdown-editor__function
-      button.a-markdown-editor__button-function(@click='onListClicked') List
+      button.a-markdown-editor__button-function(@click='onListClicked') *
   textarea.a-markdown-editor__textarea(
     ref='textarea',
     :rows='rows',
@@ -34,19 +34,19 @@ export default {
     this.$textarea = this.$refs.textarea
   },
   methods: {
-    // todo 入力内容更新箇所関数まとめる
+    async updateValue({ string, newCursorPosition }) {
+      await this.$emit('input', string)
+      this.$textarea.setSelectionRange(newCursorPosition, newCursorPosition)
+      this.$textarea.focus()
+    },
     async onListClicked() {
-      console.log('onListClicked')
       const cursorPosition = this.$textarea.selectionStart
       const { string, newCursorPosition } = toggleTermToHeadOfLine({
         term: TERMS.LIST,
         string: this.value,
         cursorPosition,
       })
-
-      await this.$emit('input', string)
-      this.$textarea.setSelectionRange(newCursorPosition, newCursorPosition)
-      this.$textarea.focus()
+      this.updateValue({ string, newCursorPosition })
     },
     async onEnter() {
       const cursorPosition = this.$textarea.selectionStart
@@ -54,9 +54,7 @@ export default {
         string: this.value,
         cursorPosition,
       })
-      await this.$emit('input', string)
-      this.$textarea.setSelectionRange(newCursorPosition, newCursorPosition)
-      this.$textarea.focus()
+      this.updateValue({ string, newCursorPosition })
     },
     async onTab($event) {
       if ($event.shiftKey) return
@@ -65,9 +63,7 @@ export default {
         string: this.value,
         cursorPosition,
       })
-      await this.$emit('input', string)
-      this.$textarea.setSelectionRange(newCursorPosition, newCursorPosition)
-      this.$textarea.focus()
+      this.updateValue({ string, newCursorPosition })
     },
     async onTabShift() {
       const cursorPosition = this.$textarea.selectionStart
@@ -75,9 +71,7 @@ export default {
         string: this.value,
         cursorPosition,
       })
-      await this.$emit('input', string)
-      this.$textarea.setSelectionRange(newCursorPosition, newCursorPosition)
-      this.$textarea.focus()
+      this.updateValue({ string, newCursorPosition })
     },
   },
 }
