@@ -43,6 +43,8 @@ export default {
       this.title = this.originalItem.title
       this.content = this.originalItem.content
       this.date = convertDateIdToDate(this.originalItem.date)
+    } else {
+      this.date = convertDateIdToDate(this.$store.state.dailyId)
     }
   },
   methods: {
