@@ -19,7 +19,18 @@ export default {
           'width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no',
       },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'preconnect',
+        href: 'https://fonts.googleapis.com',
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Darumadrop+One&display=swap',
+        crossorigin: '',
+      },
+    ],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
