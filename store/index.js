@@ -21,8 +21,10 @@ const auth = getAuth(app)
 export const state = () => ({
   user: {},
   isSignin: false,
+  colorConfig: {},
   dailyId: '',
   dailyNotes: {},
+  fontConfig: {},
   foodItems: [],
   meal: null,
   originalItem: null,
@@ -31,12 +33,20 @@ export const state = () => ({
 })
 
 export const mutations = {
+  setColorConfig(state, colorConfig) {
+    state.colorConfig = colorConfig
+  },
+
   setDailyId(state, dailyId) {
     state.dailyId = dailyId
   },
 
   setDailyNotes(state, dailyNotes) {
     state.dailyNotes = dailyNotes
+  },
+
+  setFontConfig(state, fontConfig) {
+    state.fontConfig = fontConfig
   },
 
   setFoodItemLabel(state, { name, foodItemId }) {
@@ -141,11 +151,15 @@ export const actions = {
     commit('setFoodItems', foodItems)
   },
 
-  async setUser({ commit }, uid) {
+  async setUser({ commit, state }, uid) {
     const snapshot = await getDoc(doc(db, 'users', uid))
     if (snapshot.exists()) {
-      commit('setUser', { ...snapshot.data(), uid: snapshot.id })
+      await commit('setUser', { ...snapshot.data(), uid: snapshot.id })
+      await commit('setColorConfig', snapshot.data().colorConfig)
+      await commit('setFontConfig', snapshot.data().fontConfig)
       commit('setIsSignin')
+      const elementHTML = document.querySelector('html')
+      elementHTML.style.backgroundColor = state.colorConfig.backgroundColor
     }
   },
 
