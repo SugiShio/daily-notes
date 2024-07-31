@@ -1,30 +1,35 @@
 <template lang="pug">
 .a-input-time
   select.a-input-time__select(
+    :style='style'
     v-model='year',
     @input='onYearChanged($event.target.value)'
   )
     option(v-for='yearOption in yearOptions', :value='yearOption') {{ yearOption }}
   | /
   select.a-input-time__select(
+    :style='style'
     v-model='month',
     @input='onMonthChanged($event.target.value)'
   )
     option(v-for='monthOption in monthOptions', :value='monthOption') {{ monthOption }}
   | /
   select.a-input-time__select(
+    :style='style'
     v-model='date',
     @input='onDateChanged($event.target.value)'
   )
     option(v-for='dateOption in dateOptions', :value='dateOption') {{ dateOption }}
 
   select.a-input-time__select(
+    :style='style'
     v-model='hours',
     @input='onHoursChanged($event.target.value)'
   )
     option(v-for='hoursOption in hoursOptions', :value='hoursOption') {{ hoursOption }}
   | :
   select.a-input-time__select(
+    :style='style'
     v-model='minutes',
     @input='onMinutesChanged($event.target.value)'
   )
@@ -34,7 +39,7 @@
     i.el-icon-error
 </template>
 
-  <script>
+<script>
 export default {
   name: 'AtomsInputTime',
   props: {
@@ -84,6 +89,10 @@ export default {
       return Array(60)
         .fill(0)
         .map((minute, index) => `0${minute + index}`.slice(-2))
+    },
+    style() {
+      const colorConfig = this.$store.state.colorConfig
+      return { borderColor: colorConfig.mainDark }
     },
   },
   methods: {
@@ -144,7 +153,7 @@ export default {
 }
 </script>
 
-  <style lang="scss" scoped>
+<style lang="scss" scoped>
 @import '~/assets/stylesheets/input';
 .a-input-time {
   &__select {

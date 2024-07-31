@@ -2,6 +2,7 @@
 input.a-input-text(
   :id='id'
   :placeholder='placeholder',
+  :style='style'
   :type='type'
   :value='value',
   @input='$emit("input", $event.target.value)'
@@ -16,6 +17,12 @@ export default {
     placeholder: { type: String, default: '' },
     value: { type: [String, Number], default: '' },
     type: { type: String, default: '' },
+  },
+  computed: {
+    style() {
+      const colorConfig = this.$store.state.colorConfig
+      return { borderColor: colorConfig.mainDark }
+    },
   },
 }
 </script>

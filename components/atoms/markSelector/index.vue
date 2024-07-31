@@ -5,7 +5,8 @@ ul.a-mark-selector
     @click='$emit("input", mark)'
   )
     i.a-mark-selector__icon(
-      :class='[`el-icon-${mark}`, { isSelected: mark === value }]'
+      :class='`el-icon-${mark}`'
+      :style='style(mark)'
     )
 </template>
 
@@ -15,6 +16,12 @@ export default {
   props: {
     value: { type: String, default: 'apple' },
     marks: { type: Array, default: () => ['apple'] },
+  },
+  methods: {
+    style(mark) {
+      const colorConfig = this.$store.state.colorConfig
+      return { color: mark === this.value ? colorConfig.mainDark : undefined }
+    },
   },
 }
 </script>
@@ -31,8 +38,11 @@ export default {
 
   &__icon {
     font-size: 16px;
-    &.isSelected {
-      color: $color-main-dark;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      opacity: 0.6;
     }
   }
 }

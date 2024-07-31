@@ -39,7 +39,7 @@
               span.o-meal-summary__unit g
 </template>
 
-  <script>
+<script>
 import { MAJOR_NUTRIENT_KEYS } from '~/constants/nutrients'
 
 export default {
@@ -102,7 +102,7 @@ export default {
 }
 </script>
 
-  <style lang="scss" scoped>
+<style lang="scss" scoped>
 @import '~/assets/stylesheets/variables';
 .o-meal-summary {
   display: flex;
@@ -192,10 +192,6 @@ export default {
     dt {
       width: 20%;
     }
-  }
-
-  &__button-graph {
-    color: $color-main-dark;
   }
 }
 </style>

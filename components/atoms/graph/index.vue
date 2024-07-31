@@ -102,7 +102,6 @@ export default {
   }
 
   &__bar-item {
-    z-index: 1;
     background-color: $color-violet;
 
     &:nth-child(5n + 1) {

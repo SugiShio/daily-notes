@@ -5,7 +5,7 @@ ul.a-input-image
       i.el-icon-close
     img.a-input-image__image(:src='src')
   li.a-input-image__image-item
-    label.a-input-image__add
+    label.a-input-image__add(:style='style')
       input.a-input-image__input(
         type='file',
         accept='image/*',
@@ -30,6 +30,13 @@ export default {
   computed: {
     images() {
       return [...this.originalFiles, ...this.srcs]
+    },
+    style() {
+      const colorConfig = this.$store.state.colorConfig || {}
+      return {
+        borderColor: colorConfig.mainDark,
+        color: colorConfig.mainDark,
+      }
     },
   },
   methods: {
@@ -78,9 +85,8 @@ export default {
 
   &__add {
     align-items: center;
-    border: 1px dashed $color-main-dark;
+    border: 1px dashed;
     border-radius: 5px;
-    color: $color-main-dark;
     display: flex;
     flex-direction: column;
     height: 98px;

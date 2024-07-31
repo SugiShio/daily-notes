@@ -1,5 +1,5 @@
 <template lang="pug">
-.a-input-date
+.a-input-date(:style='style')
   select.a-input-date__year(
     v-model='year',
     @input='onYearChanged($event.target.value)'
@@ -53,6 +53,10 @@ export default {
       return Array(lastDate)
         .fill(1)
         .map((date, index) => date + index)
+    },
+    style() {
+      const colorConfig = this.$store.state.colorConfig
+      return { borderColor: colorConfig.main }
     },
   },
   created() {

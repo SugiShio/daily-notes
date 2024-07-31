@@ -8,14 +8,18 @@ section.t-daily-notes
 
   organisms-task-list
 
-  .t-daily-notes__item(v-if='shouldShowMealSummary')
+  .t-daily-notes__item(
+    v-if='shouldShowMealSummary'
+   )
     organisms-meal-summary(:meals='meals')
 
-    button.t-daily-notes__button(@click='showMealSummary')
+    button.t-daily-notes__button(:style='styleColor' @click='showMealSummary')
       i.el-icon-s-data
       | &nbsp; Show detail
   ul
-    li.t-daily-notes__item(v-for='meal in mealsWithId')
+    li.t-daily-notes__item(
+      v-for='meal in mealsWithId'
+     )
       organisms-meal(:meal='meal.meal', :show-count='5')
         .t-daily-notes__actions
           button.t-daily-notes__action(
@@ -85,6 +89,14 @@ export default {
         Object.keys(this.meals).length && this.$store.state.foodItems.length
       )
     },
+    colorConfig() {
+      return this.$store.state.colorConfig
+    },
+    styleColor() {
+      return {
+        color: this.colorConfig.mainDark,
+      }
+    },
   },
   methods: {
     async deleteItem(id) {
@@ -141,13 +153,12 @@ export default {
   &__item {
     margin: 10px;
     background: rgba(#fff, 0.75);
-    box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
+    box-shadow: 0 0 3px rgba(#000, 0.2);
     border-radius: 8px;
   }
 
   &__button {
     display: block;
-    color: $color-main-dark;
     width: 100%;
     padding: 10px;
     text-align: center;

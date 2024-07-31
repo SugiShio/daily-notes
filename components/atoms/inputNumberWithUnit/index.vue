@@ -5,11 +5,13 @@
     @input='onValueInput',
     :value='value',
     :class='size',
+    :style='styleInput'
     :unit='unit'
   )
   select.a-input-number-with-unit__selector(
     @change='onUnitChanged',
     :value='unit'
+    :style='styleSelector'
   )
     option(v-for='unit in units', :value='unit.value') {{ unit.label }}
 </template>
@@ -27,6 +29,21 @@ export default {
     return {
       oldUnit: this.unit,
     }
+  },
+  computed: {
+    colorConfig() {
+      return this.$store.state.colorConfig || {}
+    },
+    styleInput() {
+      return { borderColor: this.colorConfig.mainDark }
+    },
+    styleSelector() {
+      return {
+        backgroundColor: this.colorConfig.grayLight,
+        color: this.colorConfig.mainDark,
+        borderColor: this.colorConfig.mainDark,
+      }
+    },
   },
   methods: {
     onValueInput($event) {
@@ -64,11 +81,9 @@ export default {
 
   &__selector {
     width: 40px;
-    background-color: $color-gray-light;
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    color: $color-main-dark;
     padding: 0 5px 0 10px;
   }
 }

@@ -2,24 +2,49 @@
 .a-search
   input.a-search__input(
     :placeholder='placeholder',
+    :style="styleBorderColor"
     type='search',
     :value='value',
     @input='$emit("input", $event.target.value)',
     @keydown.enter='onEnter'
   )
-  button.a-search__button-clear(@click='$emit("clear-clicked")')
+  button.a-search__button-clear(:style='styleButtonClear' @click='$emit("clear-clicked")')
     i.el-icon-error
-  button.a-search__button-search(@click='$emit("search-clicked", value)')
+  button.a-search__button-search(:style='styleButtonSearch' @click='$emit("search-clicked", value)')
     i.el-icon-search
 </template>
 
-  <script>
+<script>
 export default {
   name: 'AtomsSearch',
   props: {
     placeholder: { type: String, default: 'Keyword...' },
     value: { type: [String, Number], default: '' },
   },
+  computed: {
+    colorConfig() {
+      return this.$store.state.colorConfig
+    },
+    styleBorderColor() {
+      return {
+        borderColor: this.colorConfig.mainDark,
+      }
+    },
+    styleButtonClear() {
+      return {
+        borderColor: this.colorConfig.mainDark,
+        color: this.colorConfig.mainDark,
+      }
+    },
+    styleButtonSearch() {
+      return {
+        borderColor: this.colorConfig.mainDark,
+        backgroundColor: this.colorConfig.grayLight,
+        color: this.colorConfig.mainDark,
+      }
+    },
+  },
+
   methods: {
     onEnter($event) {
       if (!$event.isComposing) this.$emit('search-clicked', this.value)
@@ -28,7 +53,7 @@ export default {
 }
 </script>
 
-  <style lang="scss" scoped>
+<style lang="scss" scoped>
 @import '~/assets/stylesheets/variables';
 @import '~/assets/stylesheets/input';
 
@@ -60,15 +85,12 @@ export default {
     border-left: 0;
     border-right: 0;
     border-radius: 0;
-    color: $color-main-dark;
   }
 
   &__button-search {
-    background-color: $color-gray-light;
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    color: $color-main-dark;
   }
 }
 </style>

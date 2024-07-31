@@ -1,5 +1,5 @@
 <template lang="pug">
-.o-header-search(:class='{ isSearchOpen }')
+.o-header-search(:class='{ isSearchOpen }' :style='styleBorderColor')
   input.o-header-search__input(
     ref='input',
     @change='search',
@@ -17,6 +17,7 @@
           organisms-header-search-result(:item='searchResult' @search-result-clicked='moveToDatePage')
       a.o-header-search__link(
         v-if='searchResults.length'
+        :style='styleLink'
         @click='moveToSearch'
       )
         | 全ての検索結果を見る
@@ -45,6 +46,19 @@ export default {
       const isTargetTrigger = $event.target.closest('.o-header-search')
       if (!isTargetTrigger) this.isSearchOpen = false
     })
+  },
+  computed: {
+    colorConfig() {
+      return this.$store.state.colorConfig || {}
+    },
+    styleBorderColor() {
+      return {
+        borderColor: this.isSearchOpen ? this.colorConfig.mainDark : undefined,
+      }
+    },
+    styleLink() {
+      return { color: this.colorConfig.mainDark }
+    },
   },
   methods: {
     moveToDatePage(id) {
@@ -122,12 +136,12 @@ export default {
 
   &__results-container {
     background: rgba(#fff, 0.75);
-    box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
+    box-shadow: 0 0 3px rgba(#000, 0.2);
     border-radius: 8px;
     backdrop-filter: blur(3px);
     padding: 20px;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 5px);
     right: 0;
     left: 0;
     margin: auto;
@@ -152,7 +166,6 @@ export default {
   }
 
   &__link {
-    color: $color-main-dark;
     cursor: pointer;
   }
 }

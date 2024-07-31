@@ -29,6 +29,7 @@
               i.el-icon-delete
 
         button.o-meal-editor__button-add(
+          :style='style'
           @click='$store.commit("setTemplateNames", "templates-search-food-item")'
         )
           i.el-icon-circle-plus-outline
@@ -70,6 +71,10 @@ export default {
     }
   },
   computed: {
+    style() {
+      const colorConfig = this.$store.state.colorConfig
+      return { color: colorConfig.mainDark }
+    },
     selectedFoodItem() {
       return this.$store.state.searchFoodItem.selectedFoodItem
     },
@@ -232,7 +237,6 @@ export default {
   }
 
   &__button-add {
-    color: $color-main-dark;
     padding: 5px 0;
   }
 }

@@ -4,14 +4,13 @@
     li.o-create-icons__item(v-for='(t, index) in types' :class='{isOpen}')
       button.o-create-icons__button(@click='onCreateButtonClicked(index)')
         span.o-create-icons__label.font-family-accent {{ t.value }}
-        span.o-create-icons__icon(:style='styleShadow')
+        span.o-create-icons__icon
           i(:class='`el-icon-${t.icon}`')
   button.o-create-icons__trigger(@click.stop='isOpen = !isOpen' :style='styleTrigger') +
 </template>
 
 <script>
 import { TYPES } from '~/models/dailyItem'
-import { hex2rgb } from '~/scripts/colorHelper'
 
 export default {
   name: 'OrganismsCreateIcons',
@@ -27,17 +26,9 @@ export default {
     colorConfig() {
       return this.$store.state.colorConfig
     },
-    styleShadow() {
-      const [r, g, b] = hex2rgb(this.colorConfig.mainDark)
-      return {
-        boxShadow: `0 0 5px rgba(${r}, ${g}, ${b}, 0.2)`,
-      }
-    },
     styleTrigger() {
-      const [r, g, b] = hex2rgb(this.colorConfig.mainDark)
       return {
         backgroundColor: this.colorConfig.mainDark,
-        boxShadow: `0 0 5px rgba(${r}, ${g}, ${b}, 0.2)`,
       }
     },
   },
@@ -69,6 +60,7 @@ export default {
       right: 0;
       top: 0;
       visibility: visible;
+      z-index: $z-index-create-icon-background;
     }
   }
 
@@ -81,6 +73,8 @@ export default {
     bottom: 10px;
     position: fixed;
     color: #fff;
+    z-index: $z-index-create-icon-background + 1;
+    box-shadow: 0 0 3px rgba(#000, 0.2);
 
     &:hover {
       background: rgba(#fff, 0.75);
@@ -98,14 +92,9 @@ export default {
     @for $i from 0 through 3 {
       &.isOpen:nth-child(#{$i}) {
         opacity: 1;
-        // display: block;
         transform: translateY(#{$i * -50 - 20}px);
       }
     }
-  }
-
-  &__button {
-    // padding: 5px;
   }
 
   &__label {
@@ -125,6 +114,7 @@ export default {
     width: 40px;
     background-color: #fff;
     border-radius: 20px;
+    box-shadow: 0 0 3px rgba(#000, 0.2);
   }
 }
 </style>

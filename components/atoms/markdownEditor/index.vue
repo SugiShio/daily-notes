@@ -1,8 +1,8 @@
 <template lang="pug">
-.a-markdown-editor
-  .a-markdown-editor__functions
+.a-markdown-editor(:style='styleBorderColor')
+  .a-markdown-editor__functions(:style='styleBorderColor')
     .a-markdown-editor__function
-      button.a-markdown-editor__button-function(@click='onListClicked') *
+      button.a-markdown-editor__button-function(@click='onListClicked' :style='styleButtonFunction') *
   textarea.a-markdown-editor__textarea(
     ref='textarea',
     :rows='rows',
@@ -33,13 +33,24 @@ export default {
   mounted() {
     this.$textarea = this.$refs.textarea
   },
+  computed: {
+    colorConfig() {
+      return this.$store.state.colorConfig
+    },
+    styleBorderColor() {
+      return { borderColor: this.colorConfig.mainDark }
+    },
+    styleButtonFunction() {
+      return { backgroundColor: this.colorConfig.grayLight }
+    },
+  },
   methods: {
     async updateValue({ string, newCursorPosition }) {
       await this.$emit('input', string)
       this.$textarea.setSelectionRange(newCursorPosition, newCursorPosition)
       this.$textarea.focus()
     },
-    async onListClicked() {
+    onListClicked() {
       const cursorPosition = this.$textarea.selectionStart
       const { string, newCursorPosition } = toggleTermToHeadOfLine({
         term: TERMS.LIST,
@@ -48,7 +59,7 @@ export default {
       })
       this.updateValue({ string, newCursorPosition })
     },
-    async onEnter() {
+    onEnter() {
       const cursorPosition = this.$textarea.selectionStart
       const { string, newCursorPosition } = onEnter({
         string: this.value,
@@ -56,7 +67,7 @@ export default {
       })
       this.updateValue({ string, newCursorPosition })
     },
-    async onTab($event) {
+    onTab($event) {
       if ($event.shiftKey) return
       const cursorPosition = this.$textarea.selectionStart
       const { string, newCursorPosition } = onTab({
@@ -65,7 +76,7 @@ export default {
       })
       this.updateValue({ string, newCursorPosition })
     },
-    async onTabShift() {
+    onTabShift() {
       const cursorPosition = this.$textarea.selectionStart
       const { string, newCursorPosition } = onTabShift({
         string: this.value,
@@ -84,7 +95,7 @@ export default {
   padding: 0;
 
   &__functions {
-    border-bottom: 1px dashed $color-border;
+    border-bottom: 1px dashed;
     padding: 2px 4px;
   }
 
@@ -98,7 +109,6 @@ export default {
     width: 30px;
     border-radius: 3px;
     text-align: center;
-    background-color: $color-gray-light;
   }
 
   &__textarea {

@@ -23,14 +23,17 @@ section.t-food-item(v-if='foodItem')
     .t-food-item__label-input-container(v-if='isLabelEditing')
       atoms-input-text(v-model='labelText')
       ul.t-food-item__candidates
-        li.t-food-item__candidate(
+        templates-food-item-candidate(
           v-for='label in labelCandidates',
-          @click='addFoodItemId(label)'
+          :label='label'
+          @candidate-clicked='addFoodItemId(label)'
         )
           | {{ label }}
-        li.t-food-item__candidate(v-if='!labelCandidates.length && labelText')
-          button(@click='createNewLabel')
-            | Create a new label "{{ labelText }}"
+        templates-food-item-candidate(
+          v-if='!labelCandidates.length && labelText'
+          :label='`Create a new label "${ labelText }"`'
+          @candidate-clicked='createNewLabel'
+        )
 
   section.t-food-item__section(v-if='unitsText.length')
     h3.t-food-item__title-secondary
@@ -134,6 +137,15 @@ export default {
     user() {
       return this.$store.state.user
     },
+  },
+  mounted() {
+    const elementsA = this.$el.querySelectorAll('a')
+    if (elementsA.length) {
+      const colorConfig = this.$store.state.colorConfig
+      elementsA.forEach((element) => {
+        element.style.color = colorConfig.mainDark
+      })
+    }
   },
   methods: {
     addFoodItemId(label) {
@@ -239,10 +251,6 @@ export default {
     p {
       margin: 10px 0;
     }
-
-    a {
-      color: $color-main-dark;
-    }
   }
 
   &__label-input-container {
@@ -252,21 +260,11 @@ export default {
   &__candidates {
     background: rgba(#fff, 0.95);
     border-radius: 8px;
-    box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
+    box-shadow: 0 0 3px rgba(#000, 0.2);
     padding: 3px 0;
     position: absolute;
     top: calc(100% + 2px);
-  }
-
-  &__candidate {
-    cursor: pointer;
-    min-width: 120px;
-    padding: 3px 10px;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: $color-main-light;
-    }
+    z-index: 10;
   }
 }
 </style>

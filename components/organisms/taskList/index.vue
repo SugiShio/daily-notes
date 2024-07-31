@@ -4,6 +4,7 @@ ul.o-task-list
     span.o-task-list__checkbox(
       @click='toggleTaskDone(index)',
       :class='{ isDone: task.isDone }'
+      :style='styleCheckbox({ isDone: task.isDone })'
     )
     .o-task-list__content
       h3.o-task-list__title {{ task.title }}
@@ -91,6 +92,14 @@ export default {
       })
     },
 
+    styleCheckbox({ isDone }) {
+      const colorConfig = this.$store.state.colorConfig
+      return {
+        borderColor: colorConfig.mainDark,
+        backgroundColor: isDone ? colorConfig.mainDark : null,
+      }
+    },
+
     async toggleTaskDone(index) {
       const task = this.tasks[index]
       task.isDone ? task.resetDoneAt() : task.setDoneAt()
@@ -129,33 +138,29 @@ export default {
     width: 20px;
     height: 20px;
     border-radius: 10px;
-    border: 1px solid $color-main-dark;
+    border: 1px solid;
     background: rgba(#fff, 0.3);
     cursor: pointer;
     top: -2px;
     transition: 0.3s;
 
     &:hover {
-      background-color: rgba($color-main-dark, 0.6);
+      opacity: 0.5;
     }
 
-    &.isDone {
-      background-color: $color-main-dark;
-
-      &::before {
-        border-right: 1px solid #fff;
-        border-bottom: 1px solid #fff;
-        content: '';
-        width: 5px;
-        height: 8px;
-        transform: rotate(45deg);
-        position: absolute;
-        top: -2px;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        margin: auto;
-      }
+    &.isDone ::before {
+      border-right: 1px solid #fff;
+      border-bottom: 1px solid #fff;
+      content: '';
+      width: 5px;
+      height: 8px;
+      transform: rotate(45deg);
+      position: absolute;
+      top: -2px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      margin: auto;
     }
   }
 

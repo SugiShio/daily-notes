@@ -2,7 +2,7 @@
 .a-pager
   .a-pager__page(
     v-for='(templateName, index) in templateNames',
-    :style='positionStyle(index)'
+    :style='style(index)'
   )
     .a-pager__head
       button.a-pager__button(@click='onBackClicked')
@@ -27,7 +27,7 @@ export default {
         this.$store.commit('dailyForm/resetOriginalItem')
       }
     },
-    positionStyle(index) {
+    style(index) {
       const reversedIndex = this.templateNames.length - index
       return {
         transform: `scale(${0.95 ** (reversedIndex - 1)}) translateX(${
@@ -49,7 +49,7 @@ export default {
   &__page {
     background: rgba(#fff, 0.95);
     border-radius: 8px;
-    box-shadow: 0 0 5px rgba($color-main-dark, 0.2);
+    box-shadow: 0 0 3px rgba(#000, 0.2);
     height: calc(100vh - 20px);
     overflow: scroll;
     position: fixed;

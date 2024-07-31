@@ -1,6 +1,6 @@
 <template lang="pug">
 button.a-button(
-  :class='{ outline }',
+  :style='style'
   :disabled='disabled',
   @click.prevent='$emit("click")'
 ) {{ text }}
@@ -13,6 +13,35 @@ export default {
     outline: { type: Boolean, default: false },
     text: { type: String, default: '' },
   },
+  computed: {
+    colorConfig() {
+      return this.$store.state.colorConfig || {}
+    },
+    style() {
+      if (this.outline) {
+        if (this.disabled) {
+          return {
+            borderColor: this.colorConfig.mainLight,
+            color: this.colorConfig.mainLight,
+          }
+        }
+        return {
+          borderColor: this.colorConfig.mainDark,
+          color: this.colorConfig.mainDark,
+        }
+      }
+      if (this.disabled) {
+        return {
+          borderColor: this.colorConfig.mainLight,
+          backgroundColor: this.colorConfig.mainLight,
+        }
+      }
+      return {
+        backgroundColor: this.colorConfig.mainDark,
+        borderColor: this.colorConfig.mainDark,
+      }
+    },
+  },
 }
 </script>
 
@@ -22,23 +51,13 @@ export default {
 .a-button {
   text-align: center;
   padding: 5px 15px;
-  background-color: $color-main-dark;
   border-radius: 8px;
-  border: 1px solid $color-main-dark;
+  border: 1px solid;
   color: #fff;
+  transition: opacity 0.3s;
 
-  &[disabled] {
-    border-color: $color-main-light;
-    background-color: $color-main-light;
-  }
-
-  &.outline {
-    background-color: transparent;
-    color: $color-main-dark;
-
-    &[disabled] {
-      color: $color-main-light;
-    }
+  &:hover:not([disabled]) {
+    opacity: 0.6;
   }
 }
 </style>

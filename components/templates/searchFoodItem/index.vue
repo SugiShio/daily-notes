@@ -40,7 +40,7 @@ transition(name='showUp')
             atoms-tag(:is-active='tag.isSelected') {{ tag.label }}
 
     ul.t-search-food-item__list
-      li(v-for='(item, index) in items', :class='{ isAdded: isAdded(index) }')
+      li.t-search-food-item__item(v-for='(item, index) in items', :style='styleAdded(index)')
         button.t-search-food-item__add-button(
           @click='onFoodItemClicked(item, index)',
           :disabled='isAdded(index)'
@@ -175,6 +175,10 @@ export default {
     showDetail(item) {
       this.$store.dispatch('foodItem/showFoodItemDetail', item.id)
     },
+    styleAdded(index) {
+      const colorConfig = this.$store.state.colorConfig
+      return { color: this.isAdded(index) ? colorConfig.mainDark : undefined }
+    },
   },
 }
 </script>
@@ -211,23 +215,6 @@ export default {
     padding: 3px;
   }
 
-  &__tab-item {
-    border-bottom: 3px solid transparent;
-    padding: 5px 10px;
-
-    &.isSelected {
-      border-color: $color-main;
-    }
-
-    &:not(.isSelected) {
-      cursor: pointer;
-      transition: 0.3s;
-
-      &:hover {
-        opacity: 0.6;
-      }
-    }
-  }
   &__list,
   &__text {
     margin: 20px 0;
@@ -235,10 +222,6 @@ export default {
 
   &__item {
     margin: 10px 0;
-
-    &.isAdded {
-      color: $color-main-dark;
-    }
   }
 
   &__add-button {

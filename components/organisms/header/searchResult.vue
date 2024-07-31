@@ -1,6 +1,6 @@
 <template lang="pug">
 a.o-header-search-result(@click='emitClicked')
-  i.o-header-search-result__type(:class='typeIcon')
+  i.o-header-search-result__type(:class='typeIcon' :style='style')
   .o-header-search-result__content
     h2(v-if='item.title') {{item.title}}
     .o-header-search-result__text {{ item.text }}
@@ -27,11 +27,16 @@ export default {
     item: { type: SearchResult, required: true },
   },
   computed: {
+    style() {
+      const colorConfig = this.$store.state.colorConfig || {}
+      return { color: colorConfig.mainDark }
+    },
     typeIcon() {
       const type = TYPES.find((t) => t.value === this.item.type)
       return `el-icon-${type ? type.icon : 'question'}`
     },
   },
+
   methods: {
     async emitClicked() {
       const snapshot = await getDoc(doc(db, 'dailyNotes', this.item.id))
@@ -66,7 +71,6 @@ export default {
   }
 
   &__type {
-    color: $color-main-dark;
     margin-right: 10px;
   }
 

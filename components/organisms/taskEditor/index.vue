@@ -15,8 +15,8 @@
     .o-task-editor__content
       atoms-markdown-editor(v-model='description')
 
-  .o-note-editor__item
-    .o-note-editor__content
+  .o-task-editor__item
+    .o-task-editor__content
       atoms-button(text='Save', @click='onSaveClicked')
 </template>
 
