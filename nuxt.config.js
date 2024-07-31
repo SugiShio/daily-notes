@@ -27,7 +27,7 @@ export default {
       },
       {
         rel: 'stylesheet',
-        href: 'https://fonts.googleapis.com/css2?family=Darumadrop+One&display=swap',
+        href: 'https://fonts.googleapis.com/css2?family=Playwrite+PE:wght@100..400&display=swap',
         crossorigin: '',
       },
     ],
