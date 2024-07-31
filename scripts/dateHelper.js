@@ -14,7 +14,7 @@ export const convertDateIdToDate = (dateId) => {
 }
 
 export const getDayText = (dateObject) => {
-  const dayText = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  const dayText = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
   return dayText[dateObject.getDay()]
 }
 

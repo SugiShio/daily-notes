@@ -1,13 +1,13 @@
 <template lang="pug">
-.a-date-box
-  nuxt-link.a-date-box__prev(:to='linkPrevious') Prev
-
+.a-date-box(:style='style')
   time.a-date-box__main(:datetime='`${year}-${month}-${date}`')
-    span.a-date-box__year {{ year }}
-    span.a-date-box__date {{ month }}.{{ date }}
-      span.a-date-box__day {{ day }}
-
-  nuxt-link.a-date-box__next(:to='linkNext') Next
+    span.a-date-box__year.font-family-accent {{ year }}
+    span.a-date-box__date.font-family-accent {{ month }}.{{ date }}
+      span.a-date-box__day.font-family-accent {{ day }}
+  .a-date-box__nav
+    nuxt-link.a-date-box__prev(:to='linkPrevious') prev
+    nuxt-link.a-date-box__today(v-if='!isToday' :to='{ name: "index"}')
+    nuxt-link.a-date-box__next(:to='linkNext') next
 </template>
 
 <script>
@@ -49,6 +49,12 @@ export default {
 
       return { name: 'id', params: { id } }
     },
+    isToday() {
+      return this.$store.state.dailyId === convertDateToDateId(new Date())
+    },
+    style() {
+      return { fontFamily: 'Playwrite PE' }
+    },
   },
 }
 </script>
@@ -57,18 +63,18 @@ export default {
 @import '~/assets/stylesheets/variables';
 
 .a-date-box {
-  align-items: center;
   display: flex;
   justify-content: space-between;
+  padding: 10px 20px;
 
   &__main {
     display: block;
-    font-family: $font-family-accent;
-    text-align: center;
   }
 
   &__year {
     display: block;
+    font-size: 12px;
+    margin-bottom: 8px;
   }
 
   &__date {
@@ -86,19 +92,82 @@ export default {
     margin: 10px 0 30px;
   }
 
+  &__nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   &__prev,
   &__next {
-    text-decoration: none;
+    display: block;
     font-size: 14px;
-    font-family: $font-family-accent;
+    line-height: 1.2;
+    position: relative;
+    text-decoration: none;
+    width: 70px;
+
+    &::before,
+    &::after {
+      background-color: $color-text;
+      content: '';
+      display: inline-block;
+      height: 1px;
+      position: absolute;
+    }
+
+    &::before {
+      bottom: 3px;
+      width: 25px;
+    }
+
+    &::after {
+      bottom: 3px;
+      width: 5px;
+    }
   }
 
   &__prev {
-    transform: rotate(90deg);
+    text-align: right;
+
+    &::before {
+      left: 0;
+    }
+
+    &::after {
+      left: 0;
+      transform-origin: left;
+      transform: rotate(-45deg);
+    }
   }
 
   &__next {
-    transform: rotate(-90deg);
+    &::before {
+      right: 0;
+    }
+
+    &::after {
+      right: 0;
+      transform-origin: right;
+      transform: rotate(45deg);
+    }
+  }
+
+  &__today {
+    position: relative;
+
+    &::after {
+      background-color: $color-text;
+      content: '';
+      display: block;
+      height: 6px;
+      left: 0;
+      margin: auto;
+      position: absolute;
+      right: 0;
+      transform: rotate(45deg);
+      width: 6px;
+    }
   }
 }
 </style>
