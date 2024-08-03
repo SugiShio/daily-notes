@@ -1,7 +1,7 @@
 const DAY_TEXTS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 export class Timestamp {
-  constructor(timestamp) {
+  constructor(timestamp = {}) {
     this.createdAt = timestamp.createdAt || new Date().getTime()
     this.updatedAt = timestamp.updatedAt || new Date().getTime()
     this.deletedAt = timestamp.deletedAt || null

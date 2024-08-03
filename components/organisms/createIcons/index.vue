@@ -6,7 +6,7 @@
         span.o-create-icons__label.font-family-accent {{ t.value }}
         span.o-create-icons__icon
           i(:class='`el-icon-${t.icon}`')
-  button.o-create-icons__trigger(@click.stop='isOpen = !isOpen' :style='styleTrigger') +
+  button.o-create-icons__trigger(v-if='!isPagerShown' @click.stop='isOpen = !isOpen' :style='styleTrigger') +
 </template>
 
 <script>
@@ -25,6 +25,9 @@ export default {
     },
     colorConfig() {
       return this.$store.state.colorConfig
+    },
+    isPagerShown() {
+      return this.$store.state.templateNames.length
     },
     styleTrigger() {
       return {
@@ -89,7 +92,7 @@ export default {
     opacity: 0;
     transform: translateY(0);
 
-    @for $i from 0 through 3 {
+    @for $i from 0 through 10 {
       &.isOpen:nth-child(#{$i}) {
         opacity: 1;
         transform: translateY(#{$i * -50 - 20}px);

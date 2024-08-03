@@ -4,7 +4,7 @@ ul.a-input-image
     button.a-input-image__button-delete(@click='onDeleteClicked(index)')
       i.el-icon-close
     img.a-input-image__image(:src='src')
-  li.a-input-image__image-item
+  li.a-input-image__image-item(v-if='addable')
     label.a-input-image__add(:style='style')
       input.a-input-image__input(
         type='file',
@@ -20,6 +20,7 @@ export default {
   name: 'AtomsInputImage',
   props: {
     originalFiles: { type: Array, default: () => [] },
+    max: { type: Number, default: undefined },
   },
   data() {
     return {
@@ -28,6 +29,9 @@ export default {
     }
   },
   computed: {
+    addable() {
+      return this.max === undefined || this.srcs.length < this.max
+    },
     images() {
       return [...this.originalFiles, ...this.srcs]
     },
