@@ -37,7 +37,7 @@ export default {
       try {
         this.isConnecting = true
         await signInWithEmailAndPassword(auth, this.email, this.password)
-        this.$store.commit('removeTemplateNames')
+        this.$store.commit('pager/removeTemplateNames')
       } catch (error) {
         this.error = error
         console.error(error)

@@ -27,7 +27,7 @@ export default {
       return this.$store.state.colorConfig
     },
     isPagerShown() {
-      return this.$store.state.templateNames.length
+      return this.$store.state.pager.templateNames.length
     },
     styleTrigger() {
       return {
@@ -39,7 +39,7 @@ export default {
     onCreateButtonClicked(index) {
       this.isOpen = false
       this.$store.commit(
-        'setTemplateNames',
+        'pager/setTemplateNames',
         `organisms-${TYPES[index].value}-editor`
       )
     },

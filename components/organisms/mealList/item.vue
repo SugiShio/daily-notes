@@ -27,8 +27,8 @@ export default {
   },
   methods: {
     showDetail() {
-      this.$store.commit('setTemplateNames', 'templates-meal-detail')
-      this.$store.commit('setMeal', this.meal)
+      this.$store.commit('pager/setTemplateNames', 'templates-meal-detail')
+      this.$store.commit('pager/setItem', this.meal)
     },
   },
 }

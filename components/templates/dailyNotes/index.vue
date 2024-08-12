@@ -12,6 +12,8 @@ section.t-daily-notes
 
   organisms-meal-list(v-if='hasMeals')
 
+  organisms-recipe-list(v-if='hasRecipes')
+
   organisms-task-list
 
   .t-daily-notes__item(
@@ -67,6 +69,10 @@ export default {
       return !!this.$store.getters['dailyNotes/mealsWithId'].length
     },
 
+    hasRecipes() {
+      return !!this.$store.getters['dailyNotes/recipesWithId'].length
+    },
+
     nutrientBasis() {
       return this.$store.state.user.nutrientBasis
     },
@@ -110,7 +116,7 @@ export default {
         }
       })
       this.$store.commit('graph/setItems', items)
-      this.$store.commit('setTemplateNames', 'templates-meal-graph')
+      this.$store.commit('pager/setTemplateNames', 'templates-meal-graph')
     },
   },
 }

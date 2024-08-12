@@ -35,7 +35,7 @@ export default {
   methods: {
     onCreateButtonClicked(index) {
       this.$store.commit(
-        'setTemplateNames',
+        'pager/setTemplateNames',
         `organisms-${TYPES[index].value}-editor`
       )
     },

@@ -13,10 +13,8 @@ export const state = () => ({
   dailyId: '',
   fontConfig: {},
   foodItems: [],
-  meal: null,
   originalItem: null,
   originalItemId: null,
-  templateNames: [],
 })
 
 export const mutations = {
@@ -44,24 +42,8 @@ export const mutations = {
     state.isSignin = true
   },
 
-  setMeal(state, meal) {
-    state.meal = meal
-  },
-
-  setTemplateNames(state, templateName) {
-    state.templateNames.push(templateName)
-  },
-
   removeFoodItemLabel(state, { name, foodItemId }) {
     state.user.removeFoodItemLabelId({ name, foodItemId })
-  },
-
-  removeTemplateNames(state) {
-    state.templateNames.pop()
-  },
-
-  resetTemplateNames(state) {
-    state.templateNames = []
   },
 
   setUser(state, user) {

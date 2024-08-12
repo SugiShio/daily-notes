@@ -10,7 +10,7 @@ export default {
   name: 'TemplatesMealDetail',
   computed: {
     mealItems() {
-      return this.$store.state.meal.items
+      return this.$store.state.pager.item.items
     },
     nutrientBasis() {
       return this.$store.state.user.nutrientBasis
@@ -34,7 +34,7 @@ export default {
           unit: NUTRIENTS[key].unit,
         }
       })
-      this.$store.commit('setTemplateNames', 'templates-meal-graph')
+      this.$store.commit('pager/setTemplateNames', 'templates-meal-graph')
       this.$store.commit('graph/setItems', items)
     },
   },

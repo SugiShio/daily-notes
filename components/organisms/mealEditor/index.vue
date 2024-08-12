@@ -30,7 +30,7 @@
 
         button.o-meal-editor__button-add(
           :style='style'
-          @click='$store.commit("setTemplateNames", "templates-search-food-item")'
+          @click='$store.commit("pager/setTemplateNames", "templates-search-food-item")'
         )
           i.el-icon-circle-plus-outline
           | Add items
@@ -125,7 +125,7 @@ export default {
       })
       try {
         await this.$store.dispatch('dailyForm/onSaveClicked', item)
-        this.$store.commit('resetTemplateNames')
+        this.$store.commit('pager/resetTemplateNames')
         this.$store.dispatch('dailyNotes/fetchDailyNotes')
       } catch (error) {
         console.error(error)

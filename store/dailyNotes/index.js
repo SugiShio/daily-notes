@@ -2,6 +2,7 @@ import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
+import { Recipe } from '~/models/recipe'
 
 export const state = () => ({
   dailyNotes: {},
@@ -33,6 +34,10 @@ export const actions = {
       switch (data.type) {
         case 'meal':
           dailyNotes[snapShot.id] = new Meal(data)
+          break
+
+        case 'recipe':
+          dailyNotes[snapShot.id] = new Recipe(data)
           break
 
         default:
@@ -68,6 +73,19 @@ export const getters = {
       .filter((v) => v)
       .sort((a, b) => {
         return a.note.time - b.note.time
+      })
+  },
+
+  recipesWithId(state) {
+    return Object.keys(state.dailyNotes)
+      .map((key) => {
+        if (state.dailyNotes[key].type === 'recipe')
+          return { id: key, recipe: state.dailyNotes[key] }
+        return null
+      })
+      .filter((v) => v)
+      .sort((a, b) => {
+        return a.recipe.time - b.recipe.time
       })
   },
 }

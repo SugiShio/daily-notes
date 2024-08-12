@@ -8,6 +8,7 @@ export class Recipe extends DailyItem {
     this.ingredients = recipe.ingredients
       ? recipe.ingredients.map((ingredient) => new Ingredient(ingredient))
       : []
+    this.note = recipe.note || ''
     this.steps = recipe.steps ? recipe.steps.map((step) => new Step(step)) : []
   }
 
@@ -21,11 +22,12 @@ export class Recipe extends DailyItem {
         return !ingredient.isBlank
       })
       .map(
-        (ingredient, index) => new Ingredient({ ...ingredient, order: index })
+        (ingredient, index) =>
+          new Ingredient({ ...ingredient, order: index + 1 })
       )
     const steps = recipe.steps
       .filter((step) => !step.isBlank)
-      .map((step, index) => new Step({ ...step, order: index }))
+      .map((step, index) => new Step({ ...step, order: index + 1 }))
     return new Recipe({ ...recipe, ingredients, steps })
   }
 }
@@ -44,7 +46,7 @@ export class Ingredient {
 
 export class Step {
   constructor(step = {}) {
-    this.order = step.order || 1
+    this.order = step.order
     this.description = step.description || ''
   }
 

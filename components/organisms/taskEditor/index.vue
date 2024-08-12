@@ -69,7 +69,7 @@ export default {
       })
       try {
         await this.$store.dispatch('dailyForm/onSaveClicked', item)
-        this.$store.commit('resetTemplateNames')
+        this.$store.commit('pager/resetTemplateNames')
         this.$store.dispatch('dailyNotes/fetchDailyNotes')
       } catch (error) {
         console.error(error)

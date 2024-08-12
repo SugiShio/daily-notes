@@ -37,6 +37,10 @@
           i.el-icon-circle-plus-outline
           | Add step
 
+  .o-recipe-editor__item
+    label.o-recipe-editor__label(for='title') Note
+      .o-recipe-editor__content
+        atoms-input-text(v-model='note')
 
   .o-recipe-editor__item
     .o-recipe-editor__content
@@ -60,6 +64,7 @@ export default {
         new Ingredient({ name: 'にんじん' }),
         new Ingredient({ name: 'かぼちゃ' }),
       ],
+      note: '',
       steps: [new Step()],
     }
   },
@@ -96,6 +101,7 @@ export default {
         (ingredient) => new Ingredient(ingredient)
       )
       this.steps = this.originalItem.steps.map((step) => new Step(step))
+      this.note = this.originalItem.note
     }
   },
   methods: {
@@ -120,12 +126,13 @@ export default {
           (ingredient) => new Ingredient(ingredient)
         ),
         steps: this.steps.map((step) => new Step(step)),
+        note: this.note,
       })
 
       try {
         if (!recipe.isValid) throw new Error('Recipe is invalid')
         await this.$store.dispatch('dailyForm/onSaveClicked', recipe)
-        this.$store.commit('resetTemplateNames')
+        this.$store.commit('pager/resetTemplateNames')
         this.$store.dispatch('dailyNotes/fetchDailyNotes')
       } catch (error) {
         console.error(error)

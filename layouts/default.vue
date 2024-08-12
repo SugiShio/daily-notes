@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     showSigninForm() {
-      this.$store.commit('setTemplateNames', 'templates-signin-form')
+      this.$store.commit('pager/setTemplateNames', 'templates-signin-form')
     },
   },
 }

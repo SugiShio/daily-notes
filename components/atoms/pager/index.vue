@@ -17,12 +17,12 @@ export default {
   name: 'AtomsPager',
   computed: {
     templateNames() {
-      return this.$store.state.templateNames
+      return this.$store.state.pager.templateNames
     },
   },
   methods: {
     onBackClicked() {
-      this.$store.commit('removeTemplateNames')
+      this.$store.commit('pager/removeTemplateNames')
       if (!this.templateNames.length) {
         this.$store.commit('dailyForm/resetOriginalItem')
       }

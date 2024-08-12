@@ -14,17 +14,18 @@
 <script>
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
+import { Recipe } from '~/models/recipe'
 
 export default {
   name: 'AtomsActionList',
   props: {
-    dailyNote: { type: [Note, Meal], default: () => new Note() },
+    dailyNote: { type: [Note, Meal, Recipe], default: () => new Note() },
     id: { type: String, required: true },
   },
   methods: {
     editItem() {
       this.$store.commit(
-        'setTemplateNames',
+        'pager/setTemplateNames',
         `organisms-${this.dailyNote.type}-editor`
       )
       this.$store.commit('dailyForm/setOriginalItem', {

@@ -1,30 +1,28 @@
 <template lang="pug">
-.o-meal(@click='showDetail')
-  header.o-meal__head
-    i(:class='`el-icon-${meal.mark}`')
-    time.o-meal__time {{ meal.timeText }}
+.o-recipe(@click='showDetail')
+  header.o-recipe__head
+    i(:class='`el-icon-${recipe.mark}`')
+    time.o-recipe__time {{ recipe.timeText }}
 
-  organisms-meal-item-list(:meal-items='meal.items', :show-count='5')
-
-  ul.o-meal__image-list
-    li.o-meal__image-item(v-for='src in meal.files')
-      img.o-meal__image(:src='src')
+  ul.o-recipe__image-list
+    li.o-recipe__image-item(v-for='src in recipe.files')
+      img.o-recipe__image(:src='src')
 
   slot
 </template>
 
 <script>
-import { Meal } from '~/models/meal'
+import { Recipe } from '~/models/recipe'
 
 export default {
-  name: 'OrganismsMeal',
+  name: 'OrganismsRecipe',
   props: {
-    meal: { type: Meal, default: new Meal() },
+    recipe: { type: Recipe, default: new Recipe() },
   },
   methods: {
     showDetail() {
-      this.$store.commit('pager/setTemplateNames', 'templates-meal-detail')
-      this.$store.commit('pager/setItem', this.meal)
+      // this.$store.commit('pager/setTemplateNames', 'templates-recipe-detail')
+      // this.$store.commit('setRecipe', this.recipe)
     },
   },
 }
@@ -33,7 +31,7 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/stylesheets/variables';
 
-.o-meal {
+.o-recipe {
   padding: 15px 20px;
 
   &__head {

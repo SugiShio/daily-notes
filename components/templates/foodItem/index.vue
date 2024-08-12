@@ -186,7 +186,7 @@ export default {
     },
     onCloseClicked() {
       this.$store.commit('foodItem/resetFoodItem')
-      this.$store.commit('removeTemplateNames')
+      this.$store.commit('pager/removeTemplateNames')
     },
     onValueInput(value) {
       this.value = value

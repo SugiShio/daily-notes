@@ -4,12 +4,16 @@
 
   ul.o-daily-summary__list
     li(v-if='notesWithId.length')
-
       i.el-icon-document.o-daily-summary__icon
       | {{ notesWithId.length }} notes recorded
+
     li(v-if='mealsWithId.length')
       i.el-icon-apple.o-daily-summary__icon
       | {{ mealsWithId.length }} meals recorded
+
+    li(v-if='recipesWithId.length')
+      i.el-icon-fork-spoon.o-daily-summary__icon
+      | {{ recipesWithId.length }} recipe added
 </template>
 
 <script>
@@ -24,6 +28,9 @@ export default {
     },
     notesWithId() {
       return this.$store.getters['dailyNotes/notesWithId']
+    },
+    recipesWithId() {
+      return this.$store.getters['dailyNotes/recipesWithId']
     },
   },
 }
