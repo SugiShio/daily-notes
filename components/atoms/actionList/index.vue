@@ -37,6 +37,7 @@ export default {
       if (confirm('削除します。よろしいですか？')) {
         await this.$store.dispatch('dailyForm/deleteItem', this.id)
         this.$store.dispatch('dailyNotes/fetchDailyNotes')
+        this.$emit('delete-completed')
       }
     },
   },

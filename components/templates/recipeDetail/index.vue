@@ -26,6 +26,7 @@
   atoms-action-list(
     :daily-note='recipe'
     :id='id'
+    @delete-completed='$store.commit("pager/resetTemplateNames")'
     )
 
 </template>
