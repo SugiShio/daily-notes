@@ -1,25 +1,29 @@
 <template lang="pug">
-.o-meal(@click='showDetail')
-  header.o-meal__head
-    i(:class='`el-icon-${meal.mark}`')
-    time.o-meal__time {{ meal.timeText }}
+.o-meal-list-item(@click='showDetail')
+  header.o-meal-list-item__head
+  i(:class='`el-icon-${meal.mark}`')
+  time.o-meal-list-item__time {{ meal.timeText }}
 
   organisms-meal-item-list(:meal-items='meal.items', :show-count='5')
 
-  ul.o-meal__image-list
-    li.o-meal__image-item(v-for='src in meal.files')
-      img.o-meal__image(:src='src')
+  ul.o-meal-list-item__image-list
+    li.o-meal-list-item__image-item(v-for='src in meal.files')
+      img.o-meal-list-item__image(:src='src')
 
-  slot
+  atoms-action-list(
+    :daily-note='meal'
+    :id='id'
+    )
 </template>
 
 <script>
 import { Meal } from '~/models/meal'
 
 export default {
-  name: 'OrganismsMeal',
+  name: 'OrganismsMealListItem',
   props: {
-    meal: { type: Meal, default: new Meal() },
+    meal: { type: Meal, default: () => new Meal() },
+    id: { type: String, required: true },
   },
   methods: {
     showDetail() {
@@ -33,18 +37,12 @@ export default {
 <style lang="scss" scoped>
 @import '~/assets/stylesheets/variables';
 
-.o-meal {
-  padding: 15px 20px;
+.o-meal-list-item {
+  padding: 15px 0;
 
-  &__head {
-    display: flex;
-    align-items: center;
-    margin: 5px 0;
-  }
-
-  &__time {
-    font-size: 11px;
-    margin-left: 5px;
+  &__title {
+    font-weight: bold;
+    margin-bottom: 5px;
   }
 
   &__image-list {

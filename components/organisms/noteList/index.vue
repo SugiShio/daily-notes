@@ -1,18 +1,17 @@
 <template lang="pug">
-.o-meal-list
-  h2.o-meal-list__title Meal
-  ul.o-meal-list__list
-    li.o-meal-list__item(v-for='meal in mealsWithId')
-      organisms-meal-list-item(:meal='meal.meal', :id='meal.id')
-
+.o-note-list
+  h2.o-note-list__title Notes
+  ul.o-note-list__list
+    li.o-note-list__item(v-for='note in notesWithId')
+      organisms-note-list-item(:note='note.note', :id='note.id')
 </template>
 
 <script>
 export default {
-  name: 'OrganismsMealList',
+  name: 'OrganismsNoteList',
   computed: {
-    mealsWithId() {
-      return this.$store.getters['dailyNotes/mealsWithId']
+    notesWithId() {
+      return this.$store.getters['dailyNotes/notesWithId']
     },
   },
 }
@@ -20,8 +19,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '~/assets/stylesheets/typography';
-
-.o-meal-list {
+.o-note-list {
   padding: 15px 20px;
 
   &__title {

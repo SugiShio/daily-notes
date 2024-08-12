@@ -6,6 +6,12 @@ section.t-daily-notes
   .t-daily-notes__block
     organisms-create-icons
 
+  organisms-daily-summary(v-if='Object.keys(dailyNotes).length')
+
+  organisms-note-list(v-if='hasNotes')
+
+  organisms-meal-list(v-if='hasMeals')
+
   organisms-task-list
 
   .t-daily-notes__item(
@@ -16,28 +22,7 @@ section.t-daily-notes
     button.t-daily-notes__button(:style='styleColor' @click='showMealSummary')
       i.el-icon-s-data
       | &nbsp; Show detail
-  ul
-    li.t-daily-notes__item(
-      v-for='meal in mealsWithId'
-     )
-      organisms-meal(:meal='meal.meal', :show-count='5')
-        .t-daily-notes__actions
-          button.t-daily-notes__action(
-            @click.stop.prevent='editItem(meal.meal, meal.id)'
-          )
-            i.el-icon-edit
-          button.t-daily-notes__action(
-            @click.stop.prevent='deleteItem(meal.id)'
-          )
-            i.el-icon-delete
-  ul
-    li.t-daily-notes__item(v-for='(note, id) in notes')
-      organisms-note(:item='note')
-        .t-daily-notes__actions
-          button.t-daily-notes__action(@click='editItem(note, id)')
-            i.el-icon-edit
-          button.t-daily-notes__action(@click='deleteItem(id)')
-            i.el-icon-delete
+
 </template>
 
 <script>
@@ -54,8 +39,9 @@ export default {
     },
 
     dailyNotes() {
-      return this.$store.state.dailyNotes || []
+      return this.$store.state.dailyNotes.dailyNotes || []
     },
+
     meals() {
       return this.mealsWithId.map((mealWithId) => mealWithId.meal)
     },
@@ -73,17 +59,18 @@ export default {
         })
     },
 
-    notes() {
-      const notes = {}
-      Object.keys(this.dailyNotes).forEach((key) => {
-        if (this.dailyNotes[key].type === 'note')
-          notes[key] = this.dailyNotes[key]
-      })
-      return notes
+    hasNotes() {
+      return !!this.$store.getters['dailyNotes/notesWithId'].length
     },
+
+    hasMeals() {
+      return !!this.$store.getters['dailyNotes/mealsWithId'].length
+    },
+
     nutrientBasis() {
       return this.$store.state.user.nutrientBasis
     },
+
     shouldShowMealSummary() {
       return (
         Object.keys(this.meals).length && this.$store.state.foodItems.length
@@ -99,19 +86,6 @@ export default {
     },
   },
   methods: {
-    async deleteItem(id) {
-      if (confirm('削除します。よろしいですか？')) {
-        await this.$store.dispatch('dailyForm/deleteItem', id)
-        this.$store.dispatch('fetchDailyNotes')
-      }
-    },
-    editItem(dailyNote, id) {
-      this.$store.commit(
-        'setTemplateNames',
-        `organisms-${dailyNote.type}-editor`
-      )
-      this.$store.commit('dailyForm/setOriginalItem', { item: dailyNote, id })
-    },
     showMealSummary() {
       const foodItems = this.$store.state.foodItems
       const items = Object.keys(NUTRIENTS).map((key) => {
@@ -146,6 +120,8 @@ export default {
 @import '~/assets/stylesheets/variables';
 
 .t-daily-notes {
+  padding-bottom: 60px;
+
   &__block {
     margin: 20px 0;
   }

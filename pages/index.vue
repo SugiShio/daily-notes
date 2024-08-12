@@ -22,14 +22,14 @@ export default {
   watch: {
     uid(uid) {
       if (uid) {
-        this.$store.dispatch('fetchDailyNotes')
+        this.$store.dispatch('dailyNotes/fetchDailyNotes')
       }
     },
   },
   created() {
     this.$store.commit('setDailyId', dailyId)
     if (this.uid) {
-      this.$store.dispatch('fetchDailyNotes')
+      this.$store.dispatch('dailyNotes/fetchDailyNotes')
     }
   },
   methods: {
@@ -43,5 +43,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

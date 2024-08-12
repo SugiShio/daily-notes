@@ -23,14 +23,14 @@ export default {
     uid(uid) {
       if (uid) {
         this.$store.commit('setDailyId', this.dailyId)
-        this.$store.dispatch('fetchDailyNotes')
+        this.$store.dispatch('dailyNotes/fetchDailyNotes')
       }
     },
   },
   created() {
     this.$store.commit('setDailyId', this.dailyId)
     if (this.uid) {
-      this.$store.dispatch('fetchDailyNotes')
+      this.$store.dispatch('dailyNotes/fetchDailyNotes')
     }
   },
   methods: {

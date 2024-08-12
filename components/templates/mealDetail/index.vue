@@ -1,6 +1,6 @@
 <template lang="pug">
 .t-meal-detail
-  organisms-meal-list(:meal-items='mealItems')
+  organisms-meal-item-list(:meal-items='mealItems')
   button.t-meal-detail__button-graph(@click='onButtonClicked') グラフを見る
 </template>
 

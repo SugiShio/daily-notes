@@ -1,20 +1,8 @@
 import { getAuth, signOut } from 'firebase/auth'
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  orderBy,
-  updateDoc,
-  query,
-  where,
-} from 'firebase/firestore'
+import { doc, getDoc } from 'firebase/firestore'
 import { app, db } from '~/plugins/firebase'
 import { dbFoodDatabase } from '~/plugins/firebase/foodDatabase'
 import { FoodItem } from '~/models/foodItem'
-import { Note } from '~/models/note'
-import { Meal } from '~/models/meal'
 import { User } from '~/models/user'
 const auth = getAuth(app)
 
@@ -23,7 +11,6 @@ export const state = () => ({
   isSignin: false,
   colorConfig: {},
   dailyId: '',
-  dailyNotes: {},
   fontConfig: {},
   foodItems: [],
   meal: null,
@@ -39,10 +26,6 @@ export const mutations = {
 
   setDailyId(state, dailyId) {
     state.dailyId = dailyId
-  },
-
-  setDailyNotes(state, dailyNotes) {
-    state.dailyNotes = dailyNotes
   },
 
   setFontConfig(state, fontConfig) {
@@ -95,42 +78,6 @@ export const mutations = {
 }
 
 export const actions = {
-  async addItem({ state }, item) {
-    try {
-      await addDoc(collection(db, 'dailyNotes'), {
-        ...item,
-        uid: state.user.uid,
-      })
-    } catch (e) {
-      console.error(e)
-    }
-  },
-
-  async fetchDailyNotes({ commit, state }) {
-    const q = query(
-      collection(db, 'dailyNotes'),
-      where('uid', '==', state.user.uid),
-      where('date', '==', state.dailyId),
-      orderBy('createdAt', 'asc')
-    )
-    const snapShots = await getDocs(q)
-
-    const dailyNotes = {}
-    snapShots.forEach((snapShot) => {
-      const data = snapShot.data()
-      switch (data.type) {
-        case 'meal':
-          dailyNotes[snapShot.id] = new Meal(data)
-          break
-
-        default:
-          dailyNotes[snapShot.id] = new Note(data)
-      }
-    })
-
-    commit('setDailyNotes', dailyNotes)
-  },
-
   async fetchFoodItem(_, id) {
     const snapshot = await getDoc(doc(dbFoodDatabase, 'foodItems', id))
     return new FoodItem(id, snapshot.data())
@@ -170,24 +117,6 @@ export const actions = {
       commit('resetUser')
     } catch (error) {
       console.error(error)
-    }
-  },
-
-  async updateItem({ state }, item) {
-    const updated = {}
-    Object.keys(item).forEach((key) => {
-      if (item[key] !== state.originalItem[key]) {
-        updated[key] = item[key]
-      }
-    })
-    if (!Object.keys.length) return
-    try {
-      await updateDoc(doc(db, 'dailyNotes', state.originalItemId), {
-        ...updated,
-        updatedAt: new Date().getTime(),
-      })
-    } catch (e) {
-      console.error(e)
     }
   },
 }
