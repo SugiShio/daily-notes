@@ -8,6 +8,7 @@ export class Note extends DailyItem {
     this.type = 'note'
     this.content = note.content || ''
     this.title = note.title || ''
+    this.tags = note.tags || []
   }
 
   get isEmpty() {
