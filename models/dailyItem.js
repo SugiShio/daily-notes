@@ -9,6 +9,7 @@ export const TYPES = [
   { value: 'task', icon: 'circle-check' },
   { value: 'meal', icon: 'apple' },
   { value: 'recipe', icon: 'fork-spoon' },
+  { value: 'bookmark', icon: 'collection-tag' },
 ]
 
 export class DailyItem extends Timestamp {

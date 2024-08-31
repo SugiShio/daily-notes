@@ -14,6 +14,8 @@ section.t-daily-notes
 
   organisms-recipe-list(v-if='hasRecipes')
 
+  organisms-bookmark-list(v-if='hasBookmark')
+
   organisms-task-list
 
   .t-daily-notes__item(
@@ -59,6 +61,10 @@ export default {
         .sort((a, b) => {
           return a.meal.time - b.meal.time
         })
+    },
+
+    hasBookmark() {
+      return !!this.$store.getters['dailyNotes/bookmarksWithId'].length
     },
 
     hasNotes() {

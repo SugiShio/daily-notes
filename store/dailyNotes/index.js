@@ -1,5 +1,6 @@
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
+import { Bookmark } from '~/models/bookmark'
 import { Note } from '~/models/note'
 import { Meal } from '~/models/meal'
 import { Recipe } from '~/models/recipe'
@@ -32,6 +33,10 @@ export const actions = {
     snapShots.forEach((snapShot) => {
       const data = snapShot.data()
       switch (data.type) {
+        case 'bookmark':
+          dailyNotes[snapShot.id] = new Bookmark(data)
+          break
+
         case 'meal':
           dailyNotes[snapShot.id] = new Meal(data)
           break
@@ -40,8 +45,9 @@ export const actions = {
           dailyNotes[snapShot.id] = new Recipe(data)
           break
 
-        default:
+        case 'note':
           dailyNotes[snapShot.id] = new Note(data)
+          break
       }
     })
 
@@ -50,6 +56,19 @@ export const actions = {
 }
 
 export const getters = {
+  bookmarksWithId(state) {
+    return Object.keys(state.dailyNotes)
+      .map((key) => {
+        if (state.dailyNotes[key].type === 'bookmark')
+          return { id: key, bookmark: state.dailyNotes[key] }
+        return null
+      })
+      .filter((v) => v)
+      .sort((a, b) => {
+        return a.bookmark.time - b.bookmark.time
+      })
+  },
+
   mealsWithId(state) {
     return Object.keys(state.dailyNotes)
       .map((key) => {

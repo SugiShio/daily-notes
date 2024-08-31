@@ -1,3 +1,5 @@
+@import 'variables';
+
 %form {
   &__item {
     // display: flex;
@@ -14,4 +16,9 @@
     margin-top: 5px;
   }
 
+  &__error {
+    color: $color-red;
+    font-size: 11px;
+    margin-top: 5px;
+  }
 }
