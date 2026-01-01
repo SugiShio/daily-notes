@@ -6,7 +6,7 @@ export default {
   head: {
     title: 'daily-notes',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'ja',
     },
     meta: [
       { charset: 'utf-8' },
@@ -30,6 +30,7 @@ export default {
         href: 'https://fonts.googleapis.com/css2?family=Playwrite+PE:wght@100..400&display=swap',
         crossorigin: '',
       },
+      { rel: 'apple-touch-icon', sizes: '180x180', href: '/icon.png' },
     ],
   },
 
